@@ -18,8 +18,8 @@ const func = {
   waiters: require("./functions/waiters.js"),
   deliveryMen: require("./functions/deliveryMen.js"),
   users: require("./functions/users.js"),
+  neighborhoods: require("./functions/neighborhoods.js"),
   // menu: require("./functions/menu.js"),
-  // neighborhoods: require("./functions/neighborhoods.js"),
   // additionals: require('./functions/additionals.js')
 }
 
