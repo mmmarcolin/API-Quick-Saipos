@@ -45,7 +45,7 @@ module.exports = async function settings(saiposAuthToken, storeId, chsd) {
         }
         const responseData = await response.json()
         const userData = responseData.find(user => user.user.user_type === 1)
-        // console.log('Response:', userData)
+        console.log('Response:', userData)
         return userData
       } catch (error) {
         console.error('Error:', error)
@@ -53,7 +53,7 @@ module.exports = async function settings(saiposAuthToken, storeId, chsd) {
       }
     }
 
-    async function updateSettings(desiredSetting, settingValue) {
+    async function putSettings(desiredSetting, settingValue) {
       const url = `https://api.saipos.com/v1/stores/${storeId}/setting_values/${desiredSetting}`
       const data = {
         "setting_value": settingValue
@@ -77,7 +77,7 @@ module.exports = async function settings(saiposAuthToken, storeId, chsd) {
       } 
     }
 
-    async function updateCancellationPassword(userData) {
+    async function putCancellationPassword(userData) {
       const url = `https://api.saipos.com/v1/stores/${storeId}/update-user`      
       const data = {
           "id_user": userData.id_user,
@@ -103,7 +103,7 @@ module.exports = async function settings(saiposAuthToken, storeId, chsd) {
       } 
     }
 
-    async function updatePermissions(userData) {
+    async function putPermissions(userData) {
       const url = `https://api.saipos.com/v1/stores/${storeId}/update-permission`
       userData.user.permissions.forEach(function(permission) {
         if (permission.allowed === "N") {

@@ -1,27 +1,40 @@
-module.exports = async function waiters(page, waiters, waitersDailyRate) {
+module.exports = async function waiters(saiposAuthToken, storeId, chsd) {
   try {
 
-    // Acesso à página
-    await page.goto('https://conta.saipos.com/#/app/store/waiters', {timeout: 0})
-
-    // Cadastra um garçom por vez
-    for (let i = 0; i < waiters; i++) {
-      await timeOut(2000)
-      await waitForAndClick(page, '#content > data > div > base-crud > div > base-crud-title > div > button')
-      await waitForAndType(page, '#input-descricao', `Garçom ${i+1}`)
-      await waitForAndType(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > form > div > div:nth-child(2) > div.col-sm-4 > div > div > input', `${waitersDailyRate[i]*100}`)
-      await waitForAndClick(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-footer.ng-scope > button.btn.btn-primary.m-b-0.waves-effect')
+    async function postWaiters(waiterDesc, waiterDailyRate) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/store_waiters/`
+      const data = {
+        "id_store_waiter": 0,
+        "desc_store_waiter": waiterDesc,
+        "value_daily": waiterDailyRate,
+        "id_store": storeId
+      }
+      const options = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Authorization': saiposAuthToken, 
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      } 
     }
-
-    // Tempo para salvar
-    await timeOut(3000)
-    await page.goto('https://conta.saipos.com/#/', {timeout: 0})
-    await timeOut(2000)
+    
+    for (let i = 0; i < chsd.waiterDesc.length; i++) {
+      await postWaiters(chsd.waiterDesc[i], chsd.waiterDailyRate[i])
+    }
 
   // Tratamento de erros
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de GARÇONS', error)
-    ipcRenderer.send('show-alert', 'Ocorreu um erro durante o cadastro de GARÇONS, revise após a execução do programa.')
     return  ["GARÇONS: ",{ stack: error.stack }]
   }
 }

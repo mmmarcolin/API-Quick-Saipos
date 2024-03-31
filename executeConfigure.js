@@ -14,10 +14,10 @@ const func = {
   settings: require("./functions/settings.js"),
   partners: require('./functions/partners.js'),
   taxesData: require("./functions/taxesData.js"),
-  // shifts: require("./functions/shifts.js"),
-  // waiters: require("./functions/waiters.js"),
-  // deliveryMen: require("./functions/deliveryMen.js"),
-  // users: require("./functions/users.js"),
+  shifts: require("./functions/shifts.js"),
+  waiters: require("./functions/waiters.js"),
+  deliveryMen: require("./functions/deliveryMen.js"),
+  users: require("./functions/users.js"),
   // menu: require("./functions/menu.js"),
   // neighborhoods: require("./functions/neighborhoods.js"),
   // additionals: require('./functions/additionals.js')
@@ -67,7 +67,11 @@ async function handleDateNow(end) {
 // Verificador de existência
 async function hasTruthyValue(obj) {
   return Object.values(obj).some(value => {
-    if (typeof value === 'boolean' && value === true) {
+    if (
+      typeof value === 'boolean' && value === true ||
+      typeof value === 'number' && value > 0 ||
+      Array.isArray(value) && value != 0
+      ) {
       return true
     }
     return false
@@ -112,18 +116,18 @@ async function executeConfigure(data) {
 
 // Declaração temporária de objeto
 const formData = {
-  storeId: 9970,
+  storeId: 33738,
   paymentTypesChosed: {pix: false, elo: false, master: false, visa: false, amex: false, hiper: false},
   partnersChosed: {deliverySite: false, basicMenu: false, premiumMenu: false, pickupCounter: "", storeName: "", minimumValue: 0, startTime: "12:10", endTime: "13:20", weekDays: { sunday: false, monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false }},
   settingsChosed: {col42: false, kds: false, cancelReason: false, cancelPassword: false, admPermissions: false},
   saleStatusChosed: {delivery: false, easyDelivery: false},
-  tableOrderChosed: {boolean: false, quantity: 0},
-  orderCardChosed: {boolean: false, quantity: 0},
-  taxesDataChosed: {cest: false, contigency: true},
-  usersChosed: {},
-  shiftsChosed: {},
-  waitersChosed: {},
-  deliveryMenChosed: {},
+  tableOrderChosed: {quantity: 0},
+  orderCardChosed: {quantity: 0},
+  taxesDataChosed: {cest: false, contigency: false},
+  shiftsChosed: {shiftDesc: [], shiftTime: [], shiftCharge: []},
+  waitersChosed: {waiterDesc: [], waiterDailyRate: []},
+  deliveryMenChosed: {deliveryMenQuantity: [], deliveryMenDailyRate: []},
+  usersChosed: {counterUser: false, waiterUserQuantity: 0, storeName: ""},
   neighborhoodsChosed: {},
   additionalsChosed: {},
   menuChosed: {}

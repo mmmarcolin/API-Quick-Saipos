@@ -1,46 +1,69 @@
-const { waitForAndClick, waitForAndType, timeOut, waitForAndKeys, waitForAndSelectAll } = require("./auxiliarFunctions") // Importação das funções auxiliares
-module.exports = async function users(page, serviceFee, shiftTime, shiftDesc) {
-
+module.exports = async function shifts(saiposAuthToken, storeId, chsd) {
   try {
-
-    // Acesso à página
-    await page.goto('https://conta.saipos.com/#/app/store/shift', {timeout: 0})
-
-    // Edita o primeiro turno
-    await timeOut(1000)
-    await waitForAndClick(page, '#content > data > div > form > div > div.table-responsive > table > tbody > tr > td.col-md-2 > button:nth-child(1)')
-
-    // Executa o número de turnos cadastrado
-    for (let i = 0; i < shiftDesc.length; i++) {
-      
-      // Cadastro do turno
-      await waitForAndSelectAll(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > div > div:nth-child(1) > div > div > div > input')
-      await waitForAndKeys(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > div > div:nth-child(1) > div > div > div > input', `${shiftDesc[i]}`)
-      await waitForAndSelectAll(page, '#inputStartingTime')
-      await waitForAndKeys(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > div > div:nth-child(1) > div > div > div > input', `${shiftTime[i]}`)
-      
-      // Se taxa de serviço existir, ativa e inclui
-      if (serviceFee[i] > 0) {
-        await waitForAndClick(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > div > div:nth-child(3) > div:nth-child(1) > div > div > div > label > input')
-        await waitForAndType(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > div > div:nth-child(3) > div:nth-child(2) > div > div > input', `${serviceFee[i] * 100}`)
+    console.log('asd')
+    async function getShiftId() {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/shifts/`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Authorization': saiposAuthToken,
+          'Content-Type': 'application/json'
+        }
       }
-      await waitForAndClick(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-footer.ng-scope > button.btn.btn-primary.m-b-0.waves-effect')
+      try {
+        const response = await fetch(url, options)
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`)
+        }
+        const responseData = await response.json()
+        console.log(responseData[0].id_store_shift)
+        return responseData ? responseData[0].id_store_shift : null
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      }
+    }
 
-      if (shiftDesc.length > 1 && i != shiftDesc.length - 1) {
-        await timeOut(1000)
-        await waitForAndClick(page, '#content > data > div > form > div > div.lv-header-alt.clearfix.m-b-5 > button')
+    async function pustShift(method, shiftDesc, shiftTime, shiftCharge, shiftId) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/shifts/${shiftId}`
+      const data = {
+        "id_store_shift": shiftId > 0 ? shiftId : 0,
+        "desc_store_shift": shiftDesc,
+        "starting_time": shiftTime,
+        "id_store": storeId,
+        "service_charge": shiftCharge,
+        "use_service_charge": shiftCharge > 0 ? "Y" : "N"
+      }
+      const options = {
+        method: method,
+        body: JSON.stringify(data),
+        headers: {
+          'Authorization': saiposAuthToken, 
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
       } 
     }
 
-    // Tempo para salvar
-    await timeOut(2000)
-    await page.goto('https://conta.saipos.com/#/', {timeout: 0})
-    await timeOut(2000)  
+    const shiftId = await getShiftId()
+    
+    await pustShift("PUT", chsd.shiftDesc[0], chsd.shiftTime[0], chsd.shiftCharge[0], shiftId)
+
+    for (let i = 1; i < chsd.shiftDesc.length; i++) {
+      await pustShift("POST", chsd.shiftDesc[i], chsd.shiftTime[i], chsd.shiftCharge[i], "")
+    }
 
   // Tratamento de erros
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de TURNOS', error)
-    ipcRenderer.send('show-alert', 'Ocorreu um erro durante o cadastro de TURNOS, revise após a execução do programa.')
     return  ["TURNOS: ",{ stack: error.stack }]
   }
 }

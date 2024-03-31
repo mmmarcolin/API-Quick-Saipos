@@ -25,7 +25,7 @@ module.exports = async function saleStatus(saiposAuthToken, storeId, chsd) {
       }
     }
   
-    async function updateSaleStatus(saleStatusIds, saleStatusDescription, saleStatusTags) {
+    async function putSaleStatus(saleStatusIds, saleStatusDescription, saleStatusTags) {
       const url = `https://api.saipos.com/v1/stores/${storeId}/sale_statuses/update-validate/${saleStatusIds}`
       const data = {
         "id_store_sale_status": saleStatusIds,

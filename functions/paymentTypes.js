@@ -43,16 +43,14 @@ module.exports = async function paymentTypes(saiposAuthToken, storeId, chsd) {
     
     let delay = 0
 
-    if (chsd.pix) { setTimeout(() => postToSaipos(paymentType[0][0],paymentType[0][1],paymentType[0][2]), delay); delay += 500 }
-    if (chsd.elo) { setTimeout(() => postToSaipos(paymentType[1][0],paymentType[1][1],paymentType[1][2]), delay); delay += 500 }
-    if (chsd.master) { setTimeout(() => postToSaipos(paymentType[2][0],paymentType[2][1],paymentType[2][2]), delay); delay += 500 }
-    if (chsd.visa) { setTimeout(() => postToSaipos(paymentType[3][0],paymentType[3][1],paymentType[3][2]), delay); delay += 500 }
-    if (chsd.amex) { setTimeout(() => postToSaipos(paymentType[4][0],paymentType[4][1],paymentType[4][2]), delay); delay += 500 }
-    if (chsd.hiper) { setTimeout(() => postToSaipos(paymentType[5][0],paymentType[5][1],paymentType[5][2]), delay); delay += 500 }
-    if (chsd.elo) { setTimeout(() => postToSaipos(paymentType[6][0],paymentType[6][1],paymentType[6][2]), delay); delay += 500 }
-    if (chsd.master) { setTimeout(() => postToSaipos(paymentType[7][0],paymentType[7][1],paymentType[7][2]), delay); delay += 500 }
-    if (chsd.visa) { setTimeout(() => postToSaipos(paymentType[8][0],paymentType[8][1],paymentType[8][2]), delay); delay += 500 }
-
+    for (const paymentKey of Object.keys(chsd)) {
+      if (paymentType.hasOwnProperty(paymentKey)) {
+        const paymentData = paymentType[paymentKey];
+        setTimeout(() => postToSaipos(paymentData[0], paymentData[1], paymentData[2]), delay);
+        delay += 500;
+      }
+    }
+    
   // Tratamento de erros
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro das FORMAS DE PAGAMENTO', error)
