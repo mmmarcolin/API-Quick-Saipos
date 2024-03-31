@@ -2,7 +2,7 @@ const fs = require('fs') // Módulo para lidar com sistema de arquivos
 const path = require('path') // Módulo para lidar com caminhos de arquivos
 const csv = require('csv-parser') // Módulo para analisar arquivos CSV
 const { ipcRenderer, shell } = require('electron') // Módulo para comunicação com o processo principal do Electron
-const executeConfigure = require('./executeConfigure') // Módulo para chamar função de execução do Puppeteer
+const executeConfigure = require('../services/executeConfigure') // Módulo para chamar função de execução do Puppeteer
 const { neighborhoodsMappings, menuMappings, additionalsMappings, processCSV } = require('./functions/csvProcess')
 
 // Declare a variável filePath no escopo global

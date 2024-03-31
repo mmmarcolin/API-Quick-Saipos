@@ -7,18 +7,18 @@ const saiposAuthToken = process.env.SAIPOS_AUTH_TOKEN
 
 // Carregar módulos de funções
 const func = {
-  paymentTypes: require("./functions/paymentTypes.js"),
-  saleStatus: require("./functions/saleStatus.js"),
-  tableOrder: require("./functions/tableOrder.js"),
-  orderCard: require("./functions/orderCard.js"),
-  settings: require("./functions/settings.js"),
-  partners: require('./functions/partners.js'),
-  taxesData: require("./functions/taxesData.js"),
-  shifts: require("./functions/shifts.js"),
-  waiters: require("./functions/waiters.js"),
-  deliveryMen: require("./functions/deliveryMen.js"),
-  users: require("./functions/users.js"),
-  neighborhoods: require("./functions/neighborhoods.js"),
+  paymentTypes: require("./paymentTypes.js"),
+  saleStatus: require("./saleStatus.js"),
+  tableOrder: require("./tableOrder.js"),
+  orderCard: require("./orderCard.js"),
+  settings: require("./settings.js"),
+  partners: require('./partners.js'),
+  taxesData: require("./taxesData.js"),
+  shifts: require("./shifts.js"),
+  waiters: require("./waiters.js"),
+  deliveryMen: require("./deliveryMen.js"),
+  users: require("./users.js"),
+  neighborhoods: require("./neighborhoods.js"),
   // menu: require("./functions/menu.js"),
   // additionals: require('./functions/additionals.js')
 }
