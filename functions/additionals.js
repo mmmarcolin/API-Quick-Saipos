@@ -1,5 +1,3 @@
-const { ipcRenderer } = require('electron') // Módulo para comunicação com o processo principal do Electron
-
 module.exports = async function additionals(page, additionalsData, storeId, pizzaBigger, pizzaProportional) {
   try {
     // Lista auxiliares de inclusão

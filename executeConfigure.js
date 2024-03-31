@@ -1,149 +1,132 @@
-// Módulos de funções para configurações
-const login = require('./functions/login.js')
-const paymentTypes = require("./functions/paymentTypes.js")
-const users = require("./functions/users.js")
-const shifts = require("./functions/shifts.js")
-const saleStatus = require("./functions/saleStatus.js")
-const tableOrder = require("./functions/tableOrder.js")
-const orderCard = require("./functions/orderCard.js")
-const settings = require("./functions/settings.js")
-const waiters = require("./functions/waiters.js")
-const deliveryMen = require("./functions/deliveryMen.js")
-const taxesData = require("./functions/taxesData.js")
-const menu = require("./functions/menu.js")
-const neighborhoods = require("./functions/neighborhoods.js")
-const partners = require('./functions/partners.js')
-const { ipcRenderer } = require('electron') // Módulo para comunicar com electron
-const additionals = require('./functions/additionals.js')
-const dotenv = require('dotenv').config()
+// Carregar módulos gerais
+// const { ipcRenderer } = require('electron')
+require('dotenv').config()
+
+// Definição do token da API
 const saiposAuthToken = process.env.SAIPOS_AUTH_TOKEN
 
+// Carregar módulos de funções
+const func = {
+  paymentTypes: require("./functions/paymentTypes.js"),
+  saleStatus: require("./functions/saleStatus.js"),
+  tableOrder: require("./functions/tableOrder.js"),
+  orderCard: require("./functions/orderCard.js"),
+  settings: require("./functions/settings.js"),
+  partners: require('./functions/partners.js'),
+  taxesData: require("./functions/taxesData.js"),
+  // shifts: require("./functions/shifts.js"),
+  // waiters: require("./functions/waiters.js"),
+  // deliveryMen: require("./functions/deliveryMen.js"),
+  // users: require("./functions/users.js"),
+  // menu: require("./functions/menu.js"),
+  // neighborhoods: require("./functions/neighborhoods.js"),
+  // additionals: require('./functions/additionals.js')
+}
+
 // App Script API
-function googleSheetAPI(formData) {
-  const jsonData = JSON.stringify(formData)
+async function processDataAndSendToGoogleSheet(data) {
+  data.endTime = new Date()
+  data.timestamp = parseFloat((data.endTime - data.startTime) / 1000).toFixed(0)
+  data.endTime = await handleDateNow(data.endTime)
+  if (data.timestamp > 0 && data.storeId !== "33738") {
+    const jsonData = JSON.stringify(data)
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwHy4Ttcql8TXzcSMvzrsXHyymj_LSHdiphm6ieLsWlIiSwq_RMVkTapsyvJwOZZaJu/exec';
+    fetch(scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      return response.text()
+    })
+    .then(data => {
+      console.log(`REGISTRADO: ${data.storeId}`)
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+  }
+}
 
-  const scriptUrl = 'https://script.google.com/macros/s/AKfycbwHy4Ttcql8TXzcSMvzrsXHyymj_LSHdiphm6ieLsWlIiSwq_RMVkTapsyvJwOZZaJu/exec'
+// Tratamento de timestamp
+async function handleDateNow(end) {
+  var day = end.getDate().toString().padStart(2, '0')
+  var month = (end.getMonth() + 1).toString().padStart(2, '0')
+  var year = end.getFullYear()
+  var hours = end.getHours().toString().padStart(2, '0')
+  var minutes = end.getMinutes().toString().padStart(2, '0')
+  return `${day}/${month}/${year} ${hours}:${minutes}`
+}
 
-  fetch(scriptUrl, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: jsonData
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+// Verificador de existência
+async function hasTruthyValue(obj) {
+  return Object.values(obj).some(value => {
+    if (typeof value === 'boolean' && value === true) {
+      return true
     }
-    return response.text()
-  })
-  .then(data => {
-    console.log(`REGISTRADO: ${formData.storeId}`)
-  })
-  .catch((error) => {
-    console.error('Error:', error)
+    return false
   })
 }
 
-// Função principal
-module.exports = async function executeConfigure(formData) {
+// Comunicação de Status
+async function logAndSendAlert(message) {
+  console.log(message);
+  // ipcRenderer.send('show-alert', message);
+}
+
+// Função de execução do cadastro
+async function executeConfigure(data) {
   try {
     
-    // Declaração de variáveis úteis
-    let saiposUser = formData.saiposEmail.slice(0, -11)
-    formData.errorLog = []
+    // Início
+    await logAndSendAlert(`INICIADO: ${data.storeId}`)
+    data.startTime = new Date()
+    data.errorLog = []
 
-    // Comunicação de Status
-    console.log(`INICIADO: ${formData.storeId} | ${saiposUser}`)
-    ipcRenderer.send('show-alert', `INICIADO: ${formData.storeId} | ${saiposUser}`)
-
-    // Verificações para chamada das funções
-    if (formData.cardFlags || formData.pix) {
-      let err = await paymentTypes(saiposAuthToken, formData.cardFlags, formData.pix)
-      err != null ? formData.errorLog.push(err) : null
-    }
-    if (formData.deliverySite || formData.basicMenu || formData.premiumMenu) {
-      let err = await partners(saiposAuthToken, formData.deliverySite, formData.storeName, formData.minimumValue, formData.startTime, formData.weekDays, formData.endTime, formData.waiterInstruction, formData.counterInstruction, formData.premiumMenu, formData.basicMenu, formData.cardFlags, formData.pix, formData.counterPickUp)
-      err != null ? formData.errorLog.push(err) : null
-    }
-    if (formData.cancelPassword || formData.cancelReason || formData.col42) {
-      let err = await settings(saiposAuthToken, formData.cancelPassword, formData.cancelReason, formData.col42)
-      err != null ? formData.errorLog.push(err) : null
-    }
-    if (formData.waiters || formData.cancelPassword || formData.admPermissions) {
-      let err = await users(saiposAuthToken, formData.waiters, formData.storeName, formData.cancelPassword, formData.admPermissions)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.shiftTime[0] !== "") {
-      let err = await shifts(saiposAuthToken, formData.serviceFee, formData.shiftTime, formData.shiftDesc)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.saleStatus) {
-      let err = await saleStatus(saiposAuthToken, formData.easyDelivery)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.tables) {
-      let err = await tableOrder(saiposAuthToken, formData.tables)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.orderCards) {
-      let err = await orderCard(saiposAuthToken, formData.orderCards)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.waiters) {
-      let err = await waiters(saiposAuthToken, formData.waiters, formData.waitersDailyRate)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.deliveryMen || formData.easyDelivery) {
-      let err = await deliveryMen(saiposAuthToken, formData.deliveryMen, formData.deliveryMenDailyRate, formData.easyDelivery)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.drinksCEST) {
-      let err = await taxesData(saiposAuthToken)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.neighborhoodsData != undefined) {
-      let err = await neighborhoods(saiposAuthToken, formData.neighborhoodsData, formData.storeCity, formData.storeState, formData.storeId)
-      err != null ? formData.errorLog.push(err) : null
-    } 
-    if (formData.additionalsData != undefined) {
-      let err = await additionals(saiposAuthToken, formData.additionalsData, formData.storeId, formData.pizzaBigger, formData.pizzaProportional)
-      err != null ? formData.errorLog.push(err) : null
-    }
-    if (formData.menuData != undefined) {
-      let err = await menu(saiposAuthToken, formData.menuData, formData.storeId)
-      err != null ? formData.errorLog.push(err) : null
+    // Executando cada função e armazenando o retorno no errorLog
+    for (const [moduleName, moduleFunction] of Object.entries(func)) {
+      const isChosen = await hasTruthyValue(data[`${moduleName}Chosed`])
+      if (isChosen) {
+        const err = await moduleFunction(saiposAuthToken, data.storeId, data[`${moduleName}Chosed`])
+        if (err && err.length > 0) {
+          data.errorLog.push({ moduleName, err })
+        }
+      }
     }
 
-    // Finalização
-    const end = new Date()
-    const timestamp = (end - start) / 60000
-
-    // Comunicação de Status
-    console.log(`FINALIZADO: ${formData.storeId} | ${saiposUser}`)
-    ipcRenderer.send('show-alert', `FINALIZADO: ${formData.storeId} | ${saiposUser} | ${timestamp.toFixed(0)} minutos`)
+    // Final
+    await processDataAndSendToGoogleSheet(data)
+    await logAndSendAlert(`FINALIZADO: ${data.storeId} | ${data.timestamp} segundos`)
     
-    // Registro
-    formData.timestamp = parseFloat(timestamp).toFixed(0)
-
-    // Tratamento de timestamp
-    var now = new Date()
-    var day = now.getDate().toString().padStart(2, '0')
-    var month = (now.getMonth() + 1).toString().padStart(2, '0')
-    var year = now.getFullYear()
-    var hours = now.getHours().toString().padStart(2, '0')
-    var minutes = now.getMinutes().toString().padStart(2, '0')
-    formData.dateNow = `${day}/${month}/${year} ${hours}:${minutes}`
-    formData.saiposEmail = saiposUser
-
-    // Chamada de registro da planilha Google
-    if (formData.timestamp > 0 && formData.storeId != "33738") {
-      googleSheetAPI(formData)
-    }
-
     // Tratemento de erros
   } catch (error) {
     console.error('Ocorreu um erro ao CONFIGURAR:', error)
   }
 } 
+
+// Declaração temporária de objeto
+const formData = {
+  storeId: 9970,
+  paymentTypesChosed: {pix: false, elo: false, master: false, visa: false, amex: false, hiper: false},
+  partnersChosed: {deliverySite: false, basicMenu: false, premiumMenu: false, pickupCounter: "", storeName: "", minimumValue: 0, startTime: "12:10", endTime: "13:20", weekDays: { sunday: false, monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false }},
+  settingsChosed: {col42: false, kds: false, cancelReason: false, cancelPassword: false, admPermissions: false},
+  saleStatusChosed: {delivery: false, easyDelivery: false},
+  tableOrderChosed: {boolean: false, quantity: 0},
+  orderCardChosed: {boolean: false, quantity: 0},
+  taxesDataChosed: {cest: false, contigency: true},
+  usersChosed: {},
+  shiftsChosed: {},
+  waitersChosed: {},
+  deliveryMenChosed: {},
+  neighborhoodsChosed: {},
+  additionalsChosed: {},
+  menuChosed: {}
+}
+
+executeConfigure(formData)

@@ -1,67 +1,153 @@
-const { waitForAndType, waitForAndClick, timeOut } = require("./auxiliarFunctions") // Importação das funções auxiliares
-const { ipcRenderer } = require('electron') // Módulo para comunicação com o processo principal do Electron
-
-module.exports = async function settings(page, cancelPassword, cancelReason, col42) {
+module.exports = async function settings(saiposAuthToken, storeId, chsd) {
   try {
 
-    // Acesso à página Impressão
-    await page.goto('https://conta.saipos.com/#/app/store/settings/group-setting/', {timeout: 0})
+    async function getSettingId(desiredId) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/setting_values`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Authorization': saiposAuthToken,
+          'Content-Type': 'application/json'
+        }
+      }
     
-    // Removendo anúncio
-    await page.keyboard.press('Escape')
-    await timeOut(50)
-    await page.keyboard.press('Escape')
+      try {
+        const response = await fetch(url, options)
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`)
+        }
+        const responseData = await response.json()
+        console.log(('Response:', responseData.find(item => item.id_setting === desiredId)).id_store_setting_value)
+        
+        const desiredSetting = responseData.find(item => item.id_setting === desiredId)
     
-    // Cadastro Impressão caixa
-      if (col42) {
-        await timeOut(2000)
-        await waitForAndClick(page, '#content > data > div > div > div > div.card-header.x-col-sm-5 > div > ul > li:nth-child(1) > a')
-        await waitForAndClick(page, '#tabs-views > div > div.card-body.card-padding.card-store-setting-tab > div:nth-child(5) > div.col-sm-6 > div > div > input')
-        await page.keyboard.press('Backspace')
-        await page.keyboard.press('Backspace')
-        await waitForAndType(page, '#tabs-views > div > div.card-body.card-padding.card-store-setting-tab > div:nth-child(5) > div.col-sm-6 > div > div > input', '42')
-        await waitForAndClick(page, '#tabs-views > div > div.card-header > button')
-        await timeOut(2000)
+        return desiredSetting.id_store_setting_value
+      } catch (error) {
+        console.error('Error:', error)
+        return null
       }
-
-    // Configurações extras
-    if (cancelPassword || cancelReason) {
-
-    //Acesso à página Vendas  
-      await page.goto('https://conta.saipos.com/#/app/store/settings/group-setting/', {timeout: 0})
-
-    //Cadastro Vendas todos os tipos
-      await timeOut(2000)
-      await waitForAndClick(page, '#content > data > div > div > div > div.card-header.x-col-sm-5 > div > ul > li:nth-child(8) > a')
-      await timeOut(2000)
-
-      // Ativa senha para cancelamento
-      if (cancelPassword) {
-        await waitForAndClick(page, '#tabs-views > div > div.card-body.card-padding.card-store-setting-tab > div:nth-child(1) > div.col-sm-6 > div > div > div > div')
-        await waitForAndClick(page, '#tabs-views > div > div.card-body.card-padding.card-store-setting-tab > div:nth-child(1) > div.col-sm-6 > div > div > div > div > div > ul > li:nth-child(2')
-      }
-
-      // Ativa motivo para cancelamento
-      if (cancelReason) {
-        await waitForAndClick(page, '#tabs-views > div > div.card-body.card-padding.card-store-setting-tab > div:nth-child(3) > div.col-sm-6 > div > div > div > div')
-        await waitForAndClick(page, '#tabs-views > div > div.card-body.card-padding.card-store-setting-tab > div:nth-child(3) > div.col-sm-6 > div > div > div > div > div > ul > li:nth-child(2)')
-      }
-
-      // Salva
-      await timeOut(1000)
-      await waitForAndClick(page, '#tabs-views > div > div.card-header > button')
-      await timeOut(3000)
     }
 
-    // Tempo de espera
-    await page.goto('https://conta.saipos.com/#/', {timeout: 0})
-    await timeOut(2000)
+    async function getUserData() {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/find-all-users`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Authorization': saiposAuthToken,
+          'Content-Type': 'application/json'
+        }
+      }
+    
+      try {
+        const response = await fetch(url, options)
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`)
+        }
+        const responseData = await response.json()
+        const userData = responseData.find(user => user.user.user_type === 1)
+        // console.log('Response:', userData)
+        return userData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      }
+    }
+
+    async function updateSettings(desiredSetting, settingValue) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/setting_values/${desiredSetting}`
+      const data = {
+        "setting_value": settingValue
+      }
+      const options = {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+          'Authorization': saiposAuthToken, 
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      } 
+    }
+
+    async function updateCancellationPassword(userData) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/update-user`      
+      const data = {
+          "id_user": userData.id_user,
+          "cancellation_password": "123"
+      }
+      
+      const options = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Authorization': saiposAuthToken, 
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      } 
+    }
+
+    async function updatePermissions(userData) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/update-permission`
+      userData.user.permissions.forEach(function(permission) {
+        if (permission.allowed === "N") {
+          permission.allowed = "S"
+        }
+      })
+
+      const options = {
+        method: 'POST',
+        body: JSON.stringify(userData.user.permissions),
+        headers: {
+          'Authorization': saiposAuthToken, 
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      } 
+    }
+
+    const col42Id = await getSettingId(2)
+    const kdsId = await getSettingId(57)
+    const cancelReasonId = await getSettingId(61)
+    const cancelPasswordId = await getSettingId(62)
+    const userData = await getUserData(62)
+
+    if (chsd.col42) { await updateSettings(col42Id, 42) } 
+    if (chsd.kds) { await updateSettings(kdsId, 1) } 
+    if (chsd.admPermissions) { await updatePermissions(userData) }
+    if (chsd.cancelReason) { await updateSettings(cancelPasswordId, 1) } 
+    if (chsd.cancelPassword) { 
+      await updateSettings(cancelReasonId, 1)
+      setTimeout(() => updateCancellationPassword(userData), 500)
+    } 
 
   // Tratamento de erros
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CONFIGURAÇÕES', error)
-    ipcRenderer.send('show-alert', 'Ocorreu um erro durante o cadastro de CONFIGURAÇÕES, revise após a execução do programa.')
     return  ["CONFIGURAÇÕES: ",{ stack: error.stack }]
   }
 }
-

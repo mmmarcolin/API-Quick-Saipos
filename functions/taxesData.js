@@ -1,29 +1,119 @@
-const { waitForAndClick, timeOut } = require("./auxiliarFunctions") // Importação das funções auxiliares
-const { ipcRenderer } = require('electron') // Módulo para comunicação com o processo principal do Electron
-
-module.exports = async function taxesData(page) {
+module.exports = async function taxesData(saiposAuthToken, storeId, chsd) {
   try {
-
-    // Acesso à página
-    await page.goto('https://conta.saipos.com/#/app/store/taxes-data', {timeout: 0})
-
-    // Acesso aos dados fiscais
-    await timeOut(1000)
-    await waitForAndClick(page, '#content > data > div > base-crud > div > div > base-crud-data-table > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > div.text-center > button.btn.btn-default.ng-scope.waves-effect')
-    await waitForAndClick(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > form > div > div.row.p-t-20 > div > div > ul > li:nth-child(3)')
-    await waitForAndClick(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > form > div > div.row.p-t-20 > div > div > div > div.tab-pane.ng-scope.active > div > div > div:nth-child(1) > div.col-sm-10 > div > div > div > div')
-    await waitForAndClick(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-body.ng-scope > form > div > div.row.p-t-20 > div > div > div > div.tab-pane.ng-scope.active > div > div > div:nth-child(1) > div.col-sm-10 > div > div > div > div > div > ul > li:nth-child(1)')
-    await waitForAndClick(page, 'body > div.modal.fade.ng-isolate-scope.clientweb-scope.in > div > div > div.modal-footer.ng-scope > div > button.btn.btn-primary.m-b-0.waves-effect')
     
-    // Tempo para salvar
-    await timeOut(2000)
-    await page.goto('https://conta.saipos.com/#/', {timeout: 0})
-    await timeOut(2000)
+    async function getTaxesDataId() {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/taxes_datas/`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Authorization': saiposAuthToken,
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`)
+        }
+        const responseData = await response.json()
+        const taxData = responseData.find(tax => tax.desc_store_taxes_data === "Bebidas")
+        console.log(taxData.id_store_taxes_data)
+        return taxData ? taxData.id_store_taxes_data : null
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      }
+    }
 
-  // Tratamento de erros 
+    async function getTaxesDataCfopId(taxesDataId) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/taxes_datas?filter=%7B%22where%22:%7B%22id_store_taxes_data%22:${taxesDataId}%7D,%22include%22:%7B%22relation%22:%22taxes_data_cfop%22,%22scope%22:%7B%22include%22:%22cfop%22%7D%7D%7D`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Authorization': saiposAuthToken,
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`)
+        }
+        const responseData = await response.json()
+        const taxCfop = responseData.find(cfop => cfop.desc_store_taxes_data === "Bebidas")
+        console.log(taxCfop.taxes_data_cfop[0].id_store_taxes_data_cfop)
+        return taxCfop ? taxCfop.taxes_data_cfop[0].id_store_taxes_data_cfop : null
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      }
+    }
+
+    async function updateCest(taxesDataId, taxesDataCfopId) {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/taxes_datas/${taxesDataId}`
+      const data = {
+        "id_store_taxes_data": taxesDataId,
+        "id_store": storeId,
+        "id_cest": 159,
+        "taxes_data_cfop": [
+          {
+            "id_store_taxes_data_cfop": taxesDataCfopId
+          }
+        ]
+      }
+      const options = {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+          'Authorization': saiposAuthToken, 
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      } 
+    }
+
+    async function updateContigency() {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/taxes_profile`
+      const data = {
+        "id_store": storeId,
+        "contingency": "N"
+      }
+      const options = {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+          'Authorization': saiposAuthToken, 
+          'Content-Type': 'application/json'
+        }
+      }
+      try {
+        const response = await fetch(url, options)
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      } 
+    }
+
+    const taxesDataId = await getTaxesDataId()
+    const taxesDataCfopId = await getTaxesDataCfopId(taxesDataId)
+
+    chsd.cest ? await updateCest(taxesDataId, taxesDataCfopId) : null
+    chsd.contigency ? await updateContigency() : null
+
+  // Tratamento de erros
   } catch (error) {
-    console.error('Ocorreu um erro durante o cadastro de CEST', error)
-    ipcRenderer.send('show-alert', 'Ocorreu um erro durante o cadastro de CEST, revise após a execução do programa.')
-    return  ["CEST: ",{ stack: error.stack }]
+    console.error('Ocorreu um erro durante o cadastro de DADOS FISCAIS ', error)
+    return  ["DADOS FISCAIS: ",{ stack: error.stack }]
   }
 }

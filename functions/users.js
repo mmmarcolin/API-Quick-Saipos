@@ -1,5 +1,3 @@
-const { ipcRenderer } = require('electron') // Módulo para comunicação com o processo principal do Electron
-
 module.exports = async function users(page, waiters, storeName, cancelPassword, admPermissions) {
   try {
     

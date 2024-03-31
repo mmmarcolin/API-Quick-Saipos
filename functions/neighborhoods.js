@@ -1,6 +1,4 @@
 const { waitForAndType, waitForAndClick, timeOut, waitForAndKeys, waitForAndSelectAll } = require("./auxiliarFunctions") // Importação das funções auxiliares
-const { ipcRenderer } = require('electron') // Módulo para comunicação com o processo principal do Electron
-
 module.exports = async function neighborhoods(page, neighborhoodsData, storeCity, storeState, storeId ) {
   try { 
 
