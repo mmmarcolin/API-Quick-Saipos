@@ -7,24 +7,24 @@ const saiposAuthToken = process.env.SAIPOS_AUTH_TOKEN
 
 // Carregar módulos de funções
 const func = {
-  paymentTypes: require("./paymentTypes.js"),
-  saleStatus: require("./saleStatus.js"),
-  tableOrder: require("./tableOrder.js"),
-  orderCard: require("./orderCard.js"),
-  settings: require("./settings.js"),
-  partners: require('./partners.js'),
-  taxesData: require("./taxesData.js"),
-  shifts: require("./shifts.js"),
-  waiters: require("./waiters.js"),
-  deliveryMen: require("./deliveryMen.js"),
-  users: require("./users.js"),
-  neighborhoods: require("./neighborhoods.js"),
-  // menu: require("./functions/menu.js"),
-  // additionals: require('./functions/additionals.js')
+  paymentTypes: require("./apiRequests/paymentTypes.js"),
+  saleStatus: require("./apiRequests/saleStatus.js"),
+  tableOrder: require("./apiRequests/tableOrder.js"),
+  orderCard: require("./apiRequests/orderCard.js"),
+  settings: require("./apiRequests/settings.js"),
+  partners: require('./apiRequests/partners.js'),
+  taxesData: require("./apiRequests/taxesData.js"),
+  shifts: require("./apiRequests/shifts.js"),
+  waiters: require("./apiRequests/waiters.js"),
+  deliveryMen: require("./apiRequests/deliveryMen.js"),
+  users: require("./apiRequests/users.js"),
+  neighborhoods: require("./apiRequests/neighborhoods.js"),
+  // menu: require("./apiRequests/functions/menu.js"),
+  // additionals: require('./apiRequests/functions/additionals.js')
 }
 
 // App Script API
-async function processDataAndSendToGoogleSheet(data) {
+async function processDataToGoogleSheet(data) {
   data.endTime = new Date()
   data.timestamp = parseFloat((data.endTime - data.startTime) / 1000).toFixed(0)
   data.endTime = await handleDateNow(data.endTime)
@@ -70,6 +70,7 @@ async function hasTruthyValue(obj) {
     if (
       typeof value === 'boolean' && value === true ||
       typeof value === 'number' && value > 0 ||
+      typeof value === 'string' && value.length > 0 ||
       Array.isArray(value) && value != 0
       ) {
       return true
@@ -96,6 +97,7 @@ async function executeConfigure(data) {
     // Executando cada função e armazenando o retorno no errorLog
     for (const [moduleName, moduleFunction] of Object.entries(func)) {
       const isChosen = await hasTruthyValue(data[`${moduleName}Chosed`])
+      console.log(isChosen)
       if (isChosen) {
         const err = await moduleFunction(saiposAuthToken, data.storeId, data[`${moduleName}Chosed`])
         if (err && err.length > 0) {
@@ -105,7 +107,7 @@ async function executeConfigure(data) {
     }
 
     // Final
-    await processDataAndSendToGoogleSheet(data)
+    await processDataToGoogleSheet(data)
     await logAndSendAlert(`FINALIZADO: ${data.storeId} | ${data.timestamp} segundos`)
     
     // Tratemento de erros
@@ -118,7 +120,7 @@ async function executeConfigure(data) {
 const formData = {
   storeId: 33738,
   paymentTypesChosed: {pix: false, elo: false, master: false, visa: false, amex: false, hiper: false},
-  partnersChosed: {deliverySite: false, basicMenu: false, premiumMenu: false, pickupCounter: "", storeName: "", minimumValue: 0, startTime: "12:10", endTime: "13:20", weekDays: { sunday: false, monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false }},
+  partnersChosed: {deliverySite: false, basicMenu: false, premiumMenu: false, pickupCounter: "", storeName: "", minimumValue: 0, startTime: "", endTime: "", weekDays: { sunday: false, monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false }},
   settingsChosed: {col42: false, kds: false, cancelReason: false, cancelPassword: false, admPermissions: false},
   saleStatusChosed: {delivery: false, easyDelivery: false},
   tableOrderChosed: {quantity: 0},
@@ -128,9 +130,8 @@ const formData = {
   waitersChosed: {waiterDesc: [], waiterDailyRate: []},
   deliveryMenChosed: {deliveryMenQuantity: [], deliveryMenDailyRate: []},
   usersChosed: {counterUser: false, waiterUserQuantity: 0, storeName: ""},
-  neighborhoodsChosed: {},
+  neighborhoodsChosed: {stateDesc: "Rio Grande do Sul", cityDesc: "Sapucaia do Sul", neighborhoodsData: {neighborhoods: ["Bairros", "Bairro 1", "Bairro 2"], deliveryFee: ["Taxa", "1", "3"], deliveryMenFee: ["Entregador", "3", "4"]}},
   additionalsChosed: {},
   menuChosed: {}
 }
-
 executeConfigure(formData)

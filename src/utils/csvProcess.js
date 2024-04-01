@@ -57,9 +57,9 @@ dataCopy.forEach((item, index) => {
     mappings.forEach(mapping => {
         let value;
         if (['price', 'deliveryMenFee', 'fee'].includes(mapping.key)) {
-            value = processPrice(item[mapping.field]);
+            value = processPrice(item[mapping.field])
         } else {
-            value = item[mapping.field];
+            value = item[mapping.field]
         }        
         if (mapping.key === 'additional') {
             // Verifica se é do menu ou dos adicionais
@@ -76,7 +76,7 @@ dataCopy.forEach((item, index) => {
             }
         }
         if (mapping.key === 'quantity') {
-            value = value.split(',').map(additional => additional.trim());
+            value = value.split(',').map(additional => additional.trim())
         }
         if (typeof value === 'undefined') {
             result[mapping.key].push('')
