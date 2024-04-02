@@ -77,7 +77,7 @@ module.exports = async function settings(saiposAuthToken, storeId, chsd) {
       } 
     }
 
-    async function putCancellationPassword(userData) {
+    async function postCancellationPassword(userData) {
       const url = `https://api.saipos.com/v1/stores/${storeId}/update-user`      
       const data = {
           "id_user": userData.id_user,
@@ -103,7 +103,7 @@ module.exports = async function settings(saiposAuthToken, storeId, chsd) {
       } 
     }
 
-    async function putPermissions(userData) {
+    async function postPermissions(userData) {
       const url = `https://api.saipos.com/v1/stores/${storeId}/update-permission`
       userData.user.permissions.forEach(function(permission) {
         if (permission.allowed === "N") {
@@ -136,13 +136,13 @@ module.exports = async function settings(saiposAuthToken, storeId, chsd) {
     const cancelPasswordId = await getSettingId(62)
     const userData = await getUserData(62)
 
-    if (chsd.col42) { await updateSettings(col42Id, 42) } 
-    if (chsd.kds) { await updateSettings(kdsId, 1) } 
-    if (chsd.admPermissions) { await updatePermissions(userData) }
-    if (chsd.cancelReason) { await updateSettings(cancelPasswordId, 1) } 
+    if (chsd.col42) { await putSettings(col42Id, 42) } 
+    if (chsd.kds) { await putSettings(kdsId, 1) } 
+    if (chsd.admPermissions) { await postPermissions(userData) }
+    if (chsd.cancelReason) { await putSettings(cancelPasswordId, 1) } 
     if (chsd.cancelPassword) { 
-      await updateSettings(cancelReasonId, 1)
-      setTimeout(() => updateCancellationPassword(userData), 500)
+      await putSettings(cancelReasonId, 1)
+      setTimeout(() => postCancellationPassword(userData), 500)
     } 
 
   // Tratamento de erros

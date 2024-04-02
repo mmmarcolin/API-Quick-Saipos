@@ -19,8 +19,8 @@ const func = {
   deliveryMen: require("./apiRequests/deliveryMen.js"),
   users: require("./apiRequests/users.js"),
   neighborhoods: require("./apiRequests/neighborhoods.js"),
-  // menu: require("./apiRequests/functions/menu.js"),
-  // additionals: require('./apiRequests/functions/additionals.js')
+  additionals: require('./apiRequests/additionals.js')
+  // menu: require("./apiRequests/menu.js"),
 }
 
 // App Script API
@@ -66,17 +66,18 @@ async function handleDateNow(end) {
 
 // Verificador de existência
 async function hasTruthyValue(obj) {
-  return Object.values(obj).some(value => {
-    if (
-      typeof value === 'boolean' && value === true ||
-      typeof value === 'number' && value > 0 ||
-      typeof value === 'string' && value.length > 0 ||
-      Array.isArray(value) && value != 0
-      ) {
-      return true
+  function isTruthy(value) {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value > 0;
+    if (typeof value === 'string') return value.length > 0;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === 'object' && value !== null) {
+      return Object.values(value).some(isTruthy);
     }
-    return false
-  })
+    return false;
+  }
+
+  return Object.values(obj).some(isTruthy);
 }
 
 // Comunicação de Status
@@ -97,7 +98,7 @@ async function executeConfigure(data) {
     // Executando cada função e armazenando o retorno no errorLog
     for (const [moduleName, moduleFunction] of Object.entries(func)) {
       const isChosen = await hasTruthyValue(data[`${moduleName}Chosed`])
-      console.log(isChosen)
+      console.log(isChosen, ": ", data[`${moduleName}Chosed`] )
       if (isChosen) {
         const err = await moduleFunction(saiposAuthToken, data.storeId, data[`${moduleName}Chosed`])
         if (err && err.length > 0) {
@@ -130,8 +131,32 @@ const formData = {
   waitersChosed: {waiterDesc: [], waiterDailyRate: []},
   deliveryMenChosed: {deliveryMenQuantity: [], deliveryMenDailyRate: []},
   usersChosed: {counterUser: false, waiterUserQuantity: 0, storeName: ""},
-  neighborhoodsChosed: {stateDesc: "Rio Grande do Sul", cityDesc: "Sapucaia do Sul", neighborhoodsData: {neighborhoods: ["Bairros", "Bairro 1", "Bairro 2"], deliveryFee: ["Taxa", "1", "3"], deliveryMenFee: ["Entregador", "3", "4"]}},
-  additionalsChosed: {},
+  neighborhoodsChosed: {stateDesc: "", cityDesc: "", neighborhoodsData: {neighborhoods: [], deliveryFee: [], deliveryMenFee: []}},
+  additionalsChosed: {additionalsData: {additional: ["Adicional", "AdicionalNome", "AdicionalNome"], item: ["Item", "Item1", "Item2"], price: ["Preço", 2, 4], description: ["Descrição", "Desc1", "Desc2"], quantity: ["Quantidade", "1,2", "1,2"], code: ["", "", ""], }},
   menuChosed: {}
 }
 executeConfigure(formData)
+
+const additionalsMappings = [
+  { key: 'additional', field: 'Adicional' },
+  { key: 'item', field: 'Item' },
+  { key: 'price', field: 'Preço' },
+  { key: 'description', field: 'Descrição' },
+  { key: 'quantity', field: 'Quantidade' },
+  { key: 'code', field: 'Código' }
+]
+const menuMappings = [
+  { key: 'category', field: 'Categoria' },
+  { key: 'product', field: 'Produto' },
+  { key: 'price', field: 'Preço' },
+  { key: 'description', field: 'Descrição' },
+  { key: 'additional', field: 'Adicional' },
+  { key: 'code', field: 'Código' }
+]
+const neighborhoodsMappings = [
+  { key: 'neighborhood', field: 'Bairro' },
+  { key: 'fee', field: 'Taxa' },
+  { key: 'deliveryMenFee', field: 'Entregador' }
+]
+
+// Exportações

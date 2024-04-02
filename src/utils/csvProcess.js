@@ -119,7 +119,7 @@ const menuMappings = [
 ]
 const neighborhoodsMappings = [
     { key: 'neighborhood', field: 'Bairro' },
-    { key: 'fee', field: 'Taxa' },
+    { key: 'deliveryFee', field: 'Taxa' },
     { key: 'deliveryMenFee', field: 'Entregador' }
 ]
 
