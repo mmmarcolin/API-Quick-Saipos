@@ -56,27 +56,59 @@ module.exports = async function additionals(saiposAuthToken, storeId, chsd) {
         ]
       }
     }
-
-    const additionals = [] 
-
-    let i = 1
-
-    while (chsd.additionalsData.additional[i] !== chsd.additionalsData.additional[i-1] || i == 1) {
-      additionals.push(new Additional({
-        desc_store_choice: chsd.additionalsData.additional[i],
-        choice_type: null,
-        min_choices: chsd.additionalsData.quantity[i].split(",")[0],
-        max_choices: chsd.additionalsData.quantity[i].split(",")[1],
-        calc_method: null,
-        generic_use: "",
-        group_items_print: "",
-        kind: ""
-      }))
-      chsd.additionalsData.additional[i] == chsd.additionalsData.additional[i+1] ? i++ : i = j
+    
+    async function getVariationId() {
+      const url = `https://api.saipos.com/v1/stores/${storeId}/variations?filter=%7B%22where%22:%7B%22is_unique%22:%22Y%22%7D%7D`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Authorization': saiposAuthToken,
+          'Content-Type': 'application/json'
+        }
+      }
+    
+      try {
+        const response = await fetch(url, options)
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`)
+        }
+        let responseData = await response.json()
+        console.log('Response:', responseData)
+        return responseData[0].id_store_variation
+      } catch (error) {
+        console.error('Error:', error)
+        return null
+      }
     }
 
-    for (let i = 1; i < chsd.additionalsData.additional.length; i++) {  
-      additionals.push(new Additional({
+    const idStoreVariation = await getVariationId()
+
+    const pizzaDough = [
+      'Massa', 'MASSA', 'massa', 
+      'Massas', 'MASSAS', 'massas'
+    ]
+
+    const pizzaCrust = [
+      'Borda', 'BORDA', 'borda',
+      'Bordas', 'BORDAS', 'bordas'
+    ]
+
+    const pizzaFlavor = [
+      'Sabor', 'SABOR', 'sabor',
+      'Sabores', 'SABORES', 'sabores'
+    ]
+
+    const pizza = [
+      'Pizza', 'PIZZA', 'pizza',
+      'Pizzas', 'PIZZAS', 'pizzas'
+    ]
+    
+    const additionalsIds = []
+
+    let i = 1, j = 1
+
+    while (chsd.additionalsData.additional[i] != undefined) {
+      let additionalsToPost = new Additional({
         desc_store_choice: chsd.additionalsData.additional[i],
         choice_type: null,
         min_choices: chsd.additionalsData.quantity[i].split(",")[0],
@@ -85,49 +117,26 @@ module.exports = async function additionals(saiposAuthToken, storeId, chsd) {
         generic_use: "",
         group_items_print: "",
         kind: ""
-      }))
+      })
 
-      let j = i
-
-      // do {
-      //   console.log(j)
-      //   additionals[i-1].addItem({
-      //     desc_store_choice_item: chsd.additionalsData.item[j],
-      //     aditional_price: chsd.additionalsData.price[j],
-      //     detail: chsd.additionalsData.description[j],
-      //     code: chsd.additionalsData.code[j],
-      //     id_store_choice_item: null,
-      //     id_store_choice: null,
-      //     id_store_variation: null,
-      //   })
-      //   chsd.additionalsData.additional[j] == chsd.additionalsData.additional[j+1] ? j++ : i = j
-      // } while (chsd.additionalsData.additional[j] == chsd.additionalsData.additional[j-1])
-
-
-      while (chsd.additionalsData.additional[j] == chsd.additionalsData.additional[j+1] || j == 1) {
-        additionals[i-1].addItem({
+      while (chsd.additionalsData.additional[j] == chsd.additionalsData.additional[j-1] || j == i) {
+        additionalsToPost.addItem({
           desc_store_choice_item: chsd.additionalsData.item[j],
           aditional_price: chsd.additionalsData.price[j],
           detail: chsd.additionalsData.description[j],
           code: chsd.additionalsData.code[j],
           id_store_choice_item: null,
           id_store_choice: null,
-          id_store_variation: null,
+          id_store_variation: idStoreVariation,
         })
-        chsd.additionalsData.additional[j] == chsd.additionalsData.additional[j+1] ? j++ : i = j
+        j++
       }
+      i = j
+
+      console.log(additionalsToPost)
+      let additionalsId = postAdditionals(additionalsToPost)
+      additionalsIds.push(additionalsId)
     }
-
-    console.log(additionals)
-
-    // additionals.forEach((additional, additionalIndex) => {
-    //   console.log(`Additional ${additionalIndex + 1}: ${JSON.stringify(additional, null, 2)}`);
-    //   additional.choice_items.forEach((item, index) => {
-    //     console.log(`Item ${index + 1}: ${JSON.stringify(item, null, 2)}`)
-    //   })
-    // })
-
-
 
 
 
@@ -193,30 +202,6 @@ module.exports = async function additionals(saiposAuthToken, storeId, chsd) {
 //       } 
 //     }
 
-//     async function getStateId() {
-//       const url = `https://api.saipos.com/v1/states?filter%5Border%5D=desc_state`
-//       const options = {
-//         method: 'GET',
-//         headers: {
-//           'Authorization': saiposAuthToken,
-//           'Content-Type': 'application/json'
-//         }
-//       }
-    
-//       try {
-//         const response = await fetch(url, options)
-//         if (!response.ok) {
-//           throw new Error(`Erro na requisição: ${response.statusText}`)
-//         }
-//         let responseData = await response.json()
-//         responseData = responseData.find(idState => idState.desc_state === chsd.stateDesc)
-//         console.log('Response:', responseData)
-//         return responseData.id_state
-//       } catch (error) {
-//         console.error('Error:', error)
-//         return null
-//       }
-//     }
 
 //     async function getCityId(stateId) {
 //       const url = `https://api.saipos.com/v1/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D,%22order%22:%22desc_city+asc%22%7D`

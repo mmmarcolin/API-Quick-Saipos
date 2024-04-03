@@ -67,17 +67,16 @@ async function handleDateNow(end) {
 // Verificador de existência
 async function hasTruthyValue(obj) {
   function isTruthy(value) {
-    if (typeof value === 'boolean') return value;
-    if (typeof value === 'number') return value > 0;
-    if (typeof value === 'string') return value.length > 0;
-    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === 'boolean') return value
+    if (typeof value === 'number') return value > 0
+    if (typeof value === 'string') return value.length > 0
+    if (Array.isArray(value)) return value.length > 0
     if (typeof value === 'object' && value !== null) {
-      return Object.values(value).some(isTruthy);
+      return Object.values(value).some(isTruthy)
     }
-    return false;
+    return false
   }
-
-  return Object.values(obj).some(isTruthy);
+  return Object.values(obj).some(isTruthy)
 }
 
 // Comunicação de Status
@@ -132,31 +131,8 @@ const formData = {
   deliveryMenChosed: {deliveryMenQuantity: [], deliveryMenDailyRate: []},
   usersChosed: {counterUser: false, waiterUserQuantity: 0, storeName: ""},
   neighborhoodsChosed: {stateDesc: "", cityDesc: "", neighborhoodsData: {neighborhoods: [], deliveryFee: [], deliveryMenFee: []}},
-  additionalsChosed: {additionalsData: {additional: ["Adicional", "AdicionalNome", "AdicionalNome"], item: ["Item", "Item1", "Item2"], price: ["Preço", 2, 4], description: ["Descrição", "Desc1", "Desc2"], quantity: ["Quantidade", "1,2", "1,2"], code: ["", "", ""], }},
+additionalsChosed: {additionalsData: {additional: ["Adicional", "AdicionalNome", "AdicionalNome", "AdicionalNome2", "AdicionalNome3"], item: ["Item", "Item1", "Item2", "Item3", "Item3"], price: ["Preço", 2, 4, 6, 8], description: ["Descrição", "Desc1", "Desc2", "Desc3", "Desc4"], quantity: ["Quantidade", "1,2", "1,2", "1,3", "1,3"], code: ["", "", "", "", ""], }},
   menuChosed: {}
 }
+
 executeConfigure(formData)
-
-const additionalsMappings = [
-  { key: 'additional', field: 'Adicional' },
-  { key: 'item', field: 'Item' },
-  { key: 'price', field: 'Preço' },
-  { key: 'description', field: 'Descrição' },
-  { key: 'quantity', field: 'Quantidade' },
-  { key: 'code', field: 'Código' }
-]
-const menuMappings = [
-  { key: 'category', field: 'Categoria' },
-  { key: 'product', field: 'Produto' },
-  { key: 'price', field: 'Preço' },
-  { key: 'description', field: 'Descrição' },
-  { key: 'additional', field: 'Adicional' },
-  { key: 'code', field: 'Código' }
-]
-const neighborhoodsMappings = [
-  { key: 'neighborhood', field: 'Bairro' },
-  { key: 'fee', field: 'Taxa' },
-  { key: 'deliveryMenFee', field: 'Entregador' }
-]
-
-// Exportações
