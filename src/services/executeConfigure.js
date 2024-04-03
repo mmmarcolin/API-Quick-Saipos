@@ -1,9 +1,4 @@
-// Carregar módulos gerais
-// const { ipcRenderer } = require('electron')
-require('dotenv').config()
-
-// Definição do token da API
-const saiposAuthToken = process.env.SAIPOS_AUTH_TOKEN
+const { formData } = require("../utils/auxiliarVariables.js")
 
 // Carregar módulos de funções
 const func = {
@@ -19,8 +14,8 @@ const func = {
   deliveryMen: require("./apiRequests/deliveryMen.js"),
   users: require("./apiRequests/users.js"),
   neighborhoods: require("./apiRequests/neighborhoods.js"),
-  additionals: require('./apiRequests/additionals.js')
-  // menu: require("./apiRequests/menu.js"),
+  additionals: require('./apiRequests/additionals.js'),
+  menu: require("./apiRequests/menu.js"),
 }
 
 // App Script API
@@ -81,7 +76,7 @@ async function hasTruthyValue(obj) {
 
 // Comunicação de Status
 async function logAndSendAlert(message) {
-  console.log(message);
+  console.log(message)
   // ipcRenderer.send('show-alert', message);
 }
 
@@ -99,7 +94,7 @@ async function executeConfigure(data) {
       const isChosen = await hasTruthyValue(data[`${moduleName}Chosed`])
       console.log(isChosen, ": ", data[`${moduleName}Chosed`] )
       if (isChosen) {
-        const err = await moduleFunction(saiposAuthToken, data.storeId, data[`${moduleName}Chosed`])
+        const err = await moduleFunction(data[`${moduleName}Chosed`])
         if (err && err.length > 0) {
           data.errorLog.push({ moduleName, err })
         }
@@ -115,24 +110,5 @@ async function executeConfigure(data) {
     console.error('Ocorreu um erro ao CONFIGURAR:', error)
   }
 } 
-
-// Declaração temporária de objeto
-const formData = {
-  storeId: 33738,
-  paymentTypesChosed: {pix: false, elo: false, master: false, visa: false, amex: false, hiper: false},
-  partnersChosed: {deliverySite: false, basicMenu: false, premiumMenu: false, pickupCounter: "", storeName: "", minimumValue: 0, startTime: "", endTime: "", weekDays: { sunday: false, monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false }},
-  settingsChosed: {col42: false, kds: false, cancelReason: false, cancelPassword: false, admPermissions: false},
-  saleStatusChosed: {delivery: false, easyDelivery: false},
-  tableOrderChosed: {quantity: 0},
-  orderCardChosed: {quantity: 0},
-  taxesDataChosed: {cest: false, contigency: false},
-  shiftsChosed: {shiftDesc: [], shiftTime: [], shiftCharge: []},
-  waitersChosed: {waiterDesc: [], waiterDailyRate: []},
-  deliveryMenChosed: {deliveryMenQuantity: [], deliveryMenDailyRate: []},
-  usersChosed: {counterUser: false, waiterUserQuantity: 0, storeName: ""},
-  neighborhoodsChosed: {stateDesc: "", cityDesc: "", neighborhoodsData: {neighborhoods: [], deliveryFee: [], deliveryMenFee: []}},
-additionalsChosed: {additionalsData: {additional: ["Adicional", "AdicionalNome", "AdicionalNome", "AdicionalNome2", "AdicionalNome3"], item: ["Item", "Item1", "Item2", "Item3", "Item3"], price: ["Preço", 2, 4, 6, 8], description: ["Descrição", "Desc1", "Desc2", "Desc3", "Desc4"], quantity: ["Quantidade", "1,2", "1,2", "1,3", "1,3"], code: ["", "", "", "", ""], }},
-  menuChosed: {}
-}
 
 executeConfigure(formData)
