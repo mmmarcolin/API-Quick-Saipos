@@ -3,7 +3,7 @@ const path = require('path') // Módulo para lidar com caminhos de arquivos
 const csv = require('csv-parser') // Módulo para analisar arquivos CSV
 const { ipcRenderer, shell } = require('electron') // Módulo para comunicação com o processo principal do Electron
 const executeConfigure = require('../services/executeConfigure') // Módulo para chamar função de execução do Puppeteer
-const { neighborhoodsMappings, menuMappings, additionalsMappings, processCSV } = require('./functions/csvProcess')
+const { choicesMappings, menuMappings, districtsMappings, processCSV } = require('./functions/csvHandle')
 
 // Declare a variável filePath no escopo global
 let filePath
@@ -62,13 +62,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Seleciona os elementos
 const menuLabel = document.getElementById('menu-label')
-const additionalsLabel = document.getElementById('additionals-label')
-const neighborhoodsLabel = document.getElementById('neighborhoods-label')
+const districtsLabel = document.getElementById('districts-label')
+const choicesLabel = document.getElementById('choices-label')
 
 // Adiciona event listener para cada label
 menuLabel.addEventListener('change', handleFileChange.bind(null, 'menu'))
-additionalsLabel.addEventListener('change', handleFileChange.bind(null, 'additionals'))
-neighborhoodsLabel.addEventListener('change', handleFileChange.bind(null, 'neighborhoods'))
+districtsLabel.addEventListener('change', handleFileChange.bind(null, 'districts'))
+choicesLabel.addEventListener('change', handleFileChange.bind(null, 'choices'))
 
 // Função para lidar com a mudança de arquivo
 function handleFileChange(type, event) {
@@ -84,8 +84,8 @@ function handleFileChange(type, event) {
 
 // Adiciona evento de clique para remover o arquivo
 document.getElementById('menu-remove').addEventListener('click', removeFile.bind(null, 'menu'))
-document.getElementById('additionals-remove').addEventListener('click', removeFile.bind(null, 'additionals'))
-document.getElementById('additionals-remove').addEventListener('click', removeFile.bind(null, 'additionals'))
+document.getElementById('districts-remove').addEventListener('click', removeFile.bind(null, 'districts'))
+document.getElementById('choices-remove').addEventListener('click', removeFile.bind(null, 'choices'))
 
 // Função para remover o arquivo
 function removeFile(type) {
@@ -101,8 +101,8 @@ function formSubmitted(formData) {
 
   // Remoção dos spans de arquivos
   document.getElementById('menu-remove').style.display = 'none'
-  document.getElementById('additionals-remove').style.display = 'none'
-  document.getElementById('neighborhoods-remove').style.display = 'none'
+  document.getElementById('districts-remove').style.display = 'none'
+  document.getElementById('choices-remove').style.display = 'none'
 
   // Finalização
   document.getElementById("form").reset()
@@ -184,10 +184,10 @@ function synchronizeCheckboxes(mainCheckboxId, targetCheckboxId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  var menuCsvInput = document.getElementById('additionals-csv')
+  var choicesCsvInput = document.getElementById('choices-csv')
   var proportionalPizzaCheckbox = document.getElementById('pizza-proportional')
 
-  menuCsvInput.addEventListener('change', function() {
+  choicesCsvInput.addEventListener('change', function() {
     if (this.files.length > 0) {
       proportionalPizzaCheckbox.checked = true
     } else {
@@ -290,19 +290,19 @@ document.addEventListener("DOMContentLoaded", function() {
       } 
     
       // Obtém arquivos CSV
-      const neighborhoodsCSVFile = document.getElementById("neighborhoods-csv").files[0]
+      const districtsCSVFile = document.getElementById("districts-csv").files[0]
       const menuCSVFile = document.getElementById("menu-csv").files[0]
-      const additionalsCSVFile = document.getElementById("additionals-csv").files[0]
+      const choicesCSVFile = document.getElementById("choices-csv").files[0]
 
       // Chama a função que transforma arquivos CSV em arrays, se existirem os arquivos
-      if (neighborhoodsCSVFile) {
-        formData.neighborhoodsData = await processCSV(neighborhoodsCSVFile.path, ['Bairro', 'Taxa', 'Entregador'], neighborhoodsMappings)
+      if (choicesCSVFile) {
+        formData.choicesData = await processCSV(choicesCSVFile.path, ['Bairro', 'Taxa', 'Entregador'], choicesMappings)
       }
       if (menuCSVFile) {
         formData.menuData = await processCSV(menuCSVFile.path, ['Categoria', 'Produto', 'Preço', 'Descrição', 'Adicional', 'Código'], menuMappings)
       }
-      if (additionalsCSVFile) {
-        formData.additionalsData = await processCSV(additionalsCSVFile.path, ['Adicional', 'Item', 'Preço', 'Descrição', 'Quantidade', 'Código'], additionalsMappings)
+      if (districtsCSVFile) {
+        formData.districtsData = await processCSV(districtsCSVFile.path, ['Adicional', 'Item', 'Preço', 'Descrição', 'Quantidade', 'Código'], districtsMappings)
       }
 
       // Ajuste dos tamanhos de arrays
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ipcRenderer.send('show-alert', 'Para cadastrar turnos, preencha todos campos da categoria em mesma quantidade, ou taxa única')
         return
       } 
-      else if ((neighborhoodsCSVFile) && !(formData.storeCity || formData.storeState)) {
+      else if ((districtsCSVFile) && !(formData.storeCity || formData.storeState)) {
         ipcRenderer.send('show-alert', 'Para cadastrar bairros, preencha os campos de localização')
         return
       } 

@@ -2,20 +2,20 @@ const { formData } = require("../utils/auxiliarVariables.js")
 
 // Carregar módulos de funções
 const func = {
-  paymentTypes: require("./apiRequests/paymentTypes.js"),
-  saleStatus: require("./apiRequests/saleStatus.js"),
-  tableOrder: require("./apiRequests/tableOrder.js"),
-  orderCard: require("./apiRequests/orderCard.js"),
-  settings: require("./apiRequests/settings.js"),
-  partners: require('./apiRequests/partners.js'),
-  taxesData: require("./apiRequests/taxesData.js"),
-  shifts: require("./apiRequests/shifts.js"),
-  waiters: require("./apiRequests/waiters.js"),
-  deliveryMen: require("./apiRequests/deliveryMen.js"),
-  users: require("./apiRequests/users.js"),
-  neighborhoods: require("./apiRequests/neighborhoods.js"),
-  additionals: require('./apiRequests/additionals.js'),
-  menu: require("./apiRequests/menu.js"),
+  saleStatus: require("./apiFunctions/saleStatus.js"),
+  tableOrder: require("./apiFunctions/tableOrder.js"),
+  orderCard: require("./apiFunctions/orderCard.js"),
+  settings: require("./apiFunctions/settings.js"),
+  taxesData: require("./apiFunctions/taxesData.js"),
+  shifts: require("./apiFunctions/shifts.js"),
+  waiters: require("./apiFunctions/waiters.js"),
+  deliveryMen: require("./apiFunctions/deliveryMen.js"),
+  users: require("./apiFunctions/users.js"),
+  districts: require("./apiFunctions/districts.js"),
+  choices: require('./apiFunctions/choices.js'),
+  menu: require("./apiFunctions/menu.js"),
+  paymentTypes: require("./apiFunctions/paymentTypes.js"),
+  partners: require('./apiFunctions/partners.js')
 }
 
 // App Script API
@@ -91,10 +91,10 @@ async function executeConfigure(data) {
 
     // Executando cada função e armazenando o retorno no errorLog
     for (const [moduleName, moduleFunction] of Object.entries(func)) {
-      const isChosen = await hasTruthyValue(data[`${moduleName}Chosed`])
-      console.log(isChosen, ": ", data[`${moduleName}Chosed`] )
+      const isChosen = await hasTruthyValue(data[`${moduleName}Chosen`])
+      isChosen ? console.log(isChosen, ": ", moduleName) : null
       if (isChosen) {
-        const err = await moduleFunction(data[`${moduleName}Chosed`])
+        const err = await moduleFunction(data[`${moduleName}Chosen`])
         if (err && err.length > 0) {
           data.errorLog.push({ moduleName, err })
         }

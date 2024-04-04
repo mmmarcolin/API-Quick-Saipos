@@ -61,12 +61,12 @@ dataCopy.forEach((item, index) => {
         } else {
             value = item[mapping.field]
         }        
-        if (mapping.key === 'additional') {
+        if (mapping.key === 'choice') {
             // Verifica se é do menu ou dos adicionais
             if (mappings === menuMappings) {
                 // Trata os dados adicionais do menu
                 if (typeof value !== 'undefined') {
-                    value = value === '' ? [''] : value.split(',').map(additional => additional.trim())
+                    value = value === '' ? [''] : value.split(',').map(choice => choice.trim())
                 } else {
                     value = ['']
                 }
@@ -76,7 +76,7 @@ dataCopy.forEach((item, index) => {
             }
         }
         if (mapping.key === 'quantity') {
-            value = value.split(',').map(additional => additional.trim())
+            value = value.split(',').map(choice => choice.trim())
         }
         if (typeof value === 'undefined') {
             result[mapping.key].push('')
@@ -92,7 +92,7 @@ dataCopy.forEach((item, index) => {
         result.product.splice(1, 0, 'Para pagamento via pix, utilizar chave: ')
         result.price.splice(1, 0, '0')
         result.description.splice(1, 0, 'Enviar comprovante de pagamento para o contato: ')
-        result.additional.splice(1, 0, ['']) // Adiciona um array contendo uma string vazia
+        result.choice.splice(1, 0, ['']) // Adiciona um array contendo uma string vazia
         result.code.splice(1, 0, '')
     }
 
@@ -101,8 +101,8 @@ dataCopy.forEach((item, index) => {
 
 
 // Mappings dos arays
-const additionalsMappings = [
-    { key: 'additional', field: 'Adicional' },
+const choicesMappings = [
+    { key: 'choice', field: 'Adicional' },
     { key: 'item', field: 'Item' },
     { key: 'price', field: 'Preço' },
     { key: 'description', field: 'Descrição' },
@@ -114,19 +114,14 @@ const menuMappings = [
     { key: 'product', field: 'Produto' },
     { key: 'price', field: 'Preço' },
     { key: 'description', field: 'Descrição' },
-    { key: 'additional', field: 'Adicional' },
+    { key: 'choice', field: 'Adicional' },
     { key: 'code', field: 'Código' }
 ]
-const neighborhoodsMappings = [
-    { key: 'neighborhood', field: 'Bairro' },
+const districtsMappings = [
+    { key: 'district', field: 'Bairro' },
     { key: 'deliveryFee', field: 'Taxa' },
     { key: 'deliveryMenFee', field: 'Entregador' }
 ]
 
 // Exportações
-module.exports = {
-    processCSV,
-    additionalsMappings,
-    menuMappings,
-    neighborhoodsMappings
-}
+module.exports = { processCSV, choicesMappings, menuMappings, districtsMappings }

@@ -1,5 +1,6 @@
 require('dotenv').config()
 const saiposAuthToken = process.env.SAIPOS_AUTH_TOKEN
+const { normalizeText } = require('../utils/auxiliarVariables')
 
 function createRequestOptions(method, data = null) {
   const options = {
@@ -21,7 +22,9 @@ async function makeFetchRequest(url, options) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
-    return await response.json()
+    const responseData = await response.json()
+    options.method !== 'GET' ? console.log('Response:', responseData) : null
+    return responseData
   } catch (error) {
     console.error('Error:', error)
     return null
@@ -41,7 +44,7 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url) {
   if (!responseData) {
     return null
   }
-  const result = responseData.find(res => res[keyToFind] === desiredValue)
+  const result = responseData.find(res => normalizeText(res[keyToFind]) === normalizeText(desiredValue))
   if (!result) {
     console.error('Item not found')
     return null
