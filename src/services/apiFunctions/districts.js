@@ -4,7 +4,7 @@ const { storeId, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 class DataDistrict {
   constructor(data) {
     this.id_city = data.id_city
-    this.desc_districts = data.districts.slice(1)
+    this.desc_districts = data.desc_districts.slice(1)
   }
 }
 
@@ -22,12 +22,13 @@ class StoreDistrict {
 async function districts(chosenData) {
   try {
     const stateId = await getFromSaipos("desc_state", chosenData.state, "id_state",`${API_BASE_URL}/states`)
-    const cityId = await getFromSaipos("desc_city", chosenData.state, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
-    
+    const cityId = await getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
+    console.log(chosenData)
     const dataDistricToPost = new DataDistrict({ 
       id_city: cityId,
       desc_districts: chosenData.districtsData.districts
     })
+    console.log(dataDistricToPost)
     await postToSaipos(dataDistricToPost, `${API_BASE_URL}/districts/insert-district-list`)
     
     let dataStoreToPost = []
@@ -39,12 +40,11 @@ async function districts(chosenData) {
         delivery_fee: chosenData.districtsData.deliveryFee[i],
         value_motoboy: chosenData.districtsData.deliveryMenFee[i],
       }))
+      if (dataStoreToPost.length === 50 || i === chosenData.districtsData.districts.length - 1) {
+        await postToSaipos(dataStoreToPost, `${API_BASE_URL}/stores/${storeId}/districts`)
+        dataStoreToPost = []
+      }   
     }
-
-    if (dataStoreToPost.length === 50 || i === chosenData.districtsData.districts.length - 1) {
-      await postToSaipos(dataStoreToPost, `${API_BASE_URL}/stores/${storeId}/districts`)
-      dataStoreToPost = []
-    }   
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de BAIRROS', error)

@@ -91,7 +91,7 @@ class Product {
 async function menu(chosenData) {
   try {
     const foodTaxId = await getFromSaipos("desc_store_taxes_data", "Comida", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
-    const drinkTaxId = await getFromSaipos("desc_store_taxes_data", "Bebida", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
+    const drinkTaxId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
     const idStoreVariation = await getFromSaipos("desc_store_variation" , "Único", "id_store_variation" , `${API_BASE_URL}/stores/${storeId}/variations`)
 
     const uniqueCategories = new Set(chosenData.menuData.category.slice(1))
@@ -113,9 +113,11 @@ async function menu(chosenData) {
 
       const productToPost = new Product(productData, idStoreVariation)
       const splittedChoices = chosenData.menuData.choice[i].split(",")      
-      for (const choice of splittedChoices) {
-        const choiceId = await getFromSaipos("desc_store_choice", choice, "id_store_choice", `${API_BASE_URL}/stores/${storeId}/choices`)
-        productToPost.addChoice(choiceId)
+      if (splittedChoices != '') {
+        for (const choice of splittedChoices) {
+          const choiceId = await getFromSaipos("desc_store_choice", choice, "id_store_choice", `${API_BASE_URL}/stores/${storeId}/choices`)
+          productToPost.addChoice(choiceId)
+        }
       }
       await postToSaipos(productToPost, `${API_BASE_URL}/stores/${storeId}/items`)
     }

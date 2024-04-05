@@ -6,7 +6,7 @@ const func = {
   tableOrder: require("./apiFunctions/tableOrder.js"),
   orderCard: require("./apiFunctions/orderCard.js"),
   settings: require("./apiFunctions/settings.js"),
-  taxesData: require("./apiFunctions/taxesData.js"),
+  storeData: require("./apiFunctions/storeData.js"),
   shifts: require("./apiFunctions/shifts.js"),
   waiters: require("./apiFunctions/waiters.js"),
   deliveryMen: require("./apiFunctions/deliveryMen.js"),
@@ -20,10 +20,10 @@ const func = {
 
 // App Script API
 async function processDataToGoogleSheet(data) {
-  data.endTime = new Date()
-  data.timestamp = parseFloat((data.endTime - data.startTime) / 1000).toFixed(0)
-  data.endTime = await handleDateNow(data.endTime)
-  if (data.timestamp > 0 && data.storeId !== "33738") {
+  data.time.endTime = new Date()
+  data.time.timestamp = parseFloat((data.time.endTime - data.time.startTime) / 1000).toFixed(0)
+  data.time.endTime = await handleDateNow(data.time.endTime)
+  if (data.time.timestamp > 0 && data.storeId !== "33738") {
     const jsonData = JSON.stringify(data)
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbwHy4Ttcql8TXzcSMvzrsXHyymj_LSHdiphm6ieLsWlIiSwq_RMVkTapsyvJwOZZaJu/exec';
     fetch(scriptUrl, {
@@ -86,7 +86,8 @@ async function executeConfigure(data) {
     
     // Início
     await logAndSendAlert(`INICIADO: ${data.storeId}`)
-    data.startTime = new Date()
+    
+    data.time.startTime = new Date()
     data.errorLog = []
 
     // Executando cada função e armazenando o retorno no errorLog
@@ -103,7 +104,7 @@ async function executeConfigure(data) {
 
     // Final
     await processDataToGoogleSheet(data)
-    await logAndSendAlert(`FINALIZADO: ${data.storeId} | ${data.timestamp} segundos`)
+    await logAndSendAlert(`FINALIZADO: ${data.storeId} | ${data.time.timestamp} segundos`)
     
     // Tratemento de erros
   } catch (error) {
