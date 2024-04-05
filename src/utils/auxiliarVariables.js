@@ -1,5 +1,5 @@
 const formData = {
-    storeId: 37058,
+    storeId: 33738,
     paymentTypesChosen: {
         pix: false,
         elo: false,
