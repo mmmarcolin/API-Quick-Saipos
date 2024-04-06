@@ -21,11 +21,11 @@ class DeliveryMan {
 async function deliveryMen(chosenData) {
   try {
     
-    for (let i = 0; i < chosenData.deliveryMenDesc.length; i++) {
+    for (const deliveryManData of chosenData.deliveryMen) {
       const deliveryMenToPost = new DeliveryMan({
-        delivery_man_name: chosenData.deliveryMenDesc[i],
-        value_daily: chosenData.deliveryMenDailyRate[i],
-        delivery_man_quantity: chosenData.deliveryMenDesc.length
+        delivery_man_name: deliveryManData.deliveryManDesc,
+        value_daily: deliveryManData.deliveryMenDailyRate,
+        delivery_man_quantity: chosenData.deliveryMen.length
       })
       await postToSaipos(deliveryMenToPost, `${API_BASE_URL}/stores/${storeId}/delivery_men`)
     }

@@ -18,18 +18,18 @@ async function shifts(chosenData) {
 
     const shiftId = await getFromSaipos("desc_store_shift", "Dia", "id_store_shift", `${API_BASE_URL}/stores/${storeId}/shifts`);
     
-    for (let i = 0; i < chosenData.shiftDesc.length; i++) {
-      const shiftToPust = new Shift({
-        id_store_shift: i === 0 ? shiftId : 0,
-        desc_store_shift: chosenData.shiftDesc[i],
-        starting_time: chosenData.shiftTime[i],
-        service_charge: chosenData.shiftCharge[i]
-      })
-
-      if (i === 0) {
-        await putToSaipos(shiftToPust, `${API_BASE_URL}/stores/${storeId}/shifts/${shiftId}`);
+    for (const shiftData of chosenData.shifts) {
+      const shiftToPost = new Shift({
+        id_store_shift: chosenData.shifts.indexOf(shiftData) === 0 ? shiftId : 0,
+        desc_store_shift: shiftData.desc_store_shift,
+        starting_time: shiftData.shiftTime,
+        service_charge: shiftData.shiftCharge
+      });
+    
+      if (chosenData.shifts.indexOf(shiftData) === 0) {
+        await putToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/${shiftId}`);
       } else {
-        await postToSaipos(shiftToPust, `${API_BASE_URL}/stores/${storeId}/shifts/`);
+        await postToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/`);
       }
     }
   } catch (error) {

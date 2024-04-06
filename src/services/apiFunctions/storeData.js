@@ -19,33 +19,31 @@ class Cnae {
 
 class StoreData {
   constructor(data) {
-    this.id_store = id_store
-    this.created_at = created_at
-    this.updated_at = updated_at
-    this.corporate_name = corporate_name
-    this.trade_name = trade_name
-    this.phone_1 = phone_1
-    this.phone_2 = phone_2
-    this.cnpj = cnpj
-    this.ie = ie
-    this.zip_code = zip_code
-    this.address = address
-    this.address_number = address_number
-    this.address_complement = address_complement
-    this.id_district = id_district
-    this.delivery_order = delivery_order
-    this.delivery_time = delivery_time
-    this.pickup_time = pickup_time
-    this.table_order = table_order
-    this.ticket_order = ticket_order
-    this.inventory_control = inventory_control
-    this.franchise_dashboard_enabled = franchise_dashboard_enabled
-    this.delivery_area_option = delivery_area_option
-    this.id_store_situation = id_store_situation
-    this.lat_lng = lat_lng
-    this.use_chatbot = use_chatbot
-    this.printer_tester = printer_tester
-    this.automatically_migrate_sales = automatically_migrate_sales
+    this.id_store = storeId
+    this.corporate_name = data.corporate_name
+    this.trade_name = data.trade_name
+    this.phone_1 = data.phone_1
+    this.phone_2 = data.phone_2
+    this.lat_lng = data.lat_lng
+    this.cnpj = data.cnpj
+    this.ie = data.ie
+    this.id_district = data.id_district
+    this.zip_code = data.zip_code
+    this.address = data.address
+    this.address_number = data.address_number
+    this.address_complement = data.address_complement || "-"
+    this.delivery_area_option = data.deliveryOption === "area" ? "A" : "D"
+    this.delivery_order =  "Y"
+    this.delivery_time = 60
+    this.pickup_time = 30
+    this.table_order =  "Y"
+    this.ticket_order =  "Y"
+    this.inventory_control =  "Y"
+    this.franchise_dashboard_enabled =  "Y"
+    this.id_store_situation = 1
+    this.use_chatbot = "N"
+    this.printer_tester = "N"
+    this.automatically_migrate_sales = "Y"
   }
 }
 
@@ -104,29 +102,29 @@ class Cest {
   
 class Contigency {
 constructor(data) {
-    this.id_store = storeId
-    this.token_nfce = null
-    this.token_nfce_id = null
-    this.ambiente_nfe = 1
-    this.nfe_enabled = "N"
-    this.sat_enabled = "N"
-    this.sat_signature_software = null
-    this.sat_activation_code = null
-    this.version_layout_nfe = "4.00"
-    this.email = ""
-    this.contingency = data.contigency
-    this.contingency_date = null
-    this.contingency_reason = null
-    this.contingency_type_emission = null
-    this.nfe_ult_nsu = "0"
-    this.nfe_import_auto = "N"
-    this.nfe_import_date = null
-    this.has_only_own_delivery = "Y"
-    this.nfe_complementary_information = null
-    this.id_regime_tributario = 1
-    this.id_sat_modelo = null
-    this.show_import_date = ""
-}
+  this.id_store = storeId
+  this.token_nfce = null
+  this.token_nfce_id = null
+  this.ambiente_nfe = 1
+  this.nfe_enabled = "N"
+  this.sat_enabled = "N"
+  this.sat_signature_software = null
+  this.sat_activation_code = null
+  this.version_layout_nfe = "4.00"
+  this.email = ""
+  this.contingency = data.contigency
+  this.contingency_date = null
+  this.contingency_reason = null
+  this.contingency_type_emission = null
+  this.nfe_ult_nsu = "0"
+  this.nfe_import_auto = "N"
+  this.nfe_import_date = null
+  this.has_only_own_delivery = "Y"
+  this.nfe_complementary_information = null
+  this.id_regime_tributario = 1
+  this.id_sat_modelo = null
+  this.show_import_date = ""
+  }
 }
 
 async function storeData(chosenData) {
@@ -136,36 +134,52 @@ async function storeData(chosenData) {
     const cnaeDesc = await getFromSaipos("cnae", chosenData.cnae, "desc_cnae", `${API_BASE_URL}/cnae`)
     const stateId = await getFromSaipos("desc_state", chosenData.state, "id_state",`${API_BASE_URL}/states`)
     const cityId = await getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
+    const districtId = await getFromSaipos("desc_district", chosenData.district, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
+    const storeOriginalData = await getFromSaipos("id_store", storeId, "", `${API_BASE_URL}/${storeId}`)
+
+    if (stateId === 16) {
+      const taxesDataId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
+      const taxesDataCfopId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "taxes_data_cfop.id_store_taxes_data_cfop", `${API_BASE_URL}/stores/${storeId}/taxes_datas?filter=%7B%22where%22%3A%7B%22id_store_taxes_data%22%3A${taxesDataId}%7D%2C%22include%22%3A%7B%22relation%22%3A%22taxes_data_cfop%22%7D%7D`)
+      const cestToPut = new Cest ({
+        desc_store_taxes_data: taxesDataId,
+        id_store_taxes_data_cfop: taxesDataCfopId
+      })
+      await putToSaipos(cestToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile/${taxesDataId}`)
+      
+      if (stateReg !== "ISENTO") {
+        var fixedIe = chosenData.stateReg.padStart(13, "0")
+      }
+    }
 
     const cnaeToPost = new Cnae({
-        id_cnae: cnaeId,
-        desc_cnae: cnaeDesc,
-        cnae: chosenData.cnae
+      id_cnae: cnaeId,
+      desc_cnae: cnaeDesc,
+      cnae: chosenData.cnae
     })
 
     const storeDataToPut = new StoreData({
-
+      corporate_name: storeOriginalData.corporate_name,
+      trade_name: storeOriginalData.trade_name,
+      phone_1: storeOriginalData.phone_1,
+      phone_2: storeOriginalData.phone_2,
+      lat_lng: storeOriginalData.lat_lng,
+      cnpj: storeOriginalData.cnpj,
+      id_district: districtId,
+      ie: fixedIe || data.stateReg,
+      zip_code: chosenData.zipCode,
+      address: chosenData.address,
+      address_number: chosenData.addressNumber,
+      address_complement: chosenData.addressComplement,
+      delivery_area_option: chosenData.deliveryOption
+    })
+    
+    const contigencyToPut = new Contigency ({
+      contingency: "N"
     })
 
+    await putToSaipos(contigencyToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile`)
     await postToSaipos([cnaeToPost], `${API_BASE_URL}/stores/${storeId}/cnaes/upsertStoreCnaes`)
     await putToSaipos(storeDataToPut, `${API_BASE_URL}/stores/${storeId}`)
-
-    if (chosenData.cest) {
-        const taxesDataId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
-        const taxesDataCfopId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "taxes_data_cfop.id_store_taxes_data_cfop", `${API_BASE_URL}/stores/${storeId}/taxes_datas?filter=%7B%22where%22%3A%7B%22id_store_taxes_data%22%3A${taxesDataId}%7D%2C%22include%22%3A%7B%22relation%22%3A%22taxes_data_cfop%22%7D%7D`)
-        const cestToPut = new Cest ({
-            desc_store_taxes_data: taxesDataId,
-            id_store_taxes_data_cfop: taxesDataCfopId
-        })
-        await putToSaipos(cestToPut, `${API_BASE_URL}/stores/${storeId}/taxes_datas/${taxesDataId}`)
-    }
-  
-    if (chosenData.contigency) {
-        const contigencyToPut = new Contigency ({
-            contingency: "N"
-        })
-        await putToSaipos(contigencyToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile`)
-    }
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de DADOS DA LOJA', error)

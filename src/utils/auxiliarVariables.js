@@ -1,5 +1,7 @@
 const formData = {
     storeId: 33738,
+    ifoodIntegrationChosen: {
+    },
     paymentTypesChosen: {
         pix: false,
         elo: false,
@@ -45,20 +47,16 @@ const formData = {
         quantity: 0
     },
     storeDataChosen: {
-        cest: false,
-        contigency: false
-
-
-
-
-
-
-
-
-
-
-
-
+        cnae: "",
+        state: "",
+        city: "",
+        district: "",
+        address: "",
+        addressNumber: "",
+        addressComplement: "",
+        stateReg: "",
+        cnpj: "",
+        deliveryOption: ""
     },
     shiftsChosen: {
         shiftDesc: [],
@@ -79,11 +77,11 @@ const formData = {
         deliveryMenQuantity: [],
         deliveryMenDailyRate: []
     },
-    districtsChosen: {
+    deliveryAreasChosen: {
         // state: "Tocantins",
         // city: "Palmas",
-        // districtsData: {
-        //     districts: ["a", "1001 Sul", "1001 S", "1002 Sul", "1003 Sul", "1004 Sul", "1005 Sul", "1006 Sul", "1007 Sul", "101 Norte", "103 Norte", "103 S", "103 Sul", "104 Norte", "104 Sul", "105 Norte", "106 Norte", "106 S", "106 Sul", "107 Norte", "108 Norte", "108 S", "108 Sul", "1103 Sul", "1104 Sul", "1105 Sul", "1106 Sul", "110 Norte", "110 Sul", "1112 Sul", "112 Norte", "112 Sul", "1203 Sul", "1204 Sul", "1205 Sul", "1206 Sul", "1212 Sul", "1303 Sul", "1304 Sul", "1305 Sul", "1306 Sul", "1307 Sul", "1503 Sul", "201 Sul", "202 Sul", "203 Norte", "203 Sul", "204 Sul", "205 Sul", "206 Sul", "207 Norte", "207 Sul", "208 Norte", "208 Sul", "209 Sul", "210 Sul", "212 Norte", "212 Sul", "301 Norte", "302 Norte", "303 Norte", "303 Sul", "304 Norte", "304 Sul", "305 Norte", "305 Sul", "306 Sul", "307 Norte", "307 Sul", "308 Sul", "309 norte", "309 Sul", "401 Norte", "401 Sul", "402 Norte", "402 Sul", "403 Norte", "403 Sul", "404 Norte", "404 Sul", "405 Norte", "405 Sul", "406 Norte", "407 Norte", "407 Sul", "408 Norte", "409 Norte", "409 Sul", "501 Norte", "501 Sul", "502 Norte", "502 Sul", "503 Norte", "503 sul", "504 Norte", "504 Sul", "505 Sul", "506 Norte", "506 Sul", "507 Sul", "508 Norte", "509 Sul", "512 Sul", "601 Sul", "602 Sul", "603 Norte", "603 Sul", "604 Norte", "604 Sul", "605 Norte", "605 Sul", "606 Norte", "606 Sul", "607 Norte", "607 Sul", "611 Sul", "612 Sul", "701 Sul", "702 Sul", "704 Sul", "706 Sul", "712 Sul", "802 Sul", "804 Sul", "806 Sul", "901 Sul", "902 Sul", "903 Sul", "904 Sul", "905 Sul", "906 Sul", "912 Sul", "Água Fria", "Arne", "Arne 81", "Arne 81 Bairro Santo Amaro", "Arno", "Arse", "Arso", "Lago Norte", "Loteamento Água Fria", "Orla 14 Graciosa", "Plano Diretor Norte", "Plano Diretor Sul", "Santo Amaro", "Vila Militar"],
+        // deliveryAreasData: {
+        //     deliveryAreas: ["a", "1001 Sul", "1001 S", "1002 Sul", "1003 Sul", "1004 Sul", "1005 Sul", "1006 Sul", "1007 Sul", "101 Norte", "103 Norte", "103 S", "103 Sul", "104 Norte", "104 Sul", "105 Norte", "106 Norte", "106 S", "106 Sul", "107 Norte", "108 Norte", "108 S", "108 Sul", "1103 Sul", "1104 Sul", "1105 Sul", "1106 Sul", "110 Norte", "110 Sul", "1112 Sul", "112 Norte", "112 Sul", "1203 Sul", "1204 Sul", "1205 Sul", "1206 Sul", "1212 Sul", "1303 Sul", "1304 Sul", "1305 Sul", "1306 Sul", "1307 Sul", "1503 Sul", "201 Sul", "202 Sul", "203 Norte", "203 Sul", "204 Sul", "205 Sul", "206 Sul", "207 Norte", "207 Sul", "208 Norte", "208 Sul", "209 Sul", "210 Sul", "212 Norte", "212 Sul", "301 Norte", "302 Norte", "303 Norte", "303 Sul", "304 Norte", "304 Sul", "305 Norte", "305 Sul", "306 Sul", "307 Norte", "307 Sul", "308 Sul", "309 norte", "309 Sul", "401 Norte", "401 Sul", "402 Norte", "402 Sul", "403 Norte", "403 Sul", "404 Norte", "404 Sul", "405 Norte", "405 Sul", "406 Norte", "407 Norte", "407 Sul", "408 Norte", "409 Norte", "409 Sul", "501 Norte", "501 Sul", "502 Norte", "502 Sul", "503 Norte", "503 sul", "504 Norte", "504 Sul", "505 Sul", "506 Norte", "506 Sul", "507 Sul", "508 Norte", "509 Sul", "512 Sul", "601 Sul", "602 Sul", "603 Norte", "603 Sul", "604 Norte", "604 Sul", "605 Norte", "605 Sul", "606 Norte", "606 Sul", "607 Norte", "607 Sul", "611 Sul", "612 Sul", "701 Sul", "702 Sul", "704 Sul", "706 Sul", "712 Sul", "802 Sul", "804 Sul", "806 Sul", "901 Sul", "902 Sul", "903 Sul", "904 Sul", "905 Sul", "906 Sul", "912 Sul", "Água Fria", "Arne", "Arne 81", "Arne 81 Bairro Santo Amaro", "Arno", "Arse", "Arso", "Lago Norte", "Loteamento Água Fria", "Orla 14 Graciosa", "Plano Diretor Norte", "Plano Diretor Sul", "Santo Amaro", "Vila Militar"],
         //     deliveryFee: ["Taxa", 15.00, 15.00, 15.00, 15.00, 15.00, 15.00, 15.00, 15.00, 8.00,7.00,6.99,7.00,6.00,6.00,7.00,6.00,7.99,7.00,8.00,7.00,7.99,7.00,15.00, 15.00, 15.00, 15.00, 8.00,8.00,15.00, 9.00,9.00,15.00, 15.00, 15.00, 15.00, 15.00, 20.00, 20.00, 20.00, 20.00, 20.00, 20.00, 8.00,8.00,8.00,8.00,8.00,8.00,8.00,10.00, 8.00,9.00,8.00,9.00,8.00,10.00, 8.00,8.00,8.00,8.00,8.00,7.00,7.00,8.00,9.00,8.00,8.00,8.00,8.00,9.00,9.00,8.00,8.00,8.00,8.00,8.00,8.00,8.00,8.00,9.00,9.00,9.00,9.00,9.00,10.00, 9.00,10.00, 10.00, 8.00,9.00,9.00,10.00, 8.00,9.00,9.00,9.00,10.00, 9.00,10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 12.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 12.00, 6.99,12.99,12.00, 6.99,8.99,10.99,15.00, 15.00, 12.00, 7.99,17.99,12.00, 15.00],
         //     deliveryMenFee: ["a", 15.00,15.00,15.00,15.00,15.00,15.00,15.00,15.00, 8.00, 7.00, 0.00, 7.00, 6.00, 6.00, 7.00, 6.00, 0.00, 7.00, 8.00, 7.00, 0.00, 7.00,15.00,15.00,15.00,15.00, 8.00, 8.00,15.00, 9.00, 9.00,15.00,15.00,15.00,15.00,15.00,20.00,20.00,20.00,20.00,20.00,20.00, 8.00, 8.00, 8.00, 8.00, 8.00, 8.00, 8.00,10.00, 8.00, 9.00, 8.00, 9.00, 8.00,10.00, 8.00, 8.00, 8.00, 8.00, 8.00, 7.00, 7.00, 8.00, 9.00, 8.00, 8.00, 8.00, 8.00, 9.00, 9.00, 8.00, 8.00, 8.00, 8.00, 8.00, 8.00, 8.00, 8.00, 9.00, 9.00, 9.00, 9.00, 9.00,10.00, 9.00,10.00,10.00, 8.00, 9.00, 9.00,10.00, 8.00, 9.00, 9.00, 9.00,10.00, 9.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,12.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,10.00,12.00, 0.00, 0.00,12.00, 0.00, 0.00, 0.00,15.00,15.00,12.00, 0.00, 0.00,12.00,5.00]
         // }

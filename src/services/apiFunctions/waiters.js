@@ -14,10 +14,10 @@ class Waiter {
 async function waiters(chosenData) {
   try {
     
-    for (let i = 0; i < chosenData.waiterDesc.length; i++) {
+    for (const waiterData of chosenData.waiters) {
       const deliveryMenToPost = new Waiter({
-        desc_store_waiter: chosenData.waiterDesc[i],
-        value_daily: chosenData.waiterDailyRate[i]
+        desc_store_waiter: waiterData.desc_store_waiter,
+        value_daily: waiterData.value_daily
       })
       await postToSaipos(deliveryMenToPost, `${API_BASE_URL}/stores/${storeId}/store_waiters`)
     }

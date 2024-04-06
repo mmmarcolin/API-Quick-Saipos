@@ -53,4 +53,8 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url) {
   return result[keyToReturn]
 }
 
-module.exports = { postToSaipos, getFromSaipos, putToSaipos }
+async function deleteFromSaipos(url) {
+  return makeFetchRequest(url, createRequestOptions('DELETE'))
+}
+
+module.exports = { postToSaipos, getFromSaipos, putToSaipos, deleteFromSaipos }

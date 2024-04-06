@@ -2,6 +2,7 @@ const { formData } = require("../utils/auxiliarVariables.js")
 
 // Carregar módulos de funções
 const func = {
+  ifoodIntegration: require('./apiFunctions/ifoodIntegration.js'),
   saleStatus: require("./apiFunctions/saleStatus.js"),
   tableOrder: require("./apiFunctions/tableOrder.js"),
   orderCard: require("./apiFunctions/orderCard.js"),
@@ -11,7 +12,7 @@ const func = {
   waiters: require("./apiFunctions/waiters.js"),
   deliveryMen: require("./apiFunctions/deliveryMen.js"),
   users: require("./apiFunctions/users.js"),
-  districts: require("./apiFunctions/districts.js"),
+  deliveryAreas: require("./apiFunctions/deliveryAreas.js"),
   choices: require('./apiFunctions/choices.js'),
   menu: require("./apiFunctions/menu.js"),
   paymentTypes: require("./apiFunctions/paymentTypes.js"),

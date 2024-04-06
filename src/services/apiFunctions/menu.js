@@ -1,4 +1,4 @@
-const { getFromSaipos, postToSaipos } = require("../requestsToSaipos.js")
+const { getFromSaipos, postToSaipos, deleteFromSaipos } = require("../requestsToSaipos.js")
 const { storeId, auxiliarVar, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
 class Category {
@@ -45,22 +45,14 @@ class Product {
     this.availability = []
     this.production_owner = "P"
     this.cod_gtin = null
-
-    const isCombo = this.isCombo(data.desc_store_item)
-    const price = isCombo ? data.price : (this.item_type === "pizza" ? 0 : data.price)
+    const price = data.price
     this.variations = [this.createVariation(price, idStoreVariation)]
   }
 
   getItemType(desc_store_item) {
     const splittedProduct = desc_store_item.split(' ')
     const isPizza = splittedProduct.some(item => auxiliarVar.pizza.includes(item)) && !splittedProduct.some(item => auxiliarVar.foldedPizza.includes(item))
-    const isCombo = isPizza && (splittedProduct.some(item => auxiliarVar.combo.includes(item)) || splittedProduct.includes("+"))
-    return isCombo ? "combo" : isPizza ? "pizza" : "other"
-  }
-
-  isCombo(desc_store_item) {
-    const splittedProduct = desc_store_item.split(' ')
-    return splittedProduct.some(item => auxiliarVar.combo.includes(item)) || splittedProduct.includes("+")
+    return isPizza ? "pizza" : "other"
   }
 
   createVariation(price, idStoreVariation) {
@@ -87,34 +79,40 @@ class Product {
     this.choices.push({ id_store_choice: data })
   }
 }
+async function deleteCategory(categoryName) {
+  const originalCategoryId = await getFromSaipos("desc_store_category_item", categoryName, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
+  deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/categories_item/${originalCategoryId}`)
+}
 
 async function menu(chosenData) {
   try {
     const foodTaxId = await getFromSaipos("desc_store_taxes_data", "Comida", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
     const drinkTaxId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
-    const idStoreVariation = await getFromSaipos("desc_store_variation" , "Único", "id_store_variation" , `${API_BASE_URL}/stores/${storeId}/variations`)
-
-    const uniqueCategories = new Set(chosenData.menuData.category.slice(1))
-    for (const name of uniqueCategories) {
-      const category = new Category(name)
-      await category.setTaxAndPrintType(foodTaxId, drinkTaxId)
-      await postToSaipos(category, `${API_BASE_URL}/stores/${storeId}/categories_item`)
+    const idStoreVariation = await getFromSaipos("desc_store_variation", "Único", "id_store_variation", `${API_BASE_URL}/stores/${storeId}/variations`)
+        
+    await deleteCategory("Comida")
+    await deleteCategory("Bebidas")
+    
+    const uniqueCategories = new Set(chosenData.menuData.map(item => item.category))
+    for (const name of uniqueCategories.slice(1)) {
+      const categoryToPost = new Category(name)
+      await categoryToPost.setTaxAndPrintType(foodTaxId, drinkTaxId)
+      await postToSaipos(categoryToPost, `${API_BASE_URL}/stores/${storeId}/categories_item`)
     }
 
-    for (let i = 1; i < chosenData.menuData.product.length; i++) {
-      const categoryId = await getFromSaipos("desc_store_category_item", chosenData.menuData.category[i], "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
+    for (const item of chosenData.menuData.slice(1)) {
+      const categoryId = await getFromSaipos("desc_store_category_item", item.category, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
       const productData = {
-        desc_store_item: chosenData.menuData.product[i],
+        desc_store_item: item.product,
         id_store_category_item: categoryId,
-        detail: chosenData.menuData.description[i],
-        identifier_number: chosenData.menuData.code[i],
-        price: chosenData.menuData.price[i]
+        detail: item.description,
+        identifier_number: item.code,
+        price: item.price
       }
 
       const productToPost = new Product(productData, idStoreVariation)
-      const splittedChoices = chosenData.menuData.choice[i].split(",")      
-      if (splittedChoices != '') {
-        for (const choice of splittedChoices) {
+      if (item.choiceMenu != [""]) {
+        for (const choice of item.choiceMenu.slice(1)) {
           const choiceId = await getFromSaipos("desc_store_choice", choice, "id_store_choice", `${API_BASE_URL}/stores/${storeId}/choices`)
           productToPost.addChoice(choiceId)
         }
@@ -124,7 +122,7 @@ async function menu(chosenData) {
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CARDÁPIO', error)
-    return  ["CARDÁPIO: ", { stack: error.stack }]
+    return ["CARDÁPIO: ", { stack: error.stack }]
   }
 }
 
