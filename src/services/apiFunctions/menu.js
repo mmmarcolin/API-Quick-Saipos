@@ -86,15 +86,20 @@ async function deleteCategory(categoryName) {
 
 async function menu(chosenData) {
   try {
-    const foodTaxId = await getFromSaipos("desc_store_taxes_data", "Comida", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
-    const drinkTaxId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
-    const idStoreVariation = await getFromSaipos("desc_store_variation", "Único", "id_store_variation", `${API_BASE_URL}/stores/${storeId}/variations`)
-        
-    await deleteCategory("Comida")
-    await deleteCategory("Bebidas")
-    
-    const uniqueCategories = new Set(chosenData.menuData.map(item => item.category))
-    for (const name of uniqueCategories.slice(1)) {
+    const [foodTaxId, drinkTaxId, idStoreVariation] = await Promise.all([
+      getFromSaipos("desc_store_taxes_data", "Comida", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`),
+      getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`),
+      getFromSaipos("desc_store_variation", "Único", "id_store_variation", `${API_BASE_URL}/stores/${storeId}/variations`)
+    ])
+
+    await Promise.all([
+      deleteCategory("Comida"),
+      deleteCategory("Bebidas")
+    ])
+
+    const uniqueCategories = [...new Set(chosenData.menuData.map(item => item.category))].slice(1)
+
+    for (const name of uniqueCategories) {
       const categoryToPost = new Category(name)
       await categoryToPost.setTaxAndPrintType(foodTaxId, drinkTaxId)
       await postToSaipos(categoryToPost, `${API_BASE_URL}/stores/${storeId}/categories_item`)
@@ -119,7 +124,6 @@ async function menu(chosenData) {
       }
       await postToSaipos(productToPost, `${API_BASE_URL}/stores/${storeId}/items`)
     }
-
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CARDÁPIO', error)
     return ["CARDÁPIO: ", { stack: error.stack }]

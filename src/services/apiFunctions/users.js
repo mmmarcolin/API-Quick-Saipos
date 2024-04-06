@@ -30,14 +30,16 @@ async function users(chosenData) {
       userToPrintId = await getFromSaipos("user.user_type", 1, "id_user", `${API_BASE_URL}/stores/${storeId}/find-all-users`)
     }
 
-    for (const userName of chosenData.UserDesc) {
-      const userToPost = new User({
-        full_name: userName,
-        store_name: chosenData.storeName,
-        print_to_user: userToPrintId
-      })
-      await postToSaipos(userToPost, `${API_BASE_URL}/stores/${storeId}/users`)
-    }
+    const promises = chosenData.UserDesc.map(userName => {
+    const userToPost = new User({
+      full_name: userName,
+      store_name: chosenData.storeName,
+      print_to_user: userToPrintId
+    })
+    return postToSaipos(userToPost, `${API_BASE_URL}/stores/${storeId}/users`)
+  })
+  
+  await Promise.all(promises)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de USUÁRIOS', error)

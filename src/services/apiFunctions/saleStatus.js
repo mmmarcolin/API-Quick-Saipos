@@ -21,17 +21,17 @@ async function updateSaleStatus(saleStatusData) {
     `${API_BASE_URL}/stores/${storeId}/sale_statuses` :
     `${API_BASE_URL}/stores/${storeId}/sale_statuses/update-validate/${saleStatusData.id_store_sale_status}`
   return saleStatusData.id_store_sale_status === 0 ?
-  postToSaipos(saleStatusToPust, endpoint) :
-  putToSaipos(saleStatusToPust, endpoint)
+    postToSaipos(saleStatusToPust, endpoint) :
+    putToSaipos(saleStatusToPust, endpoint)
 }
 
 async function saleStatus(chosenData) {
   try {
-    const saleStatusIds = [
-      await getFromSaipos("order", 1, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
-      await getFromSaipos("order", 2, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
-      await getFromSaipos("order", 3, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`)
-    ]
+    const saleStatusIds = await Promise.all([
+      getFromSaipos("order", 1, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
+      getFromSaipos("order", 2, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
+      getFromSaipos("order", 3, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`)
+    ])
 
     const statuses = {
       delivery: [

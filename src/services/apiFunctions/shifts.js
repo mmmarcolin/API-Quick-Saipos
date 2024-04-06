@@ -15,26 +15,27 @@ class Shift {
 
 async function shifts(chosenData) {
   try {
+    const shiftId = await getFromSaipos("desc_store_shift", "Dia", "id_store_shift", `${API_BASE_URL}/stores/${storeId}/shifts`)
 
-    const shiftId = await getFromSaipos("desc_store_shift", "Dia", "id_store_shift", `${API_BASE_URL}/stores/${storeId}/shifts`);
-    
-    for (const shiftData of chosenData.shifts) {
+    const operations = chosenData.shifts.map((shiftData, index) => {
       const shiftToPost = new Shift({
-        id_store_shift: chosenData.shifts.indexOf(shiftData) === 0 ? shiftId : 0,
+        id_store_shift: index === 0 ? shiftId : 0,
         desc_store_shift: shiftData.desc_store_shift,
         starting_time: shiftData.shiftTime,
         service_charge: shiftData.shiftCharge
-      });
-    
-      if (chosenData.shifts.indexOf(shiftData) === 0) {
-        await putToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/${shiftId}`);
+      })
+
+      if (index === 0) {
+        return putToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/${shiftId}`)
       } else {
-        await postToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/`);
+        return postToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/`)
       }
-    }
+    })
+
+    await Promise.all(operations)
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de TURNOS', error)
-    return  ["TURNOS: ", { stack: error.stack }]
+    return ["TURNOS: ", { stack: error.stack }]
   }
 }
 

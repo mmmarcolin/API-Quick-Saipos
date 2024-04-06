@@ -77,7 +77,6 @@ class Payment {
 
 async function partners(chosenData) {
   try {
-
     const desiredPayments = [
       "Pix",
       "Dinheiro",
@@ -92,106 +91,62 @@ async function partners(chosenData) {
       "Débito Mastercard",
       "Débito Visa"
     ]
-    
-    const paymentMappings = {
-      Pix: 'pix',
-      Dinheiro: 'money',
-      'Crédito': 'cre',
-      'Débito': 'deb',
-      'Crédito Elo': 'creElo',
-      'Crédito Mastercard': 'creMaster',
-      'Crédito Visa': 'creVis',
-      'Crédito American Express': 'creAmex',
-      'Crédito Hipercard': 'creHiper',
-      'Débito Elo': 'debElo',
-      'Débito Mastercard': 'debMaster',
-      'Débito Visa': 'debVisa'
-    }
-    
-    const saiposPaymentId = {
-      pix: 54,
-      money: 9,
-      cre: 52,
-      deb: 53,
-      creElo: 21,
-      creMaster: 21,
-      creVis: 18,
-      creAmex: 15,
-      creHiper: 20,
-      debElo: 22,
-      debMaster: 3,
-      debVisa: 5
-    }
-    
+
+    const paymentIds = await Promise.all(desiredPayments.map(paymentType =>
+      getFromSaipos("desc_store_payment_type", paymentType, "id_store_payment_type", `${API_BASE_URL}/stores/${storeId}/payment_types`)
+    ))
+
     const storePaymentId = {}
-    for (const paymentType of desiredPayments) {
-      storePaymentId[paymentType] = await getFromSaipos("desc_store_payment_type", paymentType, "id_store_payment_type", `${API_BASE_URL}/stores/${storeId}/payment_types`)
-    }
+    desiredPayments.forEach((paymentType, index) => {
+      storePaymentId[paymentType] = paymentIds[index]
+    })
 
-    for (const [day, value] of Object.entries(chosenData.weekDays)) {
-      if (value) {
-        const dayIndex = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].indexOf(day) + 1
-        var scheduleToPost = new Schedule
-
-        scheduleToPost.addWeekDay({
-          day_week: dayIndex,
-          start_time: chosenData.startTime,
-          end_time: data.endTime
-        })
-      }
-    }
-
-    for (const paymentType of desiredPayments) {
-      const saiposPaymentKey = paymentMappings[paymentType]
-      const paymentId = saiposPaymentKey ? saiposPaymentId[saiposPaymentKey] : null
-      const storePaymentType = storePaymentId[paymentType]
-      var paymentToPost = new PaymentType()
-      paymentToPost.addPayment({
-        id_store_payment_type: storePaymentType,
-        id_payment_type: paymentId
-      })
-    }
+    const operations = []
 
     if (chosenData.deliverySite) {
-      const enableToPost = new PartnerEnable({ id_partner_sale: 7 })
-      await postToSaipos(enableToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
+      operations.push((async () => {
+        const enableToPost = new PartnerEnable({ partnerId: 7 })
+        await postToSaipos(enableToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
 
-      const siteId = await getFromSaipos("id_store", storeId, "id_store_site_data", `${API_BASE_URL}/stores/${storeId}/site_data`)
-      const siteToPost = new Site({
-        pickup_counter: chosenData.pickupCounter,
-        url_site: chosenData.storeName,
-        minimum_value: chosenData.minimumValue
-      })
+        const siteId = await getFromSaipos("id_store", storeId, "id_store_site_data", `${API_BASE_URL}/stores/${storeId}/site_data`)
+        const siteToPost = new Site({
+          pickupCounter: chosenData.pickupCounter,
+          url_site: chosenData.storeName,
+          minimumValue: chosenData.minimumValue
+        })
 
-      siteId === "" ? 
-      await postToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data/${siteId}`) : 
-      await putToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data/${siteId}`)
-
-      await postSchedule(scheduleToPost, `${API_BASE_URL}/stores/${storeId}/schedules_service/insert-all`)
-      await postPayment(paymentsToPost, `${API_BASE_URL}/stores/${storeId}/site-delivery/upsert-payment-types`)
+        if (siteId === "") {
+          await postToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data`)
+        } else {
+          await putToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data/${siteId}`)
+        }
+      })())
     }
-    
+
     if (chosenData.basicMenu || chosenData.premiumMenu) {
-      const enableToPost = new PartnerEnable({ id_partner_sale: 32 })
-      await postToSaipos(enableToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
+      operations.push((async () => {
+        const enableToPost = new PartnerEnable({ partnerId: 32 })
+        await postToSaipos(enableToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
 
-      const menuId = await getFromSaipos("id_store", storeId, "id_store_table_data", `${API_BASE_URL}/stores/${storeId}/table_data`)
-      const menuToPost = new Menu({
-        online_order_enabled: chosenData.premiumMenu,
-        url_site: chosenData.storeName
-      })
+        const menuId = await getFromSaipos("id_store", storeId, "id_store_table_data", `${API_BASE_URL}/stores/${storeId}/table_data`)
+        const menuToPost = new Menu({
+          premiumMenu: chosenData.premiumMenu,
+          url_site: chosenData.storeName
+        })
 
-      menuId === "" ? 
-      await postToSaipos(menuToPost, `${API_BASE_URL}/stores/${storeId}/site_data/${menuId}`) : 
-      await putToSaipos(menuToPost, `${API_BASE_URL}/stores/${storeId}/site_data/${menuId}`)
-
-      await postSchedule(scheduleToPost, `${API_BASE_URL}/stores/${storeId}/table_data_schedules_service/insert-all`)
-      await postPayment(paymentsToPost, `${API_BASE_URL}/stores/${storeId}/digital-table/upsert-payment-types`)
+        if (menuId === "") {
+          await postToSaipos(menuToPost, `${API_BASE_URL}/stores/${storeId}/table_data`)
+        } else {
+          await putToSaipos(menuToPost, `${API_BASE_URL}/stores/${storeId}/table_data/${menuId}`)
+        }
+      })())
     }
+
+    await Promise.all(operations)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CANAIS DE VENDA', error)
-    return  ["CANAIS DE VENDA: ", { stack: error.stack }]
+    return ["CANAIS DE VENDA: ", { stack: error.stack }]
   }
 }
 

@@ -10,7 +10,7 @@ class Settings {
 class CancPass {
   constructor(data) {
     this.id_user = data.id_user
-    this.cancellation_password = "123" 
+    this.cancellation_password = "123"
   }
 }
 
@@ -26,22 +26,22 @@ class AdmPerm {
 async function settings(chosenData) {
   try {
     const userData = await getFromSaipos("user.user_type", 1, "", `${API_BASE_URL}/stores/${storeId}/find-all-users`)
+    const settingToPut = new Settings()
+    const operations = []
 
     if (chosenData.admPermissions) {
       const admPermToPost = new AdmPerm(userData.permissions)
-      await postToSaipos(admPermToPost, `${API_BASE_URL}/stores/${storeId}/update-permission`)
+      operations.push(postToSaipos(admPermToPost, `${API_BASE_URL}/stores/${storeId}/update-permission`))
     }
-
-    const settingToPut = new Settings()
 
     if (chosenData.col42) {
       const col42Id = await getFromSaipos("id_setting", 2, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
-      await putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${col42Id}`)
+      operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${col42Id}`))
     }
 
     if (chosenData.kds) {
       const kdsId = await getFromSaipos("id_setting", 57, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
-      await putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${kdsId}`)
+      operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${kdsId}`))
     }
 
     if (chosenData.cancelReason) {
@@ -51,10 +51,13 @@ async function settings(chosenData) {
 
     if (chosenData.cancelPassword) {
       const cancelPasswordId = await getFromSaipos("id_setting", 62, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
-      await putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${cancelPasswordId}`)
+      operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${cancelPasswordId}`))
       const cancPassToPost = new CancPass({ id_user: userData.id_user })
-      await postToSaipos(cancPassToPost, `${API_BASE_URL}/stores/${storeId}/update-user`)
+      operations.push(postToSaipos(cancPassToPost, `${API_BASE_URL}/stores/${storeId}/update-user`))
     }
+
+    await Promise.all(operations)
+
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CONFIGURAÇÕES', error)
     return ["CONFIGURAÇÕES: ", { stack: error.stack }]
