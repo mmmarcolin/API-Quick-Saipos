@@ -23,7 +23,7 @@ function createWindow() {
     })
 
     // Carrega o arquivo HTML na janela
-    win.loadFile('index.html')
+    win.loadFile('public/index.html')
 
     // Ouvinte para o evento de redimensionamento
     ipcMain.on('toggle-window-size', (event, shouldExpand) => {

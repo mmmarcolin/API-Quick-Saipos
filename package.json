@@ -2,7 +2,7 @@
   "name": "quick-saipos",
   "version": "2.0.0",
   "description": "This repository contains Quick Saipos, a program developed to streamline the deployment process at Saipos. It optimizes the insertion of client information into a form via Electron. The program utilizes Puppeteer to automate the insertion of client data directly into the system, enhancing efficiency and maximizing time utilization.",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "node": "node executeConfigure.js",
