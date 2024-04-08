@@ -1,42 +1,42 @@
 {
-  "name": "quick-saipos",
-  "version": "2.0.0",
-  "description": "This repository contains Quick Saipos, a program developed to streamline the deployment process at Saipos. It optimizes the insertion of client information into a form via Electron. The program utilizes Puppeteer to automate the insertion of client data directly into the system, enhancing efficiency and maximizing time utilization.",
-  "main": "src/main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "node": "node executeConfigure.js",
-    "start": "electron .",
-    "build": "electron-builder"
-  },
-  "author": "Matheus Marcolin",
-  "license": "ISC",
-  "devDependencies": {
-    "electron": "^29.1.6",
-    "electron-builder": "^24.13.3"
-  },
-  "dependencies": {
-    "body-parser": "^1.20.2",
-    "csv-parser": "^3.0.0",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "node-fetch": "^3.3.2"
-  },
-  "build": {
-    "appId": "quick.saipos",
-    "productName": "Quick Saipos",
-    "directories": {
-      "buildResources": "resources",
-      "output": "release"
+    "name": "quick-saipos",
+    "version": "2.0.0",
+    "description": "This repository contains Quick Saipos, a program developed to streamline the deployment process at Saipos. It optimizes the insertion of client information into a form via Electron. The program utilizes Puppeteer to automate the insertion of client data directly into the system, enhancing efficiency and maximizing time utilization.",
+    "main": "./src/main.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "node": "node executeConfigure.js",
+        "start": "electron .",
+        "build": "electron-builder"
     },
-    "files": [
-      "./**/**",
-      "resources/**/*"
-    ],
-    "win": {
-      "target": "nsis",
-      "icon": "./resources/saiposLogo.ico"
-    }
-  },
-  "keywords": []
+    "author": "Matheus Marcolin",
+    "license": "ISC",
+    "devDependencies": {
+        "electron": "^29.1.6",
+        "electron-builder": "^24.13.3"
+    },
+    "dependencies": {
+        "body-parser": "^1.20.2",
+        "csv-parser": "^3.0.0",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "node-fetch": "^3.3.2"
+    },
+    "build": {
+        "appId": "quick.saipos",
+        "productName": "Quick Saipos",
+        "directories": {
+            "buildResources": "resources",
+            "output": "release"
+        },
+        "files": [
+            "./**/**",
+            "resources/**/*"
+        ],
+        "win": {
+            "target": "nsis",
+            "icon": "./resources/saiposLogo.ico"
+        }
+    },
+    "keywords": []
 }

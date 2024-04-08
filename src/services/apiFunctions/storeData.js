@@ -129,26 +129,20 @@ constructor(data) {
 
 async function storeData(chosenData) {
   try {
+    const [cnaeId, cnaeDesc, stateId, cityId, districtId, storeOriginalData, taxesDataId, taxesDataCfopId] = await Promise.all([
+      getFromSaipos("cnae", chosenData.cnae, "id_cnae", `${API_BASE_URL}/cnae`),
+      getFromSaipos("cnae", chosenData.cnae, "desc_cnae", `${API_BASE_URL}/cnae`),
+      getFromSaipos("desc_state", chosenData.state, "id_state", `${API_BASE_URL}/states`),
+      getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`),
+      getFromSaipos("desc_district", chosenData.district, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`),
+      getFromSaipos("id_store", storeId, "", `${API_BASE_URL}/${storeId}`),
+      stateId === 16 ? getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`) : null,
+      stateId === 16 ? getFromSaipos("desc_store_taxes_data", "Bebidas", "taxes_data_cfop.id_store_taxes_data_cfop", `${API_BASE_URL}/stores/${storeId}/taxes_datas?filter=%7B%22where%22%3A%7B%22id_store_taxes_data%22%3A${taxesDataId}%7D%2C%22include%22%3A%7B%22relation%22%3A%22taxes_data_cfop%22%7D%7D`) : null
+    ])
 
-    const cnaeId = await getFromSaipos("cnae", chosenData.cnae, "id_cnae", `${API_BASE_URL}/cnae`)
-    const cnaeDesc = await getFromSaipos("cnae", chosenData.cnae, "desc_cnae", `${API_BASE_URL}/cnae`)
-    const stateId = await getFromSaipos("desc_state", chosenData.state, "id_state",`${API_BASE_URL}/states`)
-    const cityId = await getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
-    const districtId = await getFromSaipos("desc_district", chosenData.district, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
-    const storeOriginalData = await getFromSaipos("id_store", storeId, "", `${API_BASE_URL}/${storeId}`)
-
-    if (stateId === 16) {
-      const taxesDataId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)
-      const taxesDataCfopId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "taxes_data_cfop.id_store_taxes_data_cfop", `${API_BASE_URL}/stores/${storeId}/taxes_datas?filter=%7B%22where%22%3A%7B%22id_store_taxes_data%22%3A${taxesDataId}%7D%2C%22include%22%3A%7B%22relation%22%3A%22taxes_data_cfop%22%7D%7D`)
-      const cestToPut = new Cest ({
-        desc_store_taxes_data: taxesDataId,
-        id_store_taxes_data_cfop: taxesDataCfopId
-      })
-      await putToSaipos(cestToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile/${taxesDataId}`)
-      
-      if (stateReg !== "ISENTO") {
-        var fixedIe = chosenData.stateReg.padStart(13, "0")
-      }
+    let fixedIe
+    if (stateId === 16 && chosenData.stateReg !== "ISENTO") {
+      fixedIe = chosenData.stateReg.padStart(13, "0")
     }
 
     const cnaeToPost = new Cnae({
@@ -165,21 +159,29 @@ async function storeData(chosenData) {
       lat_lng: storeOriginalData.lat_lng,
       cnpj: storeOriginalData.cnpj,
       id_district: districtId,
-      ie: fixedIe || data.stateReg,
+      ie: fixedIe || chosenData.stateReg,
       zip_code: chosenData.zipCode,
       address: chosenData.address,
       address_number: chosenData.addressNumber,
       address_complement: chosenData.addressComplement,
       delivery_area_option: chosenData.deliveryOption
     })
-    
-    const contigencyToPut = new Contigency ({
+
+    const contigencyToPut = new Contigency({
       contingency: "N"
     })
 
-    await putToSaipos(contigencyToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile`)
-    await postToSaipos([cnaeToPost], `${API_BASE_URL}/stores/${storeId}/cnaes/upsertStoreCnaes`)
-    await putToSaipos(storeDataToPut, `${API_BASE_URL}/stores/${storeId}`)
+    const cestToPut = stateId === 16 ? new Cest({
+      desc_store_taxes_data: taxesDataId,
+      id_store_taxes_data_cfop: taxesDataCfopId
+    }) : null
+
+    await Promise.all([
+      cestToPut ? putToSaipos(cestToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile/${taxesDataId}`) : null,
+      putToSaipos(contigencyToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile`),
+      postToSaipos([cnaeToPost], `${API_BASE_URL}/stores/${storeId}/cnaes/upsertStoreCnaes`),
+      putToSaipos(storeDataToPut, `${API_BASE_URL}/stores/${storeId}`)
+    ].filter(p => p !== null))
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de DADOS DA LOJA', error)

@@ -14,13 +14,15 @@ class Waiter {
 async function waiters(chosenData) {
   try {
     
-    for (const waiterData of chosenData.waiters) {
-      const deliveryMenToPost = new Waiter({
+    const promises = chosenData.waiters.map(waiterData => {
+      const waiterToPost = new Waiter({
         desc_store_waiter: waiterData.desc_store_waiter,
         value_daily: waiterData.value_daily
       })
-      await postToSaipos(deliveryMenToPost, `${API_BASE_URL}/stores/${storeId}/store_waiters`)
-    }
+      return postToSaipos(waiterToPost, `${API_BASE_URL}/stores/${storeId}/store_waiters`)
+    })
+
+    await Promise.all(promises)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de GARÇONS', error)
