@@ -9,10 +9,11 @@
     </head>
     <body>
         <!-- Formulário -->
-        <form class="form-grid" action="#" id="form" method="post">
+        <form action="#" id="form" method="post">
             <!-- Logo -->
                 <!-- <img id="form-logo" class="full-width-fieldset" src="./assets/saiposLogo.png" alt="Logo Saipos"> -->
             <!-- Fieldsets -->
+            <div id="collapsible-content" class="form-grid full-width-fieldset">
                 <!-- Formas de pagamento -->
                 <fieldset class="full-width-fieldset field-container-ten options-container">
                     <legend>Formas de pagamento</legend>
@@ -290,8 +291,8 @@
                         <input type="text" id="store-data-complement" name="store-data-complement" placeholder="Complexo Tecnosinos">
                     </div>
                     <div>
-                        <label for="store-data-number">CEP</label>
-                        <input type="text" id="store-data-number" name="store-data-number" placeholder="93022715" step="1" >
+                        <label for="store-data-zip">CEP</label>
+                        <input type="text" id="store-data-zip" name="store-data-zip" placeholder="93022715" step="1" >
                     </div>
                     <div>
                         <label for="store-data-cnpj">CNPJ</label>
@@ -302,8 +303,8 @@
                         <input type="text" id="store-data-state-registration" name="store-data-state-registration" placeholder="00123456789">
                     </div>
                     <div>
-                        <label for="store-data-CNAE">CNAE</label>
-                        <input type="text" id="store-data-CNAE" name="store-data-CNAE" placeholder="5611102">
+                        <label for="store-data-cnae">cnae</label>
+                        <input type="text" id="store-data-cnae" name="store-data-CNAE" placeholder="5611102">
                     </div>
                 </fieldset>
                 <!-- Turnos -->
@@ -358,8 +359,8 @@
                 <fieldset class="half-width-fieldset field-container-three">
                     <legend>Outros</legend>
                     <div>
-                        <label for="tables">Mesas</label>
-                        <input type="text" id="tables" pattern="\d{1,3}" name="tables" placeholder="25">
+                        <label for="table-orders">Mesas</label>
+                        <input type="text" id="table-orders" pattern="\d{1,3}" name="table-orders" placeholder="25">
                     </div>
                     <div>
                         <label for="order-cards">Comandas</label>
@@ -370,38 +371,39 @@
                         <input type="text" id="minimum-value-domain" name="minimum-value-domain" placeholder="nomedaloja">
                     </div>
                 </fieldset>
-                <!-- Botões -->
-                <div class="full-width-fieldset button-container">
-                    <button id="dark-light-mode-toggle" class="auxiliar-button button">
-                        &#9788
-                    </button>
-                    <button id="collapse-button" class="auxiliar-button button">
-                        &#8679
-                    </button>
-                    <button id="clean-button" class="auxiliar-button button">
-                        &#x43
-                    </button>
-                    <a id="doc-button" class="auxiliar-button button" href="https://drive.google.com/drive/folders/18TaY3PV4BYHET1h7ORRph_J1_UyeMxU4" rel="noopener" target="_blank">
-                        &#128463
-                    </a>
-                    <label for="menu-csv" class="button upload-button" id="menu-label">
-                        Cardápio
-                        <input type="file" id="menu-csv" name="menu-csv" accept=".csv">
-                        <span class="remove-file" id="menu-remove">✔</span>
-                    </label>
-                    <label for="choices-csv" class="button upload-button" id="choices-label">
-                        Adicionais
-                        <input type="file" id="choices-csv" name="choices-csv" accept=".csv">
-                        <span class="remove-file" id="choices-remove">✔</span>
-                    </label> 
-                    <label for="districts-csv" class="button upload-button" id="districts-label">
-                        Entrega
-                        <input type="file" id="districts-csv" name="districts-csv" accept=".csv">
-                        <span class="remove-file" id="districts-remove">✔</span>
-                    </label>
-                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID">
-                    <input type="submit" value="INICIAR" id="start-button" class="button">
-                </div>
+            </div>
+            <!-- Botões -->
+            <div class="full-width-fieldset form-grid" id="button-container">
+                <button id="dark-light-mode-button" class="auxiliar-button button">
+                    &#9788
+                </button>
+                <button id="collapse-button" class="auxiliar-button button">
+                    &#8679
+                </button>
+                <button id="clean-button" class="auxiliar-button button">
+                    &#x43
+                </button>
+                <a id="doc-button" class="auxiliar-button button" href="https://drive.google.com/drive/folders/18TaY3PV4BYHET1h7ORRph_J1_UyeMxU4" rel="noopener" target="_blank">
+                    &#128463
+                </a>
+                <label for="menu-csv" class="button upload-button" id="menu-label">
+                    Cardápio
+                    <input type="file" id="menu-csv" name="menu-csv" accept=".csv">
+                    <span class="remove-file" id="menu-remove">✔</span>
+                </label>
+                <label for="choices-csv" class="button upload-button" id="choices-label">
+                    Adicionais
+                    <input type="file" id="choices-csv" name="choices-csv" accept=".csv">
+                    <span class="remove-file" id="choices-remove">✔</span>
+                </label> 
+                <label for="delivery-area-csv" class="button upload-button" id="delivery-area-label">
+                    Entrega
+                    <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
+                    <span class="remove-file" id="delivery-area-remove">✔</span>
+                </label>
+                <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID">
+                <input type="submit" value="INICIAR" id="start-button" class="button">
+            </div>
             <!-- Arquivo de renderização -->
         </form>
         <script type="module" src="../src/utils/formsRenderer.js"></script>

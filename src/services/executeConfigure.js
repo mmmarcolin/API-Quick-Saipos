@@ -105,4 +105,5 @@ async function executeConfigure(data) {
   }
 }
 
-executeConfigure(formData)
+
+module.exports = executeConfigure

@@ -1,35 +1,23 @@
 const { app, BrowserWindow, dialog, ipcMain, Tray, Menu } = require('electron')
 const path = require('path')
+const { choicesMappings, menuMappings, deliveryAreasMappings, processCSV } = require('./utils/csvHandle')
+const executeConfigure = require('./services/executeConfigure')
 
 let win
 let tray = null
 
 function createWindow() {
     win = new BrowserWindow({
-        icon: path.join(__dirname, 'public', 'assets', 'saiposlogo.png'),
+        icon: path.join(__dirname, '..', 'public', 'assets', 'saiposlogo.png'),
         width: 940,
-        height: 820,
+        height: 890,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            enableRemoteModule: true,
+            preload: path.join(__dirname, 'preload.js'),
         }
     })
 
-    win.loadFile('public/index.html')
+    win.loadFile(path.join(__dirname, '..', 'public', 'index.html'))
     win.maximize()
-
-    ipcMain.on('toggle-window-size', (event, shouldExpand) => {
-        const currentWin = BrowserWindow.getFocusedWindow() 
-        if (currentWin) {
-            const { width, height } = currentWin.getBounds()
-            if (shouldExpand) {
-                currentWin.setSize(width, height + 615)
-            } else {
-                currentWin.setSize(width, Math.max(410, height - 615)) 
-            }
-        }
-    })
 
     win.on('close', (event) => {
         if (!app.isQuiting) {
@@ -41,7 +29,7 @@ function createWindow() {
 }
 
 function createTray() {
-    const iconPath = path.join(__dirname, 'resources', 'saiposLogo.png')
+    const iconPath = path.join(__dirname, '..', 'public', 'assets', 'saiposlogo.png')
     tray = new Tray(iconPath)
 
     const contextMenu = Menu.buildFromTemplate([
@@ -83,7 +71,30 @@ ipcMain.on('show-alert', (event, alertMessage) => {
     })
 })
 
-ipcMain.on('get-documents-path', (event) => {
-    const documentsPath = app.getPath('documents')
-    event.sender.send('documents-path', documentsPath)
+ipcMain.on('toggle-window-size', (event, shouldExpand) => {
+    const currentWin = BrowserWindow.getFocusedWindow() 
+    if (currentWin) {
+        const { width, height } = currentWin.getBounds()
+        if (shouldExpand) {
+            currentWin.setSize(width, height + 615)
+        } else {
+            currentWin.setSize(width, Math.max(410, height - 615))
+        }
+    }
+})
+
+ipcMain.handle('process-csv', async (event, ...args) => {
+    return processCSV(...args)
+})
+
+ipcMain.handle('execute-configure', async (event, ...args) => {
+    return executeConfigure(...args)
+})
+
+ipcMain.handle('get-mappings', async (event) => {
+    return {
+        choicesMappings,
+        menuMappings,
+        deliveryAreasMappings
+    }
 })
