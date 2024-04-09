@@ -75,7 +75,7 @@ ipcMain.on('toggle-window-size', (event, shouldExpand) => {
     if (currentWin) {
         const { width, height } = currentWin.getBounds()
         const minWidth = 340
-        const minHeight = 400
+        const minHeight = 410
         const maxWidth = 940
         const maxHeight = 840
     
@@ -83,10 +83,10 @@ ipcMain.on('toggle-window-size', (event, shouldExpand) => {
     
         if (shouldExpand) {
             newWidth = Math.min(width + 600, maxWidth)
-            newHeight = Math.min(height + 460, maxHeight)
+            newHeight = Math.min(height + 410, maxHeight)
         } else {
             newWidth = Math.max(width - 600, minWidth)
-            newHeight = Math.max(height - 460, minHeight)
+            newHeight = Math.max(height - 410, minHeight)
         }
     
         currentWin.setSize(newWidth, newHeight)

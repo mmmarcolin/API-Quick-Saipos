@@ -73,4 +73,4 @@ const deliveryAreasMappings = [
     { key: 'deliveryMenFee', field: 'Entregador' }
 ]
 
-module.exports = { processCSV, choicesMappings, menuMappings, deliveryAreasMappings }
+module.exports = { processCSV }
