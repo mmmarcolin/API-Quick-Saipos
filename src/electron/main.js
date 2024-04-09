@@ -1,22 +1,22 @@
-const { app, BrowserWindow, dialog, ipcMain, Tray, Menu } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, Tray, Menu, shell } = require('electron')
 const path = require('path')
-const { choicesMappings, menuMappings, deliveryAreasMappings, processCSV } = require('./utils/csvHandle')
-const executeConfigure = require('./services/executeConfigure')
+const { processCSV } = require('../utils/csvHandle')
+const executeConfigure = require('../services/executeConfigure')
 
 let win
 let tray = null
 
 function createWindow() {
     win = new BrowserWindow({
-        icon: path.join(__dirname, '..', 'public', 'assets', 'saiposlogo.png'),
+        icon: path.join(__dirname, '..', '..', 'public', 'assets', 'saiposlogo.png'),
         width: 940,
-        height: 820,
+        height: 890,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
         }
     })
 
-    win.loadFile(path.join(__dirname, '..', 'public', 'index.html'))
+    win.loadFile(path.join(__dirname, '..', '..', 'public', 'index.html'))
 
     win.on('close', (event) => {
         if (!app.isQuiting) {
@@ -28,7 +28,7 @@ function createWindow() {
 }
 
 function createTray() {
-    const iconPath = path.join(__dirname, '..', 'public', 'assets', 'saiposlogo.png')
+    const iconPath = path.join(__dirname, '..', '..', 'public', 'assets', 'saiposlogo.png')
     tray = new Tray(iconPath)
 
     const contextMenu = Menu.buildFromTemplate([
@@ -77,16 +77,16 @@ ipcMain.on('toggle-window-size', (event, shouldExpand) => {
         const minWidth = 340
         const minHeight = 410
         const maxWidth = 940
-        const maxHeight = 840
+        const maxHeight = 890
     
         let newWidth, newHeight
     
         if (shouldExpand) {
             newWidth = Math.min(width + 600, maxWidth)
-            newHeight = Math.min(height + 410, maxHeight)
+            newHeight = Math.min(height + 450, maxHeight)
         } else {
             newWidth = Math.max(width - 600, minWidth)
-            newHeight = Math.max(height - 410, minHeight)
+            newHeight = Math.max(height - 450, minHeight)
         }
     
         currentWin.setSize(newWidth, newHeight)
@@ -101,4 +101,8 @@ ipcMain.handle('process-csv', async (event, ...args) => {
 
 ipcMain.handle('execute-configure', async (event, ...args) => {
     return executeConfigure(...args)
+})
+
+ipcMain.handle('open-external-link', async (event, url) => {
+    await shell.openExternal(url)
 })

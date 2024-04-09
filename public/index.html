@@ -15,7 +15,7 @@
             <!-- Fieldsets -->
             <div id="collapsible-content" class="form-grid full-width-fieldset">
                 <!-- Formas de pagamento -->
-                <fieldset class="full-width-fieldset field-container-ten options-container">
+                <fieldset class="full-width-fieldset field-container-nine options-container select-all-pay">
                     <legend>Formas de pagamento</legend>
                     <label class="options-label">
                         <input type="checkbox" id="payment-types-all" name="payment-types-all">
@@ -23,27 +23,32 @@
                         Todos
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="payment-types-pix" name="payment-types-pix">
+                        <input type="checkbox" id="payment-types-pix" name="payment-types-pix" checked>
                         <span class="checkbox-mark"></span>
                         Pix
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="payment-types-master" name="payment-types-master">
+                        <input type="checkbox" id="payment-types-master" name="payment-types-master" checked>
                         <span class="checkbox-mark"></span>
                         Master
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="payment-types-elo" name="payment-types-elo">
+                        <input type="checkbox" id="payment-types-elo" name="payment-types-elo" checked>
                         <span class="checkbox-mark"></span>
                         Elo 
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="payment-types-visa" name="payment-types-visa">
+                        <input type="checkbox" id="payment-types-visa" name="payment-types-visa" checked>
                         <span class="checkbox-mark"></span>
                         Visa
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="payment-types-hiper" name="payment-types-all">
+                        <input type="checkbox" id="payment-types-amex" name="payment-types-amex">
+                        <span class="checkbox-mark"></span>
+                        Amex
+                    </label>
+                    <label class="options-label">
+                        <input type="checkbox" id="payment-types-hiper" name="payment-types-hiper">
                         <span class="checkbox-mark"></span>
                         Hiper
                     </label>
@@ -57,19 +62,9 @@
                         <span class="checkbox-mark"></span>
                         Alelo
                     </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="payment-types-va" name="payment-types-va">
-                        <span class="checkbox-mark"></span>
-                        VA
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="payment-types-vr" name="payment-types-vr">
-                        <span class="checkbox-mark"></span>
-                        VR
-                    </label>
                 </fieldset>
                 <!-- Configurações -->
-                <fieldset class=" full-width-fieldset field-container-six options-container">
+                <fieldset class=" full-width-fieldset field-container-six options-container select-all-conf">
                     <legend>Configurações</legend>
                     <label class="options-label">
                         <input type="checkbox" id="config-all" name="config-all">
@@ -77,12 +72,12 @@
                         Todos
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="config-col42" name="config-col42">
+                        <input type="checkbox" id="config-col42" name="config-col42" checked>
                         <span class="checkbox-mark"></span>
                         Colunas 42
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="config-permissions" name="config-permissions">
+                        <input type="checkbox" id="config-permissions" name="config-permissions" checked>
                         <span class="checkbox-mark"></span>
                         Permissões
                     </label>
@@ -106,12 +101,12 @@
                 <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
                     <legend>Usuários</legend>
                     <label class="options-label">
-                        <input type="checkbox" id="user-waiter-app" name="user-waiter-app">
+                        <input type="checkbox" id="user-waiter-app" name="user-waiter-app" checked>
                         <span class="checkbox-mark"></span>
                         App Garçom
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="user-cashier" name="user-cashier">
+                        <input type="checkbox" id="user-cashier" name="user-cashier" checked>
                         <span class="checkbox-mark"></span>
                         Caixa
                     </label>
@@ -120,12 +115,12 @@
                 <fieldset class="quarter-width-fieldset field-container-three options-container row2-option">
                     <legend>Status da venda</legend>
                     <label class="options-label">
-                        <input type="checkbox" id="sale-status-left" name="sale-status-left">
+                        <input type="checkbox" id="sale-status-left" name="sale-status-left" checked>
                         <span class="checkbox-mark"></span>
                         Saiu
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="sale-status-waiting" name="sale-status-waiting">
+                        <input type="checkbox" id="sale-status-easy-delivery" name="sale-status-easy-delivery">
                         <span class="checkbox-mark"></span>
                         Entrega Fácil
                     </label>
@@ -139,7 +134,7 @@
                         Bairro
                     </label>
                     <label class="options-label">
-                        <input type="checkbox" id="delivery-area-radius" name="delivery-area-radius">
+                        <input type="checkbox" id="delivery-area-radius" name="delivery-area-radius" checked>
                         <span class="checkbox-mark"></span>
                         Raio
                     </label>
@@ -148,7 +143,7 @@
                 <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
                     <legend>Cardápio pizza</legend>
                     <label class="options-label">
-                        <input type="checkbox" id="apportionment-proportional" name="apportionment-proportional">
+                        <input type="checkbox" id="apportionment-proportional" name="apportionment-proportional" checked>
                         <span class="checkbox-mark"></span>
                         Proporcional
                     </label>
@@ -238,36 +233,36 @@
                 <fieldset class="full-width-fieldset field-container-five">
                     <legend>Dados da loja</legend>
                     <div>
-                        <label for="store-data-store-state">Estado</label>
-                        <select id="store-data-store-state">
+                        <label for="store-data-state">Estado</label>
+                        <select id="store-data-state">
                             <option value="" selected>Selecione</option>
-                            <option value="Acre">Acre</option>
-                            <option value="Alagoas">Alagoas</option>
-                            <option value="Amapá">Amapá</option>
-                            <option value="Amazonas">Amazonas</option>
-                            <option value="Bahia">Bahia</option>
-                            <option value="Ceará">Ceará</option>
-                            <option value="Distrito Federal">Distrito Federal</option>
-                            <option value="Espírito Santo">Espírito Santo</option>
-                            <option value="Goiás">Goiás</option>
-                            <option value="Maranhão">Maranhão</option>
-                            <option value="Mato Grosso">Mato Grosso</option>
-                            <option value="Mato Grosso do Sul">Mato Grosso do Sul</option>
-                            <option value="Minas Gerais">Minas Gerais</option>
-                            <option value="Pará">Pará</option>
-                            <option value="Paraíba">Paraíba</option>
-                            <option value="Paraná">Paraná</option>
-                            <option value="Pernambuco">Pernambuco</option>
-                            <option value="Piauí">Piauí</option>
-                            <option value="Rio de Janeiro">Rio de Janeiro</option>
-                            <option value="Rio Grande do Norte">Rio Grande do Norte</option>
-                            <option value="Rio Grande do Sul">Rio Grande do Sul</option>
-                            <option value="Rondônia">Rondônia</option>
-                            <option value="Roraima">Roraima</option>
-                            <option value="Santa Catarina">Santa Catarina</option>
-                            <option value="São Paulo">São Paulo</option>
-                            <option value="Sergipe">Sergipe</option>
-                            <option value="Tocantins">Tocantins</option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>                            
                         </select>
                     </div>
                     <div>
@@ -348,7 +343,7 @@
                     <legend>Integração Ifood</legend>
                         <div>
                             <label for="partners-ifood-code">Código Ifood</label>
-                            <input type="text" id="partners-ifood-code" name="partners-ifood-code" placeholder="xxxx-xxxx-xxxx-xxxx">
+                            <input type="text" id="partners-ifood-code" name="partners-ifood-code" placeholder="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
                         </div>
                         <div>
                             <label for="partners-ifood-name">Nome Ifood</label>
@@ -367,8 +362,8 @@
                         <input type="text" id="order-cards" name="order-cards" placeholder="125">
                     </div>
                     <div>
-                        <label for="minimum-value-domain">Domínio</label>
-                        <input type="text" id="minimum-value-domain" name="minimum-value-domain" placeholder="nomedaloja">
+                        <label for="domain">Domínio</label>
+                        <input type="text" id="domain" name="domain" placeholder="nomedaloja">
                     </div>
                 </fieldset>
             </div>
@@ -404,12 +399,12 @@
                         <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
                         <span class="remove-file" id="delivery-area-remove">✔</span>
                     </label>
-                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID">
+                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID" required>
                     <input type="submit" value="INICIAR" id="start-button" class="button">
                 </div>
             </div>
             <!-- Arquivo de renderização -->
         </form>
-        <script type="module" src="../src/utils/formsRenderer.js"></script>
+        <script type="module" src="../src/electron/formsRenderer.js"></script>
     </body>
 </html>

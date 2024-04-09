@@ -61,6 +61,30 @@ async function deliveryAreas(chosenData) {
     const storeData = await getFromSaipos("id_store", storeId, "", `${API_BASE_URL}/stores/${storeId}`)
 
     if (storeData.delivery_area_option === "A") {
+      async function getFromZipAPI(cep) {
+        const baseUrl = 'https://brasilapi.com.br/api'
+        const url = `${baseUrl}/cep/v1/${cep}`
+
+        try {
+          const response = await fetch(url)
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.statusText}`)
+          }
+          const responseData = await response.json()
+          console.log('Response:', responseData.street)
+          return responseData.street
+        } catch (error) {
+          console.error('Erro ao buscar dados do CEP:', error)
+          return null
+        }
+      }
+
+      const zipStreet = await getFromZipAPI(storeData.zip_code)
+      if (zipStreet === "") {
+        console.log("CEP único: incapaz de cadastrar raios")
+        return
+      }
+
       const areaToPost = new Area({
         coordinates: storeData.lat_lng.split(",").map(Number),
         id_city: cityId,

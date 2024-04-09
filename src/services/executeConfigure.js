@@ -105,5 +105,4 @@ async function executeConfigure(data) {
   }
 }
 
-
 module.exports = executeConfigure
