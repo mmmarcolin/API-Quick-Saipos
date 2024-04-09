@@ -1,17 +1,11 @@
 // Importações do preload.js
-const mappings = window.api.getMappings()
-function toggleWindowSize(isVisible) {
-  window.api.toggleWindowSize(isVisible)
-}
-function processCSV(...args) {
-  window.api.processCSV(...args)
-}
-function executeConfigure(...args) {
-  window.api.executeConfigure(...args)
-}
-function openExternal(url) {
-  window.api.openExternal(url)
-}
+const api = window.api
+const toggleWindowSize = isVisible => api.toggleWindowSize(isVisible)
+const processCSV = (...args) => api.processCSV(...args)
+const executeConfigure = (...args) => api.executeConfigure(...args)
+const openExternal = url => api.openExternal(url)
+
+document.addEventListener("DOMContentLoaded", function() {
 
 // Função para ajustar tamanho dos arrays
 function adjustArraySize(array, count) {
@@ -29,22 +23,20 @@ function adjustArraySize(array, count) {
 function ProcessWeekDays(startDay, endDay) {
   let arraySelectedDays = [false, false, false, false, false, false, false]
   const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-z
-  // Verifica se os dias estão definidos e válidos
+
   if (startDay && weekDays.indexOf(startDay) !== -1 && endDay && weekDays.indexOf(endDay) !== -1) {
     let indexStartDay = weekDays.indexOf(startDay);
     let indexEndDay = weekDays.indexOf(endDay);
 
-    // Marca os dias selecionados no array
     for (let i = indexStartDay; i != indexEndDay; i = (i + 1) % 7) {
       arraySelectedDays[i] = true
     }
-    arraySelectedDays[indexEndDay] = true // Marca o último dia
+    arraySelectedDays[indexEndDay] = true
   }
   return arraySelectedDays
 }
 
-// Função chamada quando o formulário é submetido
+// Função para envio do formulário
 function formSubmitted(formData) {
   ['menu-remove', 'delivery-area-remove', 'choices-remove'].forEach(id => {
     document.getElementById(id).style.display = 'none'
@@ -53,37 +45,6 @@ function formSubmitted(formData) {
 
   executeConfigure(formData)
 }
-
-// Abrir links externamente
-document.getElementById('doc-button').addEventListener('click', (event) => {
-  event.preventDefault()
-  const url = event.currentTarget.href
-  openExternal(url)
-})
-
-// Função para colapsar
-const collapseButton = document.getElementById('collapse-button')
-collapseButton.addEventListener('click', function() {
-  var content = document.getElementById('collapsible-content')
-  var buttonContainer = document.getElementById('button-container')
-  content.classList.toggle('collapsed')
-  toggleWindowSize(content.classList.contains('collapsed'))
-
-  content.classList.contains ?
-  buttonContainer.classList.add('collapsed') :
-  buttonContainer.classList.remove('collapsed')
-
-  cleanSelection()
-
-  if (collapseButton.innerHTML.includes("⇧")) {
-    collapseButton.innerHTML = "⇩"
-  } else {
-    collapseButton.innerHTML = "⇧"
-  }
-})
-
-// Chamada para limpar seleção
-document.getElementById('clean-button').addEventListener('click', cleanSelection)
 
 // Função para limpar seleção
 function cleanSelection() {
@@ -100,12 +61,61 @@ function cleanSelection() {
   })
 }
 
-// Função para automatizar checkboxes
+// Tratar checks de upload
+['menu', 'delivery-area', 'choices'].forEach(type => {
+  const label = document.getElementById(`${type}-label`)
+  const removeButton = document.getElementById(`${type}-remove`)
+  
+  label.addEventListener('change', event => {
+    const fileInput = event.target
+    removeButton.style.display = fileInput.files.length > 0 ? 'inline' : 'none'
+  })
 
-// Função para desmarcar checkboxes concorrentes
+  removeButton.addEventListener('click', () => {
+    const fileInput = document.getElementById(`${type}-csv`)
+    fileInput.value = '' 
+    removeButton.style.display = 'none' 
+  })
+})
+
+// Abrir link
+document.getElementById('doc-button').addEventListener('click', (event) => {
+  event.preventDefault()
+  const url = event.currentTarget.href
+  openExternal(url)
+})
+
+// Colapsar HTML
+document.getElementById('collapse-button').addEventListener('click', function() {
+  var content = document.getElementById('collapsible-content')
+  var buttonContainer = document.getElementById('button-container')
+  content.classList.toggle('collapsed')
+  toggleWindowSize(content.classList.contains('collapsed'))
+
+  content.classList.contains ?
+  buttonContainer.classList.add('collapsed') :
+  buttonContainer.classList.remove('collapsed')
+  
+  if (document.getElementById('collapse-button').innerHTML.includes("⇧")) {
+    document.getElementById('collapse-button').innerHTML = "⇩"
+  } else {
+    document.getElementById('collapse-button').innerHTML = "⇧"
+  }
+
+  cleanSelection()
+})
+
+// Limpar seleção
+document.getElementById('clean-button').addEventListener('click', function() {
+  cleanSelection()
+})
+
+// Alterar iluminação
+document.getElementById('dark-light-mode-button').addEventListener('click', function() {
+  document.body.classList.toggle('dark-mode')
+})
 
 // Ouve o evento de carregamento do DOM 
-document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("form").addEventListener("submit", async function(event) {
     event.preventDefault() 
     try {
@@ -166,36 +176,37 @@ document.addEventListener("DOMContentLoaded", function() {
         tableOrders: document.getElementById('table-orders').value,
         orderCards: document.getElementById('order-cards').value,
         minimumValueDomain: document.getElementById('minimum-value-domain').value,
-        menuCsv: document.getElementById('menu-csv').files[0],
-        choicesCsv: document.getElementById('choices-csv').files[0],
-        deliveryAreaCsv: document.getElementById('delivery-area-csv').files[0],
+        menuCsv: document.getElementById('menu-csv').files[0] || "",
+        choicesCsv: document.getElementById('choices-csv').files[0] || "",
+        deliveryAreaCsv: document.getElementById('delivery-area-csv').files[0] || "",
         storeId: document.getElementById('store-id').value,
       } 
 
-      // Chama a função que transforma arquivos CSV em arrays, se existirem os arquivos
-      if (elementValues.choicesCsv) {
-        elementValues.choicesCsv = await processCSV(choicesCSVFile.path, ['Bairro', 'Taxa', 'Entregador'], mappings.choicesMappings)
-      }
-      if (elementValues.menuCsv) {
-        elementValues.menuData = await processCSV(menuCSVFile.path, ['Categoria', 'Produto', 'Preço', 'Descrição', 'Adicional', 'Código'], mappings.menuMappings)
-      }
-      if (elementValues.deliveryAreaCsv) {
-        elementValues.deliveryAreaData = await processCSV(deliveryAreaCSVFile.path, ['Adicional', 'Item', 'Preço', 'Descrição', 'Quantidade', 'Código'], mappings.deliveryAreasMappings)
-      }
+      console.log(elementValues)
+
+      // Transforma CSV em objetos
+      elementValues.choicesCsv ? elementValues.choicesCsv = await processCSV(elementValues.choicesCsv.path, ['Área', 'Taxa', 'Entregador']) : null
+      elementValues.menuCsv ? elementValues.menuData = await processCSV(elementValues.menuCsv.path, ['Categoria', 'Produto', 'Preço', 'Descrição', 'Adicional', 'Código']) : null
+      elementValues.deliveryAreaCsv ? elementValues.deliveryAreaData = await processCSV(elementValues.deliveryAreaCsv.path, ['Adicional', 'Item', 'Preço', 'Descrição', 'Quantidade', 'Código']) : null
 
       // Ajuste dos tamanhos de arrays
-      // adjustArraySize(formData.waitersDailyRate, formData.waiters)
-      // adjustArraySize(formData.deliveryMenDailyRate, formData.deliveryMen)
-      // adjustArraySize(formData.serviceFee, formData.shiftDesc)
+      adjustArraySize(elementValues.waitersDailyRate, elementValues.waitersQuantity)
+      adjustArraySize(elementValues.deliveryMenDailyRate, elementValues.deliveryMenQuantity)
+      adjustArraySize(elementValues.shiftServiceFee, elementValues.shiftDesc)
 
-      const  formData = {
+      console.log(elementValues)
 
-      }
-
-
-
+      // Função para automatizar checkboxes
+      // Função para desmarcar checkboxes concorrentes
+      // Alinhar quantidade: garçons | entregadores | turnos  
+      // Concorrência: cardapio pizza | areas de entrega | status | cardapio digital | instrução
+      // Padrões: pix master elo visa hiper | col42 permissoes |  saiu | app garçom caixa | proporcional
+      // Consequencia: Site -> Retirada | cardapio digital -> instrução | Todos -> Marca todos |
+      // Dependencias: ENTREGA -> estado e cidade | outro dado -> Todos dados | Turno -> Horario | Site/Cardapio digital -> Instrução, horarios
       // Conferências de envio
-        formSubmitted(formData)
+      // Objeto formData
+
+      // formSubmitted(formData)
     } catch (error) {
       console.error('Ocorreu um erro ao enviar o FORMULÁRIO:', error) 
     }

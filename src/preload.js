@@ -6,5 +6,4 @@ contextBridge.exposeInMainWorld('api', {
     toggleWindowSize: (isVisible) => ipcRenderer.send('toggle-window-size', !isVisible),
     openExternal: (url) => shell.openExternal(url),
     showAlert: (message) => ipcRenderer.send('show-alert', message),
-    getMappings: () => ipcRenderer.invoke('get-mappings'),
 })

@@ -10,14 +10,13 @@ function createWindow() {
     win = new BrowserWindow({
         icon: path.join(__dirname, '..', 'public', 'assets', 'saiposlogo.png'),
         width: 940,
-        height: 890,
+        height: 820,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
         }
     })
 
     win.loadFile(path.join(__dirname, '..', 'public', 'index.html'))
-    win.maximize()
 
     win.on('close', (event) => {
         if (!app.isQuiting) {
@@ -75,11 +74,24 @@ ipcMain.on('toggle-window-size', (event, shouldExpand) => {
     const currentWin = BrowserWindow.getFocusedWindow() 
     if (currentWin) {
         const { width, height } = currentWin.getBounds()
+        const minWidth = 340
+        const minHeight = 400
+        const maxWidth = 940
+        const maxHeight = 840
+    
+        let newWidth, newHeight
+    
         if (shouldExpand) {
-            currentWin.setSize(width, height + 615)
+            newWidth = Math.min(width + 600, maxWidth)
+            newHeight = Math.min(height + 460, maxHeight)
         } else {
-            currentWin.setSize(width, Math.max(410, height - 615))
+            newWidth = Math.max(width - 600, minWidth)
+            newHeight = Math.max(height - 460, minHeight)
         }
+    
+        currentWin.setSize(newWidth, newHeight)
+        currentWin.setMinimumSize(minWidth, minHeight)
+        currentWin.setMaximumSize(maxWidth, maxHeight)
     }
 })
 
@@ -89,12 +101,4 @@ ipcMain.handle('process-csv', async (event, ...args) => {
 
 ipcMain.handle('execute-configure', async (event, ...args) => {
     return executeConfigure(...args)
-})
-
-ipcMain.handle('get-mappings', async (event) => {
-    return {
-        choicesMappings,
-        menuMappings,
-        deliveryAreasMappings
-    }
 })

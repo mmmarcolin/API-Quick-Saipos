@@ -102,22 +102,8 @@
                         KDS
                     </label>
                 </fieldset>
-                <!-- Status da venda -->
-                <fieldset class="quarter-width-fieldset field-container-three options-container">
-                    <legend>Status da venda</legend>
-                    <label class="options-label">
-                        <input type="checkbox" id="sale-status-left" name="sale-status-left">
-                        <span class="checkbox-mark"></span>
-                        Saiu
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="sale-status-waiting" name="sale-status-waiting">
-                        <span class="checkbox-mark"></span>
-                        Entrega Fácil
-                    </label>
-                </fieldset>
                 <!-- Usuários -->
-                <fieldset class="quarter-width-fieldset field-container-two options-container">
+                <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
                     <legend>Usuários</legend>
                     <label class="options-label">
                         <input type="checkbox" id="user-waiter-app" name="user-waiter-app">
@@ -130,8 +116,22 @@
                         Caixa
                     </label>
                 </fieldset>
+                <!-- Status da venda -->
+                <fieldset class="quarter-width-fieldset field-container-three options-container row2-option">
+                    <legend>Status da venda</legend>
+                    <label class="options-label">
+                        <input type="checkbox" id="sale-status-left" name="sale-status-left">
+                        <span class="checkbox-mark"></span>
+                        Saiu
+                    </label>
+                    <label class="options-label">
+                        <input type="checkbox" id="sale-status-waiting" name="sale-status-waiting">
+                        <span class="checkbox-mark"></span>
+                        Entrega Fácil
+                    </label>
+                </fieldset>
                 <!-- Áreas de entrega -->
-                <fieldset class="quarter-width-fieldset field-container-two options-container">
+                <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
                     <legend>Áreas de entrega</legend>
                     <label class="options-label">
                         <input type="checkbox" id="delivery-area-district" name="delivery-area-district">
@@ -145,7 +145,7 @@
                     </label>
                 </fieldset>
                 <!-- Cardápio -->
-                <fieldset class="quarter-width-fieldset field-container-two options-container">
+                <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
                     <legend>Cardápio pizza</legend>
                     <label class="options-label">
                         <input type="checkbox" id="apportionment-proportional" name="apportionment-proportional">
@@ -159,7 +159,7 @@
                     </label>
                 </fieldset>
                 <!-- Canais de venda -->
-                <fieldset class="full-width-fieldset">
+                <fieldset id="partners" class="">
                     <legend>Canais de venda</legend>
                     <div class="field-container-six options-container">
                         <label class="options-label">
@@ -192,7 +192,7 @@
                             <span class="checkbox-mark"></span>
                             Instr. garçom
                         </label>
-                    </div>
+                    </div> 
                     <div class="field-container-five">
                         <div>
                             <label for="partners-start-day">Dia início</label>
@@ -303,7 +303,7 @@
                         <input type="text" id="store-data-state-registration" name="store-data-state-registration" placeholder="00123456789">
                     </div>
                     <div>
-                        <label for="store-data-cnae">cnae</label>
+                        <label for="store-data-cnae">CNAE</label>
                         <input type="text" id="store-data-cnae" name="store-data-CNAE" placeholder="5611102">
                     </div>
                 </fieldset>
@@ -360,11 +360,11 @@
                     <legend>Outros</legend>
                     <div>
                         <label for="table-orders">Mesas</label>
-                        <input type="text" id="table-orders" pattern="\d{1,3}" name="table-orders" placeholder="25">
+                        <input type="text" id="table-orders" name="table-orders" placeholder="25">
                     </div>
                     <div>
                         <label for="order-cards">Comandas</label>
-                        <input type="text" id="order-cards" pattern="\d{1,3}" name="order-cards" placeholder="125">
+                        <input type="text" id="order-cards" name="order-cards" placeholder="125">
                     </div>
                     <div>
                         <label for="minimum-value-domain">Domínio</label>
@@ -373,36 +373,40 @@
                 </fieldset>
             </div>
             <!-- Botões -->
-            <div class="full-width-fieldset form-grid" id="button-container">
-                <button id="dark-light-mode-button" class="auxiliar-button button">
-                    &#9788
-                </button>
-                <button id="collapse-button" class="auxiliar-button button">
-                    &#8679
-                </button>
-                <button id="clean-button" class="auxiliar-button button">
-                    &#x43
-                </button>
-                <a id="doc-button" class="auxiliar-button button" href="https://drive.google.com/drive/folders/18TaY3PV4BYHET1h7ORRph_J1_UyeMxU4" rel="noopener" target="_blank">
-                    &#128463
-                </a>
-                <label for="menu-csv" class="button upload-button" id="menu-label">
-                    Cardápio
-                    <input type="file" id="menu-csv" name="menu-csv" accept=".csv">
-                    <span class="remove-file" id="menu-remove">✔</span>
-                </label>
-                <label for="choices-csv" class="button upload-button" id="choices-label">
-                    Adicionais
-                    <input type="file" id="choices-csv" name="choices-csv" accept=".csv">
-                    <span class="remove-file" id="choices-remove">✔</span>
-                </label> 
-                <label for="delivery-area-csv" class="button upload-button" id="delivery-area-label">
-                    Entrega
-                    <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
-                    <span class="remove-file" id="delivery-area-remove">✔</span>
-                </label>
-                <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID">
-                <input type="submit" value="INICIAR" id="start-button" class="button">
+            <div class="full-width-fieldset form-grid">
+                <div id="auxiliar-button-container" class="quarter-width-fieldset field-container-four">
+                    <button id="dark-light-mode-button" class="auxiliar-button button">
+                        &#9788
+                    </button>
+                    <button id="collapse-button" class="auxiliar-button button">
+                        &#8679
+                    </button>
+                    <button id="clean-button" class="auxiliar-button button">
+                        &#x43
+                    </button>
+                    <a id="doc-button" class="auxiliar-button button" href="https://drive.google.com/drive/folders/18TaY3PV4BYHET1h7ORRph_J1_UyeMxU4" rel="noopener" target="_blank">
+                        &#128463
+                    </a>
+                </div>
+                <div id="button-container" class="nineth-width-fieldset field-container-five">
+                    <label for="menu-csv" class="button upload-button" id="menu-label">
+                        Cardápio
+                        <input type="file" id="menu-csv" name="menu-csv" accept=".csv">
+                        <span class="remove-file" id="menu-remove">✔</span>
+                    </label>
+                    <label for="choices-csv" class="button upload-button" id="choices-label">
+                        Adicionais
+                        <input type="file" id="choices-csv" name="choices-csv" accept=".csv">
+                        <span class="remove-file" id="choices-remove">✔</span>
+                    </label> 
+                    <label for="delivery-area-csv" class="button upload-button" id="delivery-area-label">
+                        Entrega
+                        <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
+                        <span class="remove-file" id="delivery-area-remove">✔</span>
+                    </label>
+                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID">
+                    <input type="submit" value="INICIAR" id="start-button" class="button">
+                </div>
             </div>
             <!-- Arquivo de renderização -->
         </form>

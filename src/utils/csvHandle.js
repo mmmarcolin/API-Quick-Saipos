@@ -1,7 +1,12 @@
 const fs = require('fs')
 const csv = require('csv-parser')
 
-function processCSV(filePath, headers, mappings) {
+function processCSV(filePath, headers) {
+    let mappings = []
+    headers[0] == "Categoria" ? mappings = menuMappings :
+    headers[0] == "Adicional" ? mappings = choicesMappings :
+    headers[0] == "Área" ? mappings = deliveryAreasMappings : null
+
     return new Promise((resolve, reject) => {
         const results = []
         fs.createReadStream(filePath)
@@ -63,7 +68,7 @@ const menuMappings = [
     { key: 'code', field: 'Código' }
 ]
 const deliveryAreasMappings = [
-    { key: 'deliveryArea', field: 'Bairro' },
+    { key: 'deliveryArea', field: 'Área' },
     { key: 'deliveryFee', field: 'Taxa' },
     { key: 'deliveryMenFee', field: 'Entregador' }
 ]
