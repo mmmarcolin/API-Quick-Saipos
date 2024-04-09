@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
     })
   }
 
+  // Completar endereço via cep
   document.getElementById('store-data-zip').addEventListener('input', async function() {
     const cep = this.value
   
@@ -287,9 +288,9 @@ document.addEventListener("DOMContentLoaded", function() {
         shiftTime: document.getElementById('shift-time').value,
         shiftServiceFee: document.getElementById('shift-service-fee').value,
         waitersQuantity: document.getElementById('waiters-quantity').value,
-        waitersDailyRate: document.getElementById('waiters-daily-rate').value,
+        waitersDailyRate: document.getElementById('waiters-daily-rate').value || 0,
         deliveryMenQuantity: document.getElementById('delivery-men-quantity').value,
-        deliveryMenDailyRate: document.getElementById('delivery-men-daily-rate').value,
+        deliveryMenDailyRate: document.getElementById('delivery-men-daily-rate').value || 0,
         partnersIfoodCode: document.getElementById('partners-ifood-code').value,
         partnersIfoodName: document.getElementById('partners-ifood-name').value,
         tableOrders: document.getElementById('table-orders').value,
@@ -318,7 +319,7 @@ document.addEventListener("DOMContentLoaded", function() {
       elementValues.users = await handleWorkers(elementValues.waitersQuantity, elementValues.waitersDailyRate, "Garçom", elementValues.userCashier)
       elementValues.ifood = await processIfoodData(elementValues.partnersIfoodCode, elementValues.partnersIfoodName)
       elementValues.shifts = await processShiftData(elementValues.shiftDesc, elementValues.shiftTime, elementValues.shiftServiceFee)
-
+console.log(elementValues.users)
       const formData = {
         paymentTypesChosen: {
           pix: elementValues.paymentTypesPix,
@@ -372,7 +373,7 @@ document.addEventListener("DOMContentLoaded", function() {
           weekDays: elementValues.weekDays
         },
         usersChosen: {
-          users: elementValues.user,
+          users: elementValues.users,
           storeName: elementValues.domain
         },
         ifoodIntegrationChosen: elementValues.ifood,
@@ -386,19 +387,23 @@ document.addEventListener("DOMContentLoaded", function() {
         time: {},
       }
 
-      checkAndHandleValues(formData) ? console.log("Valor inválido encontrado") : 
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
-      ? console.log("Valor inválido encontrado") :
+      // checkAndHandleValues(formData) ? console.log("Valor inválido encontrado") : 
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
+      // ? console.log("Valor inválido encontrado") :
       console.log(formData)
+
+// se marcado dia IntersectionObserver, fim, horario incio , fim, minimo, retirada, tem que amrcar site delivery
+// se marcar
+
 
       // formSubmitted(formData)
     } catch (error) {

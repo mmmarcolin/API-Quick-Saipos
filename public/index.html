@@ -217,15 +217,15 @@
                         </div>
                         <div>
                             <label for="partners-start-time">Horário início</label>
-                            <input type="text" id="partners-start-time" name="partners-start-time" placeholder="0800">
+                            <input type="text" id="partners-start-time" name="partners-start-time" pattern="[\d,:]+" placeholder="0800">
                         </div>
                         <div>
                             <label for="partners-end-time">Horário fim</label>
-                            <input type="text" id="partners-end-time" name="partners-end-time" placeholder="1800">
+                            <input type="text" id="partners-end-time" name="partners-end-time" pattern="[\d,:]+" placeholder="1800">
                         </div>
                         <div>
                             <label for="partners-minimum-value">Mínimo (R$)</label>
-                            <input type="text" id="partners-minimum-value" name="partners-minimum-value" placeholder="35,90" step="0.01" >
+                            <input type="text" id="partners-minimum-value" name="partners-minimum-value" pattern="[\d,]+" placeholder="35,90">
                         </div>
                     </div>
                 </fieldset>
@@ -278,28 +278,28 @@
                         <input type="text" id="store-data-address" name="store-data-address" placeholder="Av. Theodomiro Porto da Fonseca">
                     </div>
                     <div>
+                        <label for="store-data-zip">CEP</label>
+                        <input type="text" id="store-data-zip" name="store-data-zip" pattern="[\d]+" placeholder="93022715">
+                    </div>
+                    <div>
                         <label for="store-data-number">Número</label>
-                        <input type="text" id="store-data-number" name="store-data-number" placeholder="3101">
+                        <input type="text" id="store-data-number" name="store-data-number" pattern="[\d]+" placeholder="3101">
                     </div>
                     <div>
                         <label for="store-data-complement">Complemento</label>
                         <input type="text" id="store-data-complement" name="store-data-complement" placeholder="Complexo Tecnosinos">
                     </div>
                     <div>
-                        <label for="store-data-zip">CEP</label>
-                        <input type="text" id="store-data-zip" name="store-data-zip" placeholder="93022715" step="1" >
-                    </div>
-                    <div>
                         <label for="store-data-cnpj">CNPJ</label>
-                        <input type="text" id="store-data-cnpj" name="store-data-cnpj" placeholder="26747538000158">
+                        <input type="text" id="store-data-cnpj" name="store-data-cnpj" pattern="[\d]+" placeholder="26747538000158">
                     </div>
                     <div>
                         <label for="store-data-state-registration">Inscrição estadual</label>
-                        <input type="text" id="store-data-state-registration" name="store-data-state-registration" placeholder="00123456789">
+                        <input type="text" id="store-data-state-registration" name="store-data-state-registration" pattern="[\d]+" placeholder="00123456789">
                     </div>
                     <div>
                         <label for="store-data-cnae">CNAE</label>
-                        <input type="text" id="store-data-cnae" name="store-data-CNAE" placeholder="5611102">
+                        <input type="text" id="store-data-cnae" name="store-data-CNAE" pattern="[\d]+" placeholder="5611102">
                     </div>
                 </fieldset>
                 <!-- Turnos -->
@@ -311,11 +311,11 @@
                     </div>
                     <div>
                         <label for="shift-time">Horário</label>
-                        <input type="text" id="shift-time" name="shift-time" placeholder="0800, 1800">
+                        <input type="text" id="shift-time" name="shift-time" pattern="[\d,:]+" placeholder="0800, 1800">
                     </div>
                     <div>
                         <label for="shift-service-fee">Taxa (%)</label>
-                        <input type="text" id="shift-service-fee" name="shift-service-fee" placeholder="5, 10">
+                        <input type="text" id="shift-service-fee" name="shift-service-fee" pattern="[\d,]+" placeholder="5, 10">
                     </div>
                 </fieldset>
                 <!-- Funcionários -->
@@ -327,7 +327,7 @@
                     </div>
                     <div>
                         <label for="waiters-daily-rate">Diária</label>
-                        <input type="text" id="waiters-daily-rate" name="waiters-daily-rate" placeholder="30, 50">
+                        <input type="text" id="waiters-daily-rate" name="waiters-daily-rate" pattern="[\d,]+" placeholder="30, 50">
                     </div>
                     <div>
                         <label for="delivery-men-quantity">Entregadores</label>
@@ -335,7 +335,7 @@
                     </div>
                     <div>
                         <label for="delivery-men-daily-rate">Diária</label>
-                        <input type="text" id="delivery-men-daily-rate" name="delivery-men-daily-rate"placeholder="20, 30, 40">
+                        <input type="text" id="delivery-men-daily-rate" name="delivery-men-daily-rate" pattern="[\d,]+" placeholder="20, 30, 40">
                     </div>
                 </fieldset>
                 <!-- Integração Ifood -->
@@ -355,11 +355,11 @@
                     <legend>Outros</legend>
                     <div>
                         <label for="table-orders">Mesas</label>
-                        <input type="text" id="table-orders" name="table-orders" placeholder="25">
+                        <input type="text" id="table-orders" name="table-orders" pattern="\d+" placeholder="25">
                     </div>
                     <div>
                         <label for="order-cards">Comandas</label>
-                        <input type="text" id="order-cards" name="order-cards" placeholder="125">
+                        <input type="text" id="order-cards" name="order-cards" pattern="\d+" placeholder="125">
                     </div>
                     <div>
                         <label for="domain">Domínio</label>
@@ -399,7 +399,7 @@
                         <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
                         <span class="remove-file" id="delivery-area-remove">✔</span>
                     </label>
-                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID" required>
+                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID" pattern="\d+" required>
                     <input type="submit" value="INICIAR" id="start-button" class="button">
                 </div>
             </div>
