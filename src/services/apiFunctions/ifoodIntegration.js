@@ -1,5 +1,5 @@
 const { getFromSaipos, postToSaipos } = require("../requestsToSaipos.js")
-const { storeId, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
+const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
 class Ifood {
   constructor(data) {

@@ -1,6 +1,9 @@
-require('dotenv').config()
-const saiposAuthToken = process.env.SAIPOS_AUTH_TOKEN
 const { normalizeText } = require('../utils/auxiliarVariables')
+let saiposAuthToken
+
+window.api.onSaiposAuthTokenChanged((tok) => {
+  saiposAuthToken = tok
+})
 
 function createRequestOptions(method, data = null) {
   const options = {

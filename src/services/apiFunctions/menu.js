@@ -1,5 +1,5 @@
 const { getFromSaipos, postToSaipos, deleteFromSaipos } = require("../requestsToSaipos.js")
-const { storeId, auxiliarVar, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
+const{ auxiliarVar, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
 class Category {
   constructor(name) {

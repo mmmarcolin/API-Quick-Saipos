@@ -10,7 +10,7 @@ function createWindow() {
     win = new BrowserWindow({
         icon: path.join(__dirname, '..', '..', 'public', 'assets', 'saiposlogo.png'),
         width: 940,
-        height: 890,
+        height: 820,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
         }
@@ -66,7 +66,6 @@ ipcMain.on('show-alert', (event, alertMessage) => {
         type: 'info',
         title: 'Alerta',
         message: alertMessage,
-        buttons: ['OK']
     })
 })
 
@@ -77,16 +76,16 @@ ipcMain.on('toggle-window-size', (event, shouldExpand) => {
         const minWidth = 340
         const minHeight = 410
         const maxWidth = 940
-        const maxHeight = 890
+        const maxHeight = 820
     
         let newWidth, newHeight
     
         if (shouldExpand) {
-            newWidth = Math.min(width + 600, maxWidth)
-            newHeight = Math.min(height + 450, maxHeight)
+            newWidth = Math.min(width + 1000, maxWidth)
+            newHeight = Math.min(height + 1000, maxHeight)
         } else {
-            newWidth = Math.max(width - 600, minWidth)
-            newHeight = Math.max(height - 450, minHeight)
+            newWidth = Math.max(width - 1000, minWidth)
+            newHeight = Math.max(height - 1000, minHeight)
         }
     
         currentWin.setSize(newWidth, newHeight)

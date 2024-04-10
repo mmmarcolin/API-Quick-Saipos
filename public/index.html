@@ -14,6 +14,46 @@
                 <!-- <img id="form-logo" class="full-width-fieldset" src="./assets/saiposLogo.png" alt="Logo Saipos"> -->
             <!-- Fieldsets -->
             <div id="collapsible-content" class="form-grid full-width-fieldset">
+                <fieldset id="saipos-auth-token-fieldset" class="field-container-one sixth-width-fieldset">
+                    <legend>Token</legend>
+                    <div>
+                        <input type="text" id="saipos-auth-token" name="saipos-auth-token" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                    </div>
+                </fieldset>
+                <!-- Configurações -->
+                <fieldset class="tenth-width-fieldset field-container-six options-container select-all-conf">
+                    <legend>Configurações</legend>
+                    <label class="options-label">
+                        <input type="checkbox" id="config-all" name="config-all">
+                        <span class="checkbox-mark"></span>
+                        Todos
+                    </label>
+                    <label class="options-label">
+                        <input type="checkbox" id="config-col42" name="config-col42" checked>
+                        <span class="checkbox-mark"></span>
+                        Colunas 42
+                    </label>
+                    <label class="options-label">
+                        <input type="checkbox" id="config-permissions" name="config-permissions" checked>
+                        <span class="checkbox-mark"></span>
+                        Permissões
+                    </label>
+                    <label class="options-label">
+                        <input type="checkbox" id="config-cancel-pass" name="config-cancel-pass">
+                        <span class="checkbox-mark"></span>
+                        Senha canc.
+                    </label>
+                    <label class="options-label">
+                        <input type="checkbox" id="config-cancel-reason" name="config-cancel-reason">
+                        <span class="checkbox-mark"></span>
+                        Motivo canc. 
+                    </label>
+                    <label class="options-label">
+                        <input type="checkbox" id="config-kds" name="config-kds">
+                        <span class="checkbox-mark"></span>
+                        KDS
+                    </label>
+                </fieldset>
                 <!-- Formas de pagamento -->
                 <fieldset class="full-width-fieldset field-container-nine options-container select-all-pay">
                     <legend>Formas de pagamento</legend>
@@ -61,40 +101,6 @@
                         <input type="checkbox" id="payment-types-alelo" name="payment-types-alelo">
                         <span class="checkbox-mark"></span>
                         Alelo
-                    </label>
-                </fieldset>
-                <!-- Configurações -->
-                <fieldset class=" full-width-fieldset field-container-six options-container select-all-conf">
-                    <legend>Configurações</legend>
-                    <label class="options-label">
-                        <input type="checkbox" id="config-all" name="config-all">
-                        <span class="checkbox-mark"></span>
-                        Todos
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="config-col42" name="config-col42" checked>
-                        <span class="checkbox-mark"></span>
-                        Colunas 42
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="config-permissions" name="config-permissions" checked>
-                        <span class="checkbox-mark"></span>
-                        Permissões
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="config-cancel-pass" name="config-cancel-pass">
-                        <span class="checkbox-mark"></span>
-                        Senha canc.
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="config-cancel-reason" name="config-cancel-reason">
-                        <span class="checkbox-mark"></span>
-                        Motivo canc. 
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="config-kds" name="config-kds">
-                        <span class="checkbox-mark"></span>
-                        KDS
                     </label>
                 </fieldset>
                 <!-- Usuários -->
@@ -370,16 +376,16 @@
             <!-- Botões -->
             <div class="full-width-fieldset form-grid">
                 <div id="auxiliar-button-container" class="quarter-width-fieldset field-container-four">
-                    <button id="dark-light-mode-button" class="auxiliar-button button">
+                    <button type="button" id="dark-light-mode-button" class="auxiliar-button button">
                         &#9788
                     </button>
-                    <button id="collapse-button" class="auxiliar-button button">
+                    <button type="button" id="collapse-button" class="auxiliar-button button">
                         &#8679
                     </button>
-                    <button id="clean-button" class="auxiliar-button button">
+                    <button type="button" id="clean-button" class="auxiliar-button button">
                         &#x43
                     </button>
-                    <a id="doc-button" class="auxiliar-button button" href="https://drive.google.com/drive/folders/18TaY3PV4BYHET1h7ORRph_J1_UyeMxU4" rel="noopener" target="_blank">
+                    <a type="button" id="doc-button" class="auxiliar-button button" href="https://drive.google.com/drive/folders/18TaY3PV4BYHET1h7ORRph_J1_UyeMxU4" rel="noopener" target="_blank">
                         &#128463
                     </a>
                 </div>
@@ -399,7 +405,7 @@
                         <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
                         <span class="remove-file" id="delivery-area-remove">✔</span>
                     </label>
-                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID" pattern="\d+" required>
+                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID" pattern="\d+" value="33738">
                     <input type="submit" value="INICIAR" id="start-button" class="button">
                 </div>
             </div>

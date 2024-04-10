@@ -104,6 +104,10 @@ body.dark-mode #store-id:hover {
   grid-column: span 12;
 }
 
+.tenth-width-fieldset {
+  grid-column: span 10;
+}
+
 .nineth-width-fieldset {
   grid-column: span 9;
 }
@@ -118,6 +122,10 @@ body.dark-mode #store-id:hover {
 
 .quarter-width-fieldset {
   grid-column: span 3;
+}
+
+.sixth-width-fieldset {
+  grid-column: span 2;
 }
 
 .first-width-fieldset {
@@ -178,6 +186,7 @@ fieldset {
   display: flex;
   flex-wrap: wrap;
   box-shadow: 0 0 10px 1px rgb(232, 232, 232);
+  align-items: center;
 }
 
 legend {
@@ -214,6 +223,13 @@ label {
   display: block;
   margin-bottom: 3px;
   font-size: 14px;
+}
+
+#saipos-auth-token {
+  font-size: 10px;
+  height:20px;
+  margin: 0;
+  padding: 0;
 }
 
 /* Checkboxes */
@@ -278,7 +294,6 @@ label {
   text-decoration: none;
   min-width: 2.1875rem;
   height: 2.5rem;
-  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -291,6 +306,7 @@ label {
 
 #store-id {
   cursor: text;
+  font-weight: bolder;
 }
 
 .auxiliar-button {
@@ -340,7 +356,7 @@ label {
   }
 }
 
-@media only screen and (max-width: 770px) { 
+@media only screen and (max-width: 800px) { 
   .field-container-two,
   .field-container-three,
   .field-container-four,
@@ -355,6 +371,9 @@ label {
     justify-content: space-between; 
     grid-column: span 6;
     grid-gap: 10px;
+  }
+  #saipos-auth-token-fieldset {
+    display: none;
   }
   
   #auxiliar-button-container {

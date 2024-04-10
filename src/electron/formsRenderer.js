@@ -4,6 +4,8 @@ const toggleWindowSize = isVisible => api.toggleWindowSize(isVisible)
 const processCSV = (...args) => api.processCSV(...args)
 const executeConfigure = (...args) => api.executeConfigure(...args)
 const openExternal = url => api.openExternal(url)
+const showAlert = msg => api.showAlert(msg)
+const setSaiposAuthToken = tok => api.setSaiposAuthToken(tok)
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -61,9 +63,37 @@ document.addEventListener("DOMContentLoaded", function() {
     document.body.classList.toggle('dark-mode')
   })
 
+  // Completar endereço via cep
+  document.getElementById('store-data-zip').addEventListener('input', async function() {
+    const cep = this.value
+  
+    if (cep.length === 8) {
+      try {
+        const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.statusText}`)
+        }
+        const responseData = await response.json()
+        console.log('Response:', responseData)
+        document.getElementById('store-data-state').value = responseData.state
+        document.getElementById('store-data-city').value = responseData.city
+        document.getElementById('store-data-district').value = responseData.neighborhood
+        document.getElementById('store-data-address').value = responseData.street
+      } catch (error) {
+        console.error('Erro ao buscar dados do CEP:', error)
+      }
+    }
+  })
+
+  // Função para comunicação com usuário
+  function logAndSendAlert(msg) {
+    console.log(msg)
+    showAlert(msg)
+  }
+
   // Função para tratar dias da semana
   function processWeekDays(startDay, endDay) {
-    const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     const startIndex = weekDays.indexOf(startDay.toLowerCase())
     const endIndex = weekDays.indexOf(endDay.toLowerCase())
 
@@ -80,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Função para tratar arrays de funcionários
-  function handleWorkers(quantity, dailyRate, worker, cashier) {
+  function handleWorkers(quantity, dailyRate, worker, extra) {
     let result = []
 
     if (typeof quantity === 'string' && quantity.includes(",")) {
@@ -106,8 +136,11 @@ document.addEventListener("DOMContentLoaded", function() {
       result.push({ desc, dailyRate: rate })
     }
 
-    if (worker === "Garçom" && cashier) {
+    if (worker === "Garçom" && extra) {
       result.push({ desc: "Caixa", dailyRate: 0 })
+    }
+    if (worker === "Entregador" && extra) {
+      result.push({ desc: "Entrega fácil", dailyRate: 0 })
     }
 
     return result
@@ -155,34 +188,57 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.querySelectorAll('input, select').forEach(element => {
       if (element.type === 'checkbox') {
-        element.checked = false;
+        element.checked = false
       } else if (element.tagName === 'SELECT' || element.type === 'text' || element.type === 'number') {
         element.value = ""
       }
     })
   }
 
-  // Completar endereço via cep
-  document.getElementById('store-data-zip').addEventListener('input', async function() {
-    const cep = this.value
-  
-    if (cep.length === 8) {
-      try {
-        const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`)
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.statusText}`)
+  // Função para verificar itens de um objeto
+  const hasValidValue = {
+    allTrue: function(object) {
+      for (const key in object) {
+        if (object.hasOwnProperty(key)) {
+          if (!object[key]) {
+            return false
+          }
         }
-        const responseData = await response.json()
-        console.log('Response:', responseData)
-        document.getElementById('store-data-state').value = responseData.state
-        document.getElementById('store-data-city').value = responseData.city
-        document.getElementById('store-data-district').value = responseData.neighborhood
-        document.getElementById('store-data-address').value = responseData.street
-      } catch (error) {
-        console.error('Erro ao buscar dados do CEP:', error)
       }
+      return true
+    },
+
+    someTrue: function(object) {
+      for (const key in object) {
+        if (object.hasOwnProperty(key)) {
+          if (object[key]) {
+            return true
+          }
+        }
+      }
+      return false
     }
-  })
+  }
+
+  // Função para checar token de autorização
+  async function apiTest(saiposAuthToken, id) {
+    try {
+      const response = await fetch(`https://api.saipos.com/v1/stores/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': saiposAuthToken
+        }
+      })
+      if (response.ok) {
+        return true
+      } else {
+        return false
+      }
+    } catch {
+      return false
+    }
+  }
 
   // Função para sincronizar checkboxes
   function syncCheckboxes(controlId, targets, isGroup = false) {
@@ -197,8 +253,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
       document.querySelectorAll(targets).forEach(checkbox => {
         checkbox.addEventListener('change', () => {
-          control.checked = document.querySelectorAll(targets).length ===
-                            document.querySelectorAll(`${targets}:checked`).length
+          control.checked = 
+          document.querySelectorAll(targets).length ===
+          document.querySelectorAll(`${targets}:checked`).length
         })
       })
     } else {
@@ -212,6 +269,13 @@ document.addEventListener("DOMContentLoaded", function() {
   syncCheckboxes('config-all', '.select-all-conf input[type=checkbox]:not(#config-all)', true)
   syncCheckboxes('partners-site-delivery', 'partners-counter-pickup')
   syncCheckboxes('partners-premium-digital-menu', 'partners-instruction-counter')
+
+  // Carrega Token Saipos
+  const tokenInputField = document.getElementById('saipos-auth-token')
+  const storedToken = localStorage.getItem('saiposAuthToken')
+  if (storedToken) {
+    tokenInputField.value = storedToken
+  }
 
   // Função para concorrer checkboxes
   function toggleExclusiveCheckboxes(id1, id2) {
@@ -288,9 +352,9 @@ document.addEventListener("DOMContentLoaded", function() {
         shiftTime: document.getElementById('shift-time').value,
         shiftServiceFee: document.getElementById('shift-service-fee').value,
         waitersQuantity: document.getElementById('waiters-quantity').value,
-        waitersDailyRate: document.getElementById('waiters-daily-rate').value || 0,
+        waitersDailyRate: document.getElementById('waiters-daily-rate').value,
         deliveryMenQuantity: document.getElementById('delivery-men-quantity').value,
-        deliveryMenDailyRate: document.getElementById('delivery-men-daily-rate').value || 0,
+        deliveryMenDailyRate: document.getElementById('delivery-men-daily-rate').value,
         partnersIfoodCode: document.getElementById('partners-ifood-code').value,
         partnersIfoodName: document.getElementById('partners-ifood-name').value,
         tableOrders: document.getElementById('table-orders').value,
@@ -301,6 +365,12 @@ document.addEventListener("DOMContentLoaded", function() {
         deliveryAreaCsv: document.getElementById('delivery-area-csv').files[0] || "",
         storeId: document.getElementById('store-id').value,
       } 
+      
+      // Exporta Token Saipos
+      const saiposAuthToken = document.getElementById('saipos-auth-token').value
+      const tokenValue = tokenInputField.value
+      setSaiposAuthToken(saiposAuthToken)
+
 
       // Trata CSV
       elementValues.choicesCsv ? elementValues.choicesCsv = await processCSV(elementValues.choicesCsv.path, ['Área', 'Taxa', 'Entregador']) : null
@@ -315,11 +385,15 @@ document.addEventListener("DOMContentLoaded", function() {
       elementValues.deliveryAreaDistrict === true ? elementValues.deliveryOption = "D" : ""
 
       // Trata arrays
-      elementValues.deliveryMen = await handleWorkers(elementValues.deliveryMenQuantity, elementValues.deliveryMenDailyRate, "Entregador")
+      elementValues.deliveryMen = await handleWorkers(elementValues.deliveryMenQuantity, elementValues.deliveryMenDailyRate, "Entregador", elementValues.saleStatusEasyDelivery)
       elementValues.users = await handleWorkers(elementValues.waitersQuantity, elementValues.waitersDailyRate, "Garçom", elementValues.userCashier)
       elementValues.ifood = await processIfoodData(elementValues.partnersIfoodCode, elementValues.partnersIfoodName)
       elementValues.shifts = await processShiftData(elementValues.shiftDesc, elementValues.shiftTime, elementValues.shiftServiceFee)
-console.log(elementValues.users)
+
+      // Trata canais de venda
+      const hasPartners = elementValues.partnersSiteDelivery || elementValues.partnersBasicDigitalMenu || elementValues.partnersPremiumDigitalMenu
+
+      // Declaração do objeto de tarefa
       const formData = {
         paymentTypesChosen: {
           pix: elementValues.paymentTypesPix,
@@ -349,9 +423,10 @@ console.log(elementValues.users)
           quantity: elementValues.orderCards
         },
         storeDataChosen: {
+          deliveryOption: elementValues.storeDataCnae ? elementValues.deliveryOption : "", 
+          state: elementValues.storeDataCnae ? elementValues.storeDataState : "",
+          city: elementValues.storeDataCnae ? elementValues.storeDataCity : "",
           cnae: elementValues.storeDataCnae,
-          state: elementValues.storeDataState,
-          city: elementValues.storeDataCity,
           district: elementValues.storeDataDistrict,
           zipCode: elementValues.storeDataZip,
           address: elementValues.storeDataAddress,
@@ -359,53 +434,63 @@ console.log(elementValues.users)
           addressComplement: elementValues.storeDataComplement,
           stateReg: elementValues.storeDataStateRegistration,
           cnpj: elementValues.storeDataCnpj,
-          deliveryOption: elementValues.deliveryOption
         },
         partnersChosen: {
-          deliverySite: elementValues.partnersSiteDelivery,
+          deliverySite: elementValues.partnersSiteDelivery, 
           basicMenu: elementValues.partnersBasicDigitalMenu,
           premiumMenu: elementValues.partnersPremiumDigitalMenu,
-          pickupCounter: elementValues.partnersCounterPickup,
-          domain: elementValues.domain,
-          partnersMinimumValue: elementValues.partnersMinimumValue,
-          startTime: elementValues.partnersStartTime,
-          endTime: elementValues.partnersEndTime,
-          weekDays: elementValues.weekDays
+          pickupCounter: hasPartners ? elementValues.partnersCounterPickup : "",
+          domain: hasPartners ? elementValues.domain : "",
+          partnersMinimumValue: hasPartners ? elementValues.partnersMinimumValue : "",
+          startTime: hasPartners ? elementValues.partnersStartTime : "",
+          endTime: hasPartners ? elementValues.partnersEndTime : "",
+          weekDays: hasPartners ? elementValues.weekDays : "",
+          waiterInstruction: hasPartners ? elementValues.partnersInstructionWaiter : "",
+          counterInstruction: hasPartners ? elementValues.partnersInstructionCounter : "",
         },
         usersChosen: {
           users: elementValues.users,
-          storeName: elementValues.domain
+          domain: elementValues.users ? elementValues.domain : ""
         },
         ifoodIntegrationChosen: elementValues.ifood,
         shiftsChosen: elementValues.shifts,
         deliveryMenChosen: elementValues.deliveryMen,
         waitersChosen: elementValues.users,
-        deliveryAreasChosen: elementValues.deliveryAreaCsv,
-        choicesChosen: elementValues.choicesCsv,
+        deliveryAreasChosen: {
+          data: elementValues.deliveryAreaCsv,
+          state: elementValues.deliveryAreaCsv ? elementValues.storeDataState: "",
+          city: elementValues.deliveryAreaCsv ? elementValues.storeDataCity: "",
+          deliveryOption: elementValues.deliveryAreaCsv ? elementValues.deliveryOption: ""
+        },
+        choicesChosen: {
+          data: elementValues.choicesCsv,
+          apportionmentBigger: elementValues.choicesCsv ? elementValues.apportionmentBigger : "",
+          apportionmentProportional: elementValues.choicesCsv ? elementValues.apportionmentProportional : ""
+        },
         menuChosen: elementValues.menuCsv,
-        storeId: elementValues.storeId,
-        time: {},
+        generalData: {
+          storeId: elementValues.storeId,
+          time: {},
+        }, 
       }
 
-      // checkAndHandleValues(formData) ? console.log("Valor inválido encontrado") : 
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
-      // ? console.log("Valor inválido encontrado") :
+      // Teste De Token
+      const authTokenTest = await apiTest(saiposAuthToken, 18)
+      const storeIdTest = await apiTest(saiposAuthToken, formData.generalData.storeId)
+
+      // Verificações
       console.log(formData)
+      !authTokenTest ? logAndSendAlert("Insira 'Token' válido") :
+      !storeIdTest ? logAndSendAlert("Insira 'ID da loja' válido") :
+      formData.usersChosen.users[0] && !formData.usersChosen.domain ? logAndSendAlert("Insira 'domínio'") :
+      elementValues.waitersQuantity && !elementValues.userWaiterApp ? logAndSendAlert("Habilite 'App garçom'") :
+      formData.deliveryAreasChosen.data && (!formData.deliveryAreasChosen.state || !formData.deliveryAreasChosen.city) ? logAndSendAlert("Insira 'estado' e 'cidade'") :
+      !hasValidValue.allTrue(formData.storeDataChosen) && hasValidValue.someTrue(formData.storeDataChosen) ? logAndSendAlert("Insira 'dados da loja'") :
+      hasPartners && !formData.partnersChosen.domain ? logAndSendAlert("Insira 'domínio'") :
+      formSubmitted(formData)
+      
+      localStorage.setItem('saiposAuthToken', tokenValue)
 
-// se marcado dia IntersectionObserver, fim, horario incio , fim, minimo, retirada, tem que amrcar site delivery
-// se marcar
-
-
-      // formSubmitted(formData)
     } catch (error) {
       console.error('Ocorreu um erro ao enviar o FORMULÁRIO:', error) 
     }
