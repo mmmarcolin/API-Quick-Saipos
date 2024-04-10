@@ -1,11 +1,11 @@
 // Importações do preload.js
 const api = window.api
 const toggleWindowSize = isVisible => api.toggleWindowSize(isVisible)
-const processCSV = (...args) => api.processCSV(...args)
-const executeConfigure = (...args) => api.executeConfigure(...args)
 const openExternal = url => api.openExternal(url)
 const showAlert = msg => api.showAlert(msg)
-const setSaiposAuthToken = tok => api.setSaiposAuthToken(tok)
+function processCSV(...args) { return api.processCSV(...args) }
+function executeConfigure(...args) { return api.executeConfigure(...args) }
+function sendSaiposAuthToken(token) { return api.sendSaiposAuthToken(token) }
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -108,6 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     return result
   }
+  cleanSelection()
 
   // Função para tratar arrays de funcionários
   function handleWorkers(quantity, dailyRate, worker, extra) {
@@ -175,8 +176,8 @@ document.addEventListener("DOMContentLoaded", function() {
     ['menu-remove', 'delivery-area-remove', 'choices-remove'].forEach(id => {
       document.getElementById(id).style.display = 'none'
     })  
-    document.getElementById("form").reset()
 
+    cleanSelection()
     executeConfigure(formData)
   }
 
@@ -371,7 +372,7 @@ document.addEventListener("DOMContentLoaded", function() {
       // Exporta Token Saipos
       const saiposAuthToken = document.getElementById('saipos-auth-token').value.trim()
       const tokenValue = tokenInputField.value
-      api.sendSaiposAuthToken(saiposAuthToken)
+      sendSaiposAuthToken(saiposAuthToken)
 
       // Trata CSV
       elementValues.choicesCsv ? elementValues.choicesCsv = await processCSV(elementValues.choicesCsv.path, ['Área', 'Taxa', 'Entregador']) : null
@@ -472,6 +473,7 @@ document.addEventListener("DOMContentLoaded", function() {
         generalData: {
           storeId: elementValues.storeId,
           time: {},
+          errorLog: []
         }, 
       }
 
@@ -479,8 +481,10 @@ document.addEventListener("DOMContentLoaded", function() {
       const authTokenTest = await apiTest(saiposAuthToken, 18)
       const storeIdTest = await apiTest(saiposAuthToken, formData.generalData.storeId)
 
+      // Console
+      console.log(formData)
+
       // Verificações
-      console.log(authTokenTest)
       !authTokenTest ? logAndSendAlert("Insira 'Token' válido") :
       !storeIdTest ? logAndSendAlert("Insira 'ID da loja' válido") :
       formData.usersChosen.users[0] && !formData.usersChosen.domain ? logAndSendAlert("Insira 'domínio'") :

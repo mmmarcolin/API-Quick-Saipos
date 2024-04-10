@@ -1,9 +1,8 @@
 const { app, BrowserWindow, dialog, ipcMain, Tray, Menu, shell } = require('electron')
 const path = require('path')
 const { processCSV } = require('../utils/csvHandle')
-const executeConfigure = require('../services/executeConfigure')
-const requestToSaipos = require('../services/requestsToSaipos');
-
+const { executeConfigure } = require('../services/executeConfigure')
+const requestToSaipos = require('../services/requestsToSaipos')
 
 let win
 let tray = null
@@ -111,3 +110,4 @@ ipcMain.handle('open-external-link', async (event, url) => {
 ipcMain.on('saipos-auth-token', (event, token) => {
     requestToSaipos.setToken(token)
 })
+
