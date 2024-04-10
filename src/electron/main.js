@@ -2,6 +2,8 @@ const { app, BrowserWindow, dialog, ipcMain, Tray, Menu, shell } = require('elec
 const path = require('path')
 const { processCSV } = require('../utils/csvHandle')
 const executeConfigure = require('../services/executeConfigure')
+const requestToSaipos = require('../services/requestsToSaipos');
+
 
 let win
 let tray = null
@@ -10,7 +12,7 @@ function createWindow() {
     win = new BrowserWindow({
         icon: path.join(__dirname, '..', '..', 'public', 'assets', 'saiposlogo.png'),
         width: 940,
-        height: 820,
+        height: 890,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
         }
@@ -74,9 +76,9 @@ ipcMain.on('toggle-window-size', (event, shouldExpand) => {
     if (currentWin) {
         const { width, height } = currentWin.getBounds()
         const minWidth = 340
-        const minHeight = 410
+        const minHeight = 450
         const maxWidth = 940
-        const maxHeight = 820
+        const maxHeight = 890
     
         let newWidth, newHeight
     
@@ -104,4 +106,8 @@ ipcMain.handle('execute-configure', async (event, ...args) => {
 
 ipcMain.handle('open-external-link', async (event, url) => {
     await shell.openExternal(url)
+})
+
+ipcMain.on('saipos-auth-token', (event, token) => {
+    requestToSaipos.setToken(token)
 })

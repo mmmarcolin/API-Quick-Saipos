@@ -1,9 +1,9 @@
 const { normalizeText } = require('../utils/auxiliarVariables')
-let saiposAuthToken
+let saiposAuthToken = ''
 
-window.api.onSaiposAuthTokenChanged((tok) => {
-  saiposAuthToken = tok
-})
+function setToken(token) {
+  saiposAuthToken = token
+}
 
 function createRequestOptions(method, data = null) {
   const options = {
@@ -60,4 +60,4 @@ async function deleteFromSaipos(url) {
   return makeFetchRequest(url, createRequestOptions('DELETE'))
 }
 
-module.exports = { postToSaipos, getFromSaipos, putToSaipos, deleteFromSaipos }
+module.exports = { postToSaipos, getFromSaipos, putToSaipos, deleteFromSaipos, setToken }

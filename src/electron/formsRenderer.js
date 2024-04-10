@@ -187,10 +187,12 @@ document.addEventListener("DOMContentLoaded", function() {
     })
 
     document.querySelectorAll('input, select').forEach(element => {
-      if (element.type === 'checkbox') {
-        element.checked = false
-      } else if (element.tagName === 'SELECT' || element.type === 'text' || element.type === 'number') {
-        element.value = ""
+      if (element != document.getElementById("saipos-auth-token")) {
+        if (element.type === 'checkbox') {
+          element.checked = false
+        } else if (element.tagName === 'SELECT' || element.type === 'text' || element.type === 'number') {
+          element.value = ""
+        }
       }
     })
   }
@@ -367,10 +369,9 @@ document.addEventListener("DOMContentLoaded", function() {
       } 
       
       // Exporta Token Saipos
-      const saiposAuthToken = document.getElementById('saipos-auth-token').value
+      const saiposAuthToken = document.getElementById('saipos-auth-token').value.trim()
       const tokenValue = tokenInputField.value
-      setSaiposAuthToken(saiposAuthToken)
-
+      api.sendSaiposAuthToken(saiposAuthToken)
 
       // Trata CSV
       elementValues.choicesCsv ? elementValues.choicesCsv = await processCSV(elementValues.choicesCsv.path, ['Área', 'Taxa', 'Entregador']) : null
@@ -479,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const storeIdTest = await apiTest(saiposAuthToken, formData.generalData.storeId)
 
       // Verificações
-      console.log(formData)
+      console.log(authTokenTest)
       !authTokenTest ? logAndSendAlert("Insira 'Token' válido") :
       !storeIdTest ? logAndSendAlert("Insira 'ID da loja' válido") :
       formData.usersChosen.users[0] && !formData.usersChosen.domain ? logAndSendAlert("Insira 'domínio'") :
