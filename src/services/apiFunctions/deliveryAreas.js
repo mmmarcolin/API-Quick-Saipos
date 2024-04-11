@@ -1,6 +1,7 @@
 const { getFromSaipos, postToSaipos, deleteFromSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class DataDistrict {
   constructor(data) {
     this.id_city = data.id_city
@@ -53,7 +54,7 @@ class Area {
   }
 }
 
-async function deliveryAreas(chosenData) {
+async function deliveryAreas(chosenData, storeId) {
   try {
     const stateId = await getFromSaipos("desc_state", chosenData.state, "id_state", `${API_BASE_URL}/states`)
     const cityId = await getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)

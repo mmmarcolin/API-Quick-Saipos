@@ -1,6 +1,7 @@
 const { getFromSaipos, postToSaipos, putToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL, normalizeText } = require("../../utils/auxiliarVariables.js")
 
+
 class PartnerEnable {
   constructor(data) {
     this.id_store_partner_sale = 0
@@ -75,7 +76,7 @@ class Payment {
   }
 }
 
-async function partners(chosenData) {
+async function partners(chosenData, storeId) {
   try {
     const desiredPayments = [
       "Pix",

@@ -23,40 +23,41 @@ class AdmPerm {
   }
 }
 
-async function settings(chosenData) {
+async function settings(chosenData, storeId) {
   try {
+
     const userData = await getFromSaipos("user.user_type", 1, "", `${API_BASE_URL}/stores/${storeId}/find-all-users`)
     const settingToPut = new Settings()
     const operations = []
 
-    if (chosenData.admPermissions) {
-      const admPermToPost = new AdmPerm(userData.permissions)
-      operations.push(postToSaipos(admPermToPost, `${API_BASE_URL}/stores/${storeId}/update-permission`))
-    }
+    // if (chosenData.admPermissions) {
+    //   const admPermToPost = new AdmPerm(userData.permissions)
+    //   operations.push(postToSaipos(admPermToPost, `${API_BASE_URL}/stores/${storeId}/update-permission`))
+    // }
 
-    if (chosenData.col42) {
-      const col42Id = await getFromSaipos("id_setting", 2, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
-      operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${col42Id}`))
-    }
+    // if (chosenData.col42) {
+    //   const col42Id = await getFromSaipos("id_setting", 2, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
+    //   operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${col42Id}`))
+    // }
 
-    if (chosenData.kds) {
-      const kdsId = await getFromSaipos("id_setting", 57, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
-      operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${kdsId}`))
-    }
+    // if (chosenData.kds) {
+    //   const kdsId = await getFromSaipos("id_setting", 57, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
+    //   operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${kdsId}`))
+    // }
 
-    if (chosenData.cancelReason) {
-      const cancelReasonId = await getFromSaipos("id_setting", 61, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
-      await putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${cancelReasonId}`)
-    }
+    // if (chosenData.cancelReason) {
+    //   const cancelReasonId = await getFromSaipos("id_setting", 61, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
+    //   await putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${cancelReasonId}`)
+    // }
 
-    if (chosenData.cancelPassword) {
-      const cancelPasswordId = await getFromSaipos("id_setting", 62, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
-      operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${cancelPasswordId}`))
-      const cancPassToPost = new CancPass({ id_user: userData.id_user })
-      operations.push(postToSaipos(cancPassToPost, `${API_BASE_URL}/stores/${storeId}/update-user`))
-    }
+    // if (chosenData.cancelPassword) {
+    //   const cancelPasswordId = await getFromSaipos("id_setting", 62, "id_store_setting_value", `${API_BASE_URL}/stores/${storeId}/setting_values`)
+    //   operations.push(putToSaipos(settingToPut, `${API_BASE_URL}/stores/${storeId}/setting_values/${cancelPasswordId}`))
+    //   const cancPassToPost = new CancPass({ id_user: userData.id_user })
+    //   operations.push(postToSaipos(cancPassToPost, `${API_BASE_URL}/stores/${storeId}/update-user`))
+    // }
 
-    await Promise.all(operations)
+    // await Promise.all(operations)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CONFIGURAÇÕES', error)

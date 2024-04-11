@@ -41,6 +41,6 @@ const auxiliarVar = {
 
 const API_BASE_URL = "https://api.saipos.com/v1"
 
-const normalizeText = (text) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, "").toLowerCase()
+const normalizeText = (text) => text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, "").toLowerCase()
 
 module.exports = { auxiliarVar: auxiliarVar, API_BASE_URL, normalizeText }

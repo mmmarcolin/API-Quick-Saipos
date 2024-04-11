@@ -1,6 +1,7 @@
 const { postToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class Waiter {
   constructor(data) {
     this.id_store_waiter = 0
@@ -11,7 +12,7 @@ class Waiter {
   }
 }
 
-async function waiters(chosenData) {
+async function waiters(chosenData, storeId) {
   try {
     
     const promises = chosenData.waiters.map(waiterData => {

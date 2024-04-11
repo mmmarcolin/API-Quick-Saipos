@@ -1,6 +1,7 @@
 const { getFromSaipos, postToSaipos } = require("../requestsToSaipos.js")
 const{ auxiliarVar, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class Choice {
   constructor(data) {
     this.id_store = storeId
@@ -41,7 +42,7 @@ class Item {
   }
 }
 
-async function choices(chosenData) {
+async function choices(chosenData, storeId) {
   try {
     const getResults = await Promise.all(
       getFromSaipos("desc_store_variation", "Único", "id_store_variation", `${API_BASE_URL}/stores/${storeId}/variations`)

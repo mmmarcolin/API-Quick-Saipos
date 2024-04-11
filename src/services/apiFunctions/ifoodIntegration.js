@@ -1,6 +1,6 @@
 const { postToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
-const { storeId } = require('../executeConfigure.js')
+
 
 class IfoodVerify {
   constructor(data) {
@@ -49,8 +49,8 @@ class Ifood {
   }
 }
 
-async function ifoodIntegration(chosenData) {
-  console.log(chosenData)
+async function ifoodIntegration(chosenData, storeId) {
+  console.log(chosenData, storeId)
   try {
     const ifoodVerifyToPost = new IfoodVerify ({
       _cod_store: chosenData.code,

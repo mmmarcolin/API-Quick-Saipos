@@ -61,10 +61,25 @@ async function handleDateNow(end) {
 }
 
 // Verificação de existência
-async function hasTruthyValue(obj) {
-  return Object.values(obj).some(value => 
-    Boolean(value) && (typeof value !== 'object' || Object.values(value).length > 0)
-  )
+async function hasTruthyValue(value) {
+  if (typeof value === 'string' && value.length > 0) {
+    return true
+  } else if (typeof value === 'boolean' && value) {
+    return true
+  } else if (Array.isArray(value)) {
+    for (const element of value) {
+      if (await hasTruthyValue(element)) {
+        return true
+      }
+    }
+  } else if (typeof value === 'object' && value !== null) {
+    for (const key in value) {
+      if (await hasTruthyValue(value[key])) {
+        return true
+      }
+    }
+  }
+  return false
 }
 
 // Comunicação com usuário
@@ -76,7 +91,7 @@ async function logAndSendAlert(message) {
 async function executeModule(moduleName, data) {
   if (await hasTruthyValue(data[`${moduleName}Chosen`])) {
     console.log(true, ": ", moduleName)
-    const err = await func[moduleName](data[`${moduleName}Chosen`])
+    const err = await func[moduleName](data[`${moduleName}Chosen`], data.generalData.storeId)
     if (err && err.length > 0) {
       data.generalData.errorLog.push({ moduleName, err })
     }
@@ -84,7 +99,6 @@ async function executeModule(moduleName, data) {
 }
 
 // Execução da configuração
-let storeId
 async function executeConfigure(data) {
   try {
     storeId = data.generalData.storeId
@@ -112,4 +126,4 @@ async function executeConfigure(data) {
   }
 }
 
-module.exports = { executeConfigure, storeId }
+module.exports = { executeConfigure }

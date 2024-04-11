@@ -1,6 +1,7 @@
 const { getFromSaipos, postToSaipos, putToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class SaleStatus {
   constructor(data) {
     this.id_store_sale_status = data.id_store_sale_status
@@ -25,7 +26,7 @@ async function updateSaleStatus(saleStatusData) {
     putToSaipos(saleStatusToPust, endpoint)
 }
 
-async function saleStatus(chosenData) {
+async function saleStatus(chosenData, storeId) {
   try {
     const saleStatusIds = await Promise.all([
       getFromSaipos("order", 1, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),

@@ -47,6 +47,7 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url) {
   if (!responseData) {
     return null
   }
+  console.log(keyToFind, desiredValue, keyToReturn)
   const result = responseData.find(res => normalizeText(res[keyToFind]) === normalizeText(desiredValue))
   if (!result) {
     console.error('Item not found')

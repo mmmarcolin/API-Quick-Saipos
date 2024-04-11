@@ -1,13 +1,14 @@
 const { postToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class OrderCard {
   constructor(data) {
     this.qtd = data.qtd
   }
 }
 
-async function orderCard(chosenData) {
+async function orderCard(chosenData, storeId) {
   try {
 
     const orderCardToPost = new OrderCard({

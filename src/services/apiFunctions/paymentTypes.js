@@ -1,6 +1,7 @@
 const { postToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class PaymentType {
   constructor(data) {
     this.id_store_payment_type = 0
@@ -15,7 +16,7 @@ class PaymentType {
   }
 }
 
-async function paymentTypes(chosenData) {
+async function paymentTypes(chosenData, storeId) {
   try {
     const paymentMappings = {
       pix: [["Pix", 13, null]],
@@ -26,7 +27,7 @@ async function paymentTypes(chosenData) {
       hiper: [["Crédito Hipercard", 3, "07"]]
     }
 
-    for (const key of Object.keys(chosenData)) {
+    for (const key of Object.keys(chosenData, storeId)) {
       if (chosenData[key] && paymentMappings[key]) {
         for (const paymentOption of paymentMappings[key]) {
           const [desc, nfeCode, idMethod] = paymentOption

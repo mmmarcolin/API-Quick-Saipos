@@ -1,6 +1,7 @@
 const { getFromSaipos, postToSaipos, putToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class Cnae {
   constructor(data) {
     this.id_cnae = data.id_cnae
@@ -127,7 +128,7 @@ constructor(data) {
   }
 }
 
-async function storeData(chosenData) {
+async function storeData(chosenData, storeId) {
   try {
     const [cnaeId, cnaeDesc, stateId, cityId, districtId, storeOriginalData, taxesDataId, taxesDataCfopId] = await Promise.all([
       getFromSaipos("cnae", chosenData.cnae, "id_cnae", `${API_BASE_URL}/cnae`),

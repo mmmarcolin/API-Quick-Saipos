@@ -1,6 +1,7 @@
 const { postToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class DeliveryMan {
   constructor(data) {
     this.id_store_delivery_man = 0
@@ -18,7 +19,7 @@ class DeliveryMan {
   }
 }
 
-async function deliveryMen(chosenData) {
+async function deliveryMen(chosenData, storeId) {
   try {
     const deliveryMenPromises = chosenData.deliveryMen.map(deliveryManData => {
       const deliveryManToPost = new DeliveryMan({

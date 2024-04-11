@@ -1,6 +1,7 @@
 const { getFromSaipos, postToSaipos, putToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class Shift {
   constructor(data) {
     this.id_store_shift = data.id_store_shift,
@@ -13,7 +14,7 @@ class Shift {
   }
 }
 
-async function shifts(chosenData) {
+async function shifts(chosenData, storeId) {
   try {
     const shiftId = await getFromSaipos("desc_store_shift", "Dia", "id_store_shift", `${API_BASE_URL}/stores/${storeId}/shifts`)
 

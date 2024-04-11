@@ -1,6 +1,7 @@
 const { getFromSaipos, postToSaipos, deleteFromSaipos } = require("../requestsToSaipos.js")
 const{ auxiliarVar, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
+
 class Category {
   constructor(name) {
     this.desc_store_category_item = name
@@ -84,7 +85,7 @@ async function deleteCategory(categoryName) {
   deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/categories_item/${originalCategoryId}`)
 }
 
-async function menu(chosenData) {
+async function menu(chosenData, storeId) {
   try {
     const [foodTaxId, drinkTaxId, idStoreVariation] = await Promise.all([
       getFromSaipos("desc_store_taxes_data", "Comida", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`),
