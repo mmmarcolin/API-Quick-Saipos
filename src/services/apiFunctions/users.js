@@ -20,28 +20,33 @@ async function users(chosenData, storeId) {
 
     let userToPrintId = null
 
-    if (chosenData.counterUser) {
+
+    if (chosenData.users.some(item => item.desc === 'Caixa')) {
       const userToPost = new User({
         full_name: "Caixa",
-        store_name: chosenData.storeName
+        store_name: chosenData.domain
       })
       const response = await postToSaipos(userToPost, `${API_BASE_URL}/stores/${storeId}/users`)
       userToPrintId = response.id_user
+      chosenData.users = chosenData.users.filter(user => user.desc !== 'Caixa')
     } else {
-      userToPrintId = await getFromSaipos("user.user_type", 1, "id_user", `${API_BASE_URL}/stores/${storeId}/find-all-users`)
+      userToPrintId = await getFromSaipos("user", 1, "id_user", `${API_BASE_URL}/stores/${storeId}/find-all-users`, "user_type")
     }
 
-    const promises = chosenData.UserDesc.map(userName => {
-    const userToPost = new User({
-      full_name: userName,
-      store_name: chosenData.storeName,
-      print_to_user: userToPrintId
-    })
-    return postToSaipos(userToPost, `${API_BASE_URL}/stores/${storeId}/users`)
-  })
+    let promises
+    if (chosenData.users.length > 0 ) {
+      promises = chosenData.users.map(usersData => {
+        console.log(usersData)
+        const userToPost = new User({
+          full_name: usersData.desc,
+          store_name: chosenData.domain,
+          print_to_user: userToPrintId
+        })
+      return postToSaipos(userToPost, `${API_BASE_URL}/stores/${storeId}/users`)
+      })
+      await Promise.all(promises)
+    }
   
-  await Promise.all(promises)
-
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de USUÁRIOS', error)
     return ["USUÁRIOS: ", { stack: error.stack }]

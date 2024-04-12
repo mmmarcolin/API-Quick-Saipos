@@ -113,39 +113,43 @@ document.addEventListener("DOMContentLoaded", function() {
   // Função para tratar arrays de funcionários
   function handleWorkers(quantity, dailyRate, worker, extra) {
     let result = []
-
+  
     if (typeof quantity === 'string' && quantity.includes(",")) {
-      quantity = quantity.split(",").map(item => item.trim())
+      quantity = quantity.split(",").map(item => parseInt(item.trim(), 10))
     } else if (typeof quantity === 'string') {
       quantity = parseInt(quantity, 10)
     }
-
+  
     if (typeof dailyRate === 'string' && dailyRate.includes(",")) {
-      dailyRate = dailyRate.split(",").map(Number)
+      dailyRate = dailyRate.split(",").map(item => parseInt(item, 10))
     } else if (typeof dailyRate === 'string') {
       dailyRate = parseInt(dailyRate, 10)
     }
-
+  
     let iterations = Array.isArray(quantity) ? quantity.length : quantity
-
+  
     for (let i = 0; i < iterations; i++) {
-        let desc = Array.isArray(quantity) ? quantity[i] : `${worker} ${i + 1}`
+      let desc = Array.isArray(quantity) ? quantity[i] : `${worker} ${i + 1}`
       let rate = Array.isArray(dailyRate) ? dailyRate[i] : dailyRate
+  
       if (Array.isArray(dailyRate) && i >= dailyRate.length) {
         rate = 0
+      } else if (isNaN(rate)) {
+        rate = 0 
       }
+  
       result.push({ desc, dailyRate: rate })
     }
-
+  
     if (worker === "Garçom" && extra) {
       result.push({ desc: "Caixa", dailyRate: 0 })
     }
     if (worker === "Entregador" && extra) {
       result.push({ desc: "Entrega fácil", dailyRate: 0 })
     }
-
+  
     return result
-  }
+  }  
 
   // Função para tratar array de ifood
   function processIfoodData(partnersIfoodCodeStr, partnersIfoodNameStr) {
@@ -302,6 +306,12 @@ document.addEventListener("DOMContentLoaded", function() {
   toggleExclusiveCheckboxes("partners-basic-digital-menu", "partners-premium-digital-menu")
   toggleExclusiveCheckboxes("partners-instruction-counter", "partners-instruction-waiter")
 
+  // TESTES
+  document.getElementById("store-id").value = 35504
+  document.getElementById("delivery-area-radius").checked = true
+  document.getElementById('store-data-state').value = "AC"
+  document.getElementById('store-data-city').value = "Bujari"
+
 // Enviar formulário 
   document.getElementById("form").addEventListener("submit", async function(event) {
     event.preventDefault() 
@@ -375,9 +385,9 @@ document.addEventListener("DOMContentLoaded", function() {
       sendSaiposAuthToken(saiposAuthToken)
 
       // Trata CSV
-      elementValues.choicesCsv ? elementValues.choicesCsv = await processCSV(elementValues.choicesCsv.path, ['Área', 'Taxa', 'Entregador']) : null
-      elementValues.menuCsv ? elementValues.deliveryAreaCsv = await processCSV(elementValues.menuCsv.path, ['Categoria', 'Produto', 'Preço', 'Descrição', 'Adicional', 'Código']) : null
-      elementValues.deliveryAreaCsv ? elementValues.deliveryAreaCsv = await processCSV(elementValues.deliveryAreaCsv.path, ['Adicional', 'Item', 'Preço', 'Descrição', 'Quantidade', 'Código']) : null
+      elementValues.choicesCsv ? elementValues.choicesCsv = await processCSV(elementValues.choicesCsv.path, ['Adicional', 'Item', 'Preço', 'Descrição', 'Quantidade', 'Código']) : null
+      elementValues.menuCsv ? elementValues.menuCsv = await processCSV(elementValues.menuCsv.path, ['Categoria', 'Produto', 'Preço', 'Descrição', 'Adicional', 'Código']) : null
+      elementValues.deliveryAreaCsv ? elementValues.deliveryAreaCsv = await processCSV(elementValues.deliveryAreaCsv.path, ['Área', 'Taxa', 'Entregador']) : null
 
       // Trata dias da semana
       elementValues.weekDays = await processWeekDays(elementValues.partnersStartDay, elementValues.partnersEndDay)
@@ -425,7 +435,7 @@ document.addEventListener("DOMContentLoaded", function() {
           quantity: elementValues.orderCards
         },
         storeDataChosen: {
-          deliveryOption: elementValues.storeDataCnae ? elementValues.deliveryOption : "", 
+          deliveryOption: elementValues.storeDataCnae ? (elementValues.deliveryOption ? elementValues.deliveryOption : "D") : "", 
           state: elementValues.storeDataCnae ? elementValues.storeDataState : "",
           city: elementValues.storeDataCnae ? elementValues.storeDataCity : "",
           cnae: elementValues.storeDataCnae,
@@ -443,7 +453,7 @@ document.addEventListener("DOMContentLoaded", function() {
           premiumMenu: elementValues.partnersPremiumDigitalMenu,
           pickupCounter: hasPartners ? elementValues.partnersCounterPickup : "",
           domain: hasPartners ? elementValues.domain : "",
-          partnersMinimumValue: hasPartners ? elementValues.partnersMinimumValue : "",
+          minimumValue: hasPartners ? elementValues.partnersMinimumValue : "",
           startTime: hasPartners ? elementValues.partnersStartTime : "",
           endTime: hasPartners ? elementValues.partnersEndTime : "",
           weekDays: hasPartners ? elementValues.weekDays : "",
@@ -451,8 +461,8 @@ document.addEventListener("DOMContentLoaded", function() {
           counterInstruction: hasPartners ? elementValues.partnersInstructionCounter : "",
         },
         usersChosen: {
-          users: elementValues.users,
-          domain: elementValues.users ? elementValues.domain : ""
+          users: elementValues.userCashier || elementValues.userWaiterApp ? elementValues.users : "",
+          domain: elementValues.userCashier || elementValues.userWaiterApp ? (elementValues.users ? elementValues.domain : "") : ""
         },
         ifoodIntegrationChosen: elementValues.ifood,
         shiftsChosen: elementValues.shifts,
@@ -483,12 +493,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // Console
       console.log(formData)
-
+      console.log(hasValidValue.allTrue(formData.storeDataChosen), hasValidValue.someTrue(formData.storeDataChosen))
+      
       // Verificações
       !authTokenTest ? logAndSendAlert("Insira 'Token' válido") :
       !storeIdTest ? logAndSendAlert("Insira 'ID da loja' válido") :
-      formData.usersChosen.users[0] && !formData.usersChosen.domain ? logAndSendAlert("Insira 'domínio'") :
-      elementValues.waitersQuantity && !elementValues.userWaiterApp ? logAndSendAlert("Habilite 'App garçom'") :
+      (elementValues.userCashier || elementValues.userWaiterApp) && !formData.usersChosen.domain ? logAndSendAlert("Insira 'domínio'") :
       formData.deliveryAreasChosen.data && (!formData.deliveryAreasChosen.state || !formData.deliveryAreasChosen.city) ? logAndSendAlert("Insira 'estado' e 'cidade'") :
       !hasValidValue.allTrue(formData.storeDataChosen) && hasValidValue.someTrue(formData.storeDataChosen) ? logAndSendAlert("Insira 'dados da loja'") :
       hasPartners && !formData.partnersChosen.domain ? logAndSendAlert("Insira 'domínio'") :

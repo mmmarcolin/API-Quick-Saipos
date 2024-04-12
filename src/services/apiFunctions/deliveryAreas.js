@@ -1,11 +1,11 @@
-const { getFromSaipos, postToSaipos, deleteFromSaipos } = require("../requestsToSaipos.js")
+const { getFromSaipos, postToSaipos, deleteFromSaipos, putToSaipos } = require("../requestsToSaipos.js")
 const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
 
 class DataDistrict {
   constructor(data) {
     this.id_city = data.id_city
-    this.desc_districts = data.desc_districts.map(district => district.desc_district)
+    this.desc_districts = data.desc_districts.map(district => district.deliveryArea)
   }
 }
 
@@ -13,9 +13,9 @@ class StoreDistrict {
   constructor(data) {
     this.id_store_district = 0
     this.id_district = data.id_district
-    this.desc_store_district = data.desc_district
-    this.delivery_fee = data.delivery_fee
-    this.value_motoboy = data.value_motoboy
+    this.desc_store_district = data.desc_store_district
+    this.delivery_fee = parseInt(data.delivery_fee)
+    this.value_motoboy = parseInt(data.value_motoboy)
     this.enabled_site_delivery = "Y"
   }
 }
@@ -47,21 +47,22 @@ class Area {
 
   addRadius(data) {
     this.properties.radius_mode.push({
-      radius: data.radius,
-      value_motoboy: data.value_motoboy,
-      delivery_fee: data.delivery_fee
+      radius: parseInt(data.radius),
+      value_motoboy: parseInt(data.value_motoboy),
+      delivery_fee: parseInt(data.delivery_fee)
     })
   }
 }
 
 async function deliveryAreas(chosenData, storeId) {
   try {
-    const stateId = await getFromSaipos("desc_state", chosenData.state, "id_state", `${API_BASE_URL}/states`)
+    const stateId = await getFromSaipos("short_desc_state", chosenData.state, "id_state", `${API_BASE_URL}/states`)
     const cityId = await getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
 
-    const storeData = await getFromSaipos("id_store", storeId, "", `${API_BASE_URL}/stores/${storeId}`)
+    if (chosenData.deliveryOption == "A") {
+      const storeData = await getFromSaipos(null, null, null, `${API_BASE_URL}/stores/${storeId}`)
+      await putToSaipos({ delivery_area_option: 'A', id_store: storeId }, `${API_BASE_URL}/stores/${storeId}`)
 
-    if (storeData.delivery_area_option === "A") {
       async function getFromZipAPI(cep) {
         const baseUrl = 'https://brasilapi.com.br/api'
         const url = `${baseUrl}/cep/v1/${cep}`
@@ -91,34 +92,51 @@ async function deliveryAreas(chosenData, storeId) {
         id_city: cityId,
       })
 
-      chosenData.deliveryAreaData.forEach(deliveryArea => {
+      chosenData.data.slice(1).forEach(deliveryArea => {
         areaToPost.addRadius({
-          radius: deliveryArea.radius,
-          value_motoboy: deliveryArea.value_motoboy,
-          delivery_fee: deliveryArea.delivery_fee
+          radius: deliveryArea.deliveryArea,
+          value_motoboy: deliveryArea.deliveryMenFee,
+          delivery_fee: deliveryArea.deliveryFee
         })
       })
 
       await postToSaipos(areaToPost, `${API_BASE_URL}/stores/${storeId}/districts/area`)
-      const areaId = await getFromSaipos("properties.id_store", storeId, "id_store_district", `${API_BASE_URL}/stores/${storeId}/districts/area`)
-      await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/districts/area/${areaId}`)
-    } else {
-      const dataDistrictToPost = new DataDistrict({ 
-        id_city: cityId,
-        desc_districts: chosenData.deliveryAreasData
-      })
-      await postToSaipos(dataDistrictToPost, `${API_BASE_URL}/districts/insert-district-list`)
+      // const areaId = await getFromSaipos("properties", storeId, "id_store_district", `${API_BASE_URL}/stores/${storeId}/districts/area`, "id_store")
+      // await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/districts/area/${areaId}`)
 
-      for (const deliveryArea of chosenData.deliveryAreaData) {
-        const districtId = await getFromSaipos("desc_district", deliveryArea.desc_district, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
-        const storeDistrict = new StoreDistrict({
-          id_district: districtId,
-          desc_store_district: deliveryArea.desc_district,
-          delivery_fee: deliveryArea.delivery_fee,
-          value_motoboy: deliveryArea.value_motoboy
-        })
-        await postToSaipos(storeDistrict, `${API_BASE_URL}/stores/${storeId}/districts`)
-      }
+    } else {
+      await putToSaipos({ delivery_area_option: 'D' }, `${API_BASE_URL}/stores/${storeId}`)
+
+      const districtPromises = chosenData.data.slice(1).map(deliveryArea =>
+        getFromSaipos("desc_district", deliveryArea.deliveryArea, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
+      )
+  
+      const districtIds = await Promise.all(districtPromises)
+  
+      const districtsBatch = []
+      const postPromises = []
+  
+      districtIds.forEach((districtId, index) => {
+        const deliveryArea = chosenData.data.slice(1)[index]
+        if (districtId) { 
+          const storeDistrict = new StoreDistrict({
+            id_district: districtId,
+            desc_store_district: deliveryArea.deliveryArea,
+            delivery_fee: deliveryArea.deliveryFee,
+            value_motoboy: deliveryArea.deliveryMenFee
+          })
+          districtsBatch.push(storeDistrict)
+  
+          if (districtsBatch.length === 50 || index === districtIds.length - 1) {
+            if (districtsBatch.length > 0) {
+              postPromises.push(postToSaipos([...districtsBatch], `${API_BASE_URL}/stores/${storeId}/districts`))
+              districtsBatch.length = 0 
+            }
+          }
+        }
+      })
+  
+      await Promise.all(postPromises)
     }
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de BAIRROS', error)

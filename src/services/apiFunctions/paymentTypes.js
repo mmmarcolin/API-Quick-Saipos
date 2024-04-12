@@ -24,13 +24,15 @@ async function paymentTypes(chosenData, storeId) {
       master: [["Crédito Mastercard", 3, "02"], ["Débito Mastercard", 4, "02"]],
       visa: [["Crédito Visa", 3, "01"], ["Débito Visa", 4, "01"]],
       amex: [["Crédito American Express", 3, "03"]],
-      hiper: [["Crédito Hipercard", 3, "07"]]
+      hiper: [["Crédito Hipercard", 3, "07"]],
+      sodexo: [["Vale Alelo", 7, null]],
+      alelo: [["Vale Sodexo", 7, null]]
     }
 
     for (const key of Object.keys(chosenData, storeId)) {
       if (chosenData[key] && paymentMappings[key]) {
         for (const paymentOption of paymentMappings[key]) {
-          const [desc, nfeCode, idMethod] = paymentOption
+          const [desc, idMethod, nfeCode, ] = paymentOption
           const paymentTypeToPost = new PaymentType({
             desc_store_payment_type: desc,
             nfe_cod_bandeira: nfeCode,

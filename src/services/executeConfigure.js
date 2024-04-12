@@ -62,7 +62,7 @@ async function handleDateNow(end) {
 
 // Verificação de existência
 async function hasTruthyValue(value) {
-  if (typeof value === 'string' && value.length > 0) {
+  if (typeof value === 'string' && value.length > 0 && !(value.length == 1 && value[0] == ' ') ) {
     return true
   } else if (typeof value === 'boolean' && value) {
     return true

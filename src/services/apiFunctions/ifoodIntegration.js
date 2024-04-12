@@ -5,7 +5,7 @@ const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 class IfoodVerify {
   constructor(data) {
     this.id_store_partner_sale = 0
-    this.id_store = storeId
+    this.id_store = data.id_store
     this.id_partner_sale = 1
     this.enabled = "Y"
     this.$edit = true
@@ -18,52 +18,61 @@ class IfoodVerify {
 
 class Ifood {
   constructor(data) {
-    this.idStorePartnerSale = 0
-    this.codStore = data._cod_store
-    this.apiLogin = null
-    this.apiPassword = ""
-    this.apiToken = null
-    this.portalLogin = null
-    this.portalPassword = null
-    this.autoConfirm = "Y"
+    this.id_store_partner_sale = 0,
+    this.id_store = data.id_store,
+    this.id_partner_sale = 1,
+    this.$edit = true,
+    this.$_cod_store = data._cod_store,
+    this.$_desc_store_partner = data._desc_store_partner,
+    this.cod_store = data._cod_store,
+    this.desc_store_partner = data._desc_store_partner,
+    this.api_password = "",
+    this.portal_login = "",
+    this.import_delivery_fee = "Y"
+  }
+}
+
+class PartnerEnable {
+  constructor(data) {
+    this.id_store_partner_sale = 0
     this.enabled = "Y"
-    this.integrationType = null
-    this.descStorePartner = data._desc_store_partner
-    this.defaultStorePayment = 0
-    this.isOnline =  "N"
-    this.timeToPickup =  "0"
-    this.timeToDelivery =  "0"
-    this.deletedAt = null
-    this.importDeliveryFee = "Y"
-    this.partnerCredentialType = null
-    this.idStore = storeId
-    this.idPartnerSale = 1
-    this.edit = true
-    this._codStore = data._cod_store
-    this._descStorePartner = data._desc_store_partner
-    this._enabled = "Y"
-    this._apiLogin = null
-    this._apiPassword = ""
-    this._portalLogin = ""
-    this._portalPassword = null
+    this.id_store = data.id_store
+    this.id_partner_sale = 1
   }
 }
 
 async function ifoodIntegration(chosenData, storeId) {
-  console.log(chosenData, storeId)
   try {
-    const ifoodVerifyToPost = new IfoodVerify ({
-      _cod_store: chosenData.code,
-      _desc_store_partner: chosenData.name
+
+    const enableToPost = new PartnerEnable({ 
+      partnerId: 1,
+      id_store: storeId
+    })
+    await postToSaipos(enableToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
+
+    const promises = chosenData.map(async data => {
+      console.log(data)
+      const ifoodVerifyToPost = new IfoodVerify({
+        _cod_store: data.code,
+        _desc_store_partner: data.name,
+        id_store: storeId
+      })
+      const ifoodToPost = new Ifood({
+        _cod_store: data.code,
+        _desc_store_partner: data.name,
+        id_store: storeId
+      })
+
+      const verifyRes = await postToSaipos(ifoodVerifyToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/verify_partner_sale_api_login`)
+      if (verifyRes.access_token === "SUCCESS") {
+        return postToSaipos([ifoodToPost], `${API_BASE_URL}/stores/${storeId}/partners_sale`)
+      } else {
+        console.error("Verification failed for data:", data)
+        return null
+      }
     })
 
-    const ifoodToPost = new Ifood ({
-      _cod_store: chosenData.code,
-      _desc_store_partner: chosenData.name
-    })
-
-    const verifyRes = await postToSaipos(ifoodVerifyToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/verify_partner_sale_api_login`)
-    verifyRes.access_token == "SUCCESS" ? postToSaipos(ifoodToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale`) : null
+    await Promise.all(promises)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de IFOOD', error)

@@ -11,10 +11,10 @@ class TableOrder {
 async function tableOrder(chosenData, storeId) {
   try {
 
-    const orderCardToPost = new TableOrder({
+    const tableOrderToPost = new TableOrder({
       qtd: chosenData.quantity
     })
-    await postToSaipos(orderCardToPost, `${API_BASE_URL}/stores/${storeId}/order_cards/tables/insert-table-qtd`)
+    await postToSaipos(tableOrderToPost, `${API_BASE_URL}/stores/${storeId}/tables/insert-table-qtd`)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de MESAS', error)
