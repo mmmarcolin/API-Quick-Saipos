@@ -24,7 +24,7 @@ async function makeFetchRequest(url, options) {
     console.log(options)
     const response = await fetch(url, options)
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
+      throw new Error(response.status)
     }
     const responseData = await response.json()
     // options.method !== 'GET' ? console.log('Response:', responseData) : null
@@ -62,7 +62,7 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url, extraPro
   }
 
   if (!result) {
-    // console.error(keyToReturn, ' not found')
+    console.error(keyToReturn, ' not found')
     return null
   }
 
