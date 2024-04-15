@@ -120,6 +120,8 @@ async function storeData(chosenData, storeId) {
     const cityId = await getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
     const districtId = await getFromSaipos("desc_district", chosenData.district, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
 
+    await postToSaipos({id_city: cityId, desc_districts: districtId}, `${API_BASE_URL}/districts/insert-district-list`)
+
     let cestToPut, fixedIe
     if (stateId === 16) {
       const taxesDataId = await getFromSaipos("desc_store_taxes_data", "Bebidas", "id_store_taxes_data", `${API_BASE_URL}/stores/${storeId}/taxes_datas`)

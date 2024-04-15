@@ -5,7 +5,7 @@ const{ API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 class DataDistrict {
   constructor(data) {
     this.id_city = data.id_city
-    this.desc_districts = data.desc_districts.map(district => district.deliveryArea)
+    this.desc_districts = data.desc_districts
   }
 }
 
@@ -102,11 +102,20 @@ async function deliveryAreas(chosenData, storeId) {
       })
 
       await postToSaipos(areaToPost, `${API_BASE_URL}/stores/${storeId}/districts/area`)
-      // const areaId = await getFromSaipos("properties", storeId, "id_store_district", `${API_BASE_URL}/stores/${storeId}/districts/area`, "id_store")
-      // await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/districts/area/${areaId}`)
+      const areaId = await getFromSaipos("properties", storeId, "id_store_district", `${API_BASE_URL}/stores/${storeId}/districts/area`, "id_store")
+      await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/districts/area/${areaId}`)
 
     } else {
       await putToSaipos({ delivery_area_option: 'D' }, `${API_BASE_URL}/stores/${storeId}`)
+
+      const stateId = await getFromSaipos("desc_state", chosenData.state, "id_state",`${API_BASE_URL}/states`)
+      const cityId = await getFromSaipos("desc_city", chosenData.state, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
+
+      const dataDistricToPost = new DataDistrict({ 
+        id_city: cityId,
+        desc_districts: chosenData.data.map(item => item.districts)
+      })
+      await postToSaipos(dataDistricToPost, `${API_BASE_URL}/districts/insert-district-list`)
 
       const districtPromises = chosenData.data.map(deliveryArea =>
         getFromSaipos("desc_district", deliveryArea.deliveryArea, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
