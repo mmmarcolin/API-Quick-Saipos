@@ -26,7 +26,7 @@ async function processDataToGoogleSheet(data) {
 
   if (data.generalData.time.timestamp > 0 && storeId != "33738") {
     const jsonData = JSON.stringify(data)
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbyrw1WB9-faoK65MDF6N1WfELncKa1u6h45LixExRBcOfpkWCC-zRK30AEm_cRVBS-x/exec'
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwoo8ZA0Qf5vjkRPglJUWjhPKBTV_5DAxxCHQop4SQWCCEvWO8bIW7H3rPuw8oPMSms/exec'
 
     fetch(scriptUrl, {
       method: 'POST',
