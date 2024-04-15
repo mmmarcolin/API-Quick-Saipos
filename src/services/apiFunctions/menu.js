@@ -34,7 +34,7 @@ class Product {
     this.generic_use = "N"
     this.service_charge = "Y"
     this.decimal_quantity = "N"
-    this.order = data.store
+    this.order = data.order
     this.categories = []
     this.choices = []
     this.availability = []
@@ -45,7 +45,7 @@ class Product {
       id_store_item: 0,
       id_store_variation: data.id_store_variation,
       price: data.price,
-      order: data.order,
+      order: 0,
       enabled: "Y",
       variation: {
         id_store: storeId,
@@ -117,7 +117,7 @@ async function menu(chosenData, storeId) {
         desc_store_category_item: name,
         id_store_taxes_data: isDrink ? drinkTaxId : foodTaxId,
         print_type: isDrink ? 3 : 2,
-        order: uniqueCategories.length - i - 1
+        order: i
       })
       postCategoriesPromises.push(postToSaipos(categoryToPost, `${API_BASE_URL}/stores/${storeId}/categories_item`))
     })
