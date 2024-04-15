@@ -41,7 +41,9 @@ class Area {
         fillColor: "#4CAF50"
       },
       radius_mode: [],
-      id_store: storeId
+      id_store: storeId,
+      delivery_fee: 0,
+      value_motoboy: 0
     }
   }
 
@@ -73,7 +75,6 @@ async function deliveryAreas(chosenData, storeId) {
             throw new Error(`HTTP error! Status: ${response.statusText}`)
           }
           const responseData = await response.json()
-          console.log('Response:', responseData.street)
           return responseData.street
         } catch (error) {
           console.error('Erro ao buscar dados do CEP:', error)
@@ -92,7 +93,7 @@ async function deliveryAreas(chosenData, storeId) {
         id_city: cityId,
       })
 
-      chosenData.data.slice(1).forEach(deliveryArea => {
+      chosenData.data.forEach(deliveryArea => {
         areaToPost.addRadius({
           radius: deliveryArea.deliveryArea,
           value_motoboy: deliveryArea.deliveryMenFee,
@@ -107,7 +108,7 @@ async function deliveryAreas(chosenData, storeId) {
     } else {
       await putToSaipos({ delivery_area_option: 'D' }, `${API_BASE_URL}/stores/${storeId}`)
 
-      const districtPromises = chosenData.data.slice(1).map(deliveryArea =>
+      const districtPromises = chosenData.data.map(deliveryArea =>
         getFromSaipos("desc_district", deliveryArea.deliveryArea, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
       )
   
@@ -117,7 +118,7 @@ async function deliveryAreas(chosenData, storeId) {
       const postPromises = []
   
       districtIds.forEach((districtId, index) => {
-        const deliveryArea = chosenData.data.slice(1)[index]
+        const deliveryArea = chosenData.data[index]
         if (districtId) { 
           const storeDistrict = new StoreDistrict({
             id_district: districtId,

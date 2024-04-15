@@ -27,7 +27,6 @@ async function deliveryMen(chosenData, storeId) {
         value_daily: deliveryMenData.dailyRate,
         default_delivery_man: chosenData.length === 1 ? "Y" : "N"
       })
-      console.log(deliveryMenData.desc)
     
       return postToSaipos(deliveryMenToPost, `${API_BASE_URL}/stores/${storeId}/delivery_men`)
     })

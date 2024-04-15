@@ -1,11 +1,13 @@
 const { app, BrowserWindow, dialog, ipcMain, Tray, Menu, shell } = require('electron')
-const path = require('path')
 const { processCSV } = require('../utils/csvHandle')
 const { executeConfigure } = require('../services/executeConfigure')
+const path = require('path')
 const requestToSaipos = require('../services/requestsToSaipos')
+const ProgressBar = require('electron-progressbar');
 
 let win
 let tray = null
+let progressBar
 
 function createWindow() {
     win = new BrowserWindow({
@@ -65,7 +67,7 @@ app.on('activate', () => {
 ipcMain.on('show-alert', (event, alertMessage) => {
     dialog.showMessageBox({
         type: 'info',
-        title: 'Alerta',
+        title: 'Aviso',
         message: alertMessage,
     })
 })

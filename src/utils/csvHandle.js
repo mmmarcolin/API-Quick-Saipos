@@ -20,10 +20,11 @@ function processCSV(filePath, headers) {
                         product: 'Para pagamento via pix, utilizar chave:',
                         price: '0',
                         description: 'Enviar comprovante de pagamento para o contato:',
-                        choice: [''],
+                        choiceMenu: [''],
                         code: ''
                     })
                 }
+                processedData.shift()
                 resolve(processedData)
             })
             .on('error', (error) => reject(error))

@@ -62,7 +62,7 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url, extraPro
   }
 
   if (!result) {
-    console.error(keyToReturn, ' not found')
+    // console.error(keyToReturn, ' not found')
     return null
   }
 
@@ -70,7 +70,7 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url, extraPro
   result = extraPropertyToReturn != null ? result[keyToReturn][extraPropertyToReturn] :
   result = keyToReturn != null ? result[keyToReturn] : result
 
-  console.log(keyToReturn, ': ', result)
+  // console.log(keyToReturn, ': ', result)
   return result   
 }
 
