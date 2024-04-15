@@ -22,8 +22,9 @@ async function processDataToGoogleSheet(data) {
   data.generalData.time.endTime = new Date()
   data.generalData.time.timestamp = parseFloat((data.generalData.time.endTime - data.generalData.time.startTime) / 1000).toFixed(0)
   data.generalData.time.endTime = await handleDateNow(data.generalData.time.endTime)
-  
-  if (data.generalData.time.timestamp > 0 && data.generalData.storeId !== "33738") {
+  const storeId = data.generalData.storeId
+
+  if (data.generalData.time.timestamp > 0 && storeId != "33738") {
     const jsonData = JSON.stringify(data)
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbyrw1WB9-faoK65MDF6N1WfELncKa1u6h45LixExRBcOfpkWCC-zRK30AEm_cRVBS-x/exec'
 
@@ -42,7 +43,7 @@ async function processDataToGoogleSheet(data) {
       return response.text()
     })
     .then(data => {
-      console.log(`REGISTRO: ${data.generalData.storeId}`)
+      console.log(`REGISTRO: ${storeId}`)
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -88,15 +89,10 @@ async function executeModule(moduleName, data) {
     console.log(`EXECUTANDO: ${storeId} | ${moduleName}`)
     const err = await func[moduleName](data[`${moduleName}Chosen`], data.generalData.storeId)
     if (err && err.length > 0) {
-      await logAndSendAlert(`ERRO: ${storeId} | ${err[0].slice(0, -2)}`)
+      await console.log(`ERRO: ${storeId} | ${err[0].slice(0, -2)}`)
       data.generalData.errorLog.push({ moduleName, err })
     }
   }
-}
-
-// Comunicação com usuário
-async function logAndSendAlert(message) {
-  console.log(message)
 }
 
 // Execução da configuração
@@ -104,8 +100,6 @@ async function executeConfigure(data) {
   try {
     storeId = data.generalData.storeId
 
-    await logAndSendAlert(`INÍCIO: ${storeId}`)
-    
     data.generalData.time.startTime = new Date()
     data.generalData.errorLog = []
 
@@ -121,7 +115,7 @@ async function executeConfigure(data) {
     await Promise.all(remainingModules)
 
     await processDataToGoogleSheet(data)
-    await logAndSendAlert(`FIM: ${storeId} | ${data.generalData.time.timestamp} segundos`)
+    return data.generalData.time.timestamp
   } catch (error) {
     console.error('Ocorreu um erro ao CONFIGURAR:', error)
   }

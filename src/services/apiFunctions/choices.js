@@ -43,7 +43,7 @@ class Item {
 }
 
 async function choices(chosenData, storeId) {
-  try {
+  try { 
     const idStoreVariation = await getFromSaipos("desc_store_variation", "Único", "id_store_variation", `${API_BASE_URL}/stores/${storeId}/variations`)
 
     let previousChoice = null

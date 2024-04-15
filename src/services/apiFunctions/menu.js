@@ -9,7 +9,7 @@ class Category {
     this.print_type = data.print_type
     this.enabled = "Y"
     this.id_store_category_item = 0
-    this.order = 0
+    this.order = data.order
     this.average_preparation_time = 20
     this.background_color = null
     this.id_store_item_required = null
@@ -17,7 +17,7 @@ class Category {
 }
 
 class Product {
-  constructor(data, idStoreVariation) {
+  constructor(data) {
     this.id_store = storeId
     this.id_store_item = 0
     this.item_type = this.getItemType(data.desc_store_item)
@@ -34,7 +34,7 @@ class Product {
     this.generic_use = "N"
     this.service_charge = "Y"
     this.decimal_quantity = "N"
-    this.order = 1
+    this.order = data.store
     this.categories = []
     this.choices = []
     this.availability = []
@@ -45,7 +45,7 @@ class Product {
       id_store_item: 0,
       id_store_variation: data.id_store_variation,
       price: data.price,
-      order: 0,
+      order: data.order,
       enabled: "Y",
       variation: {
         id_store: storeId,
@@ -76,8 +76,22 @@ class Product {
 }
 
 async function deleteCategory(categoryName) {
-    const originalCategoryId = await getFromSaipos("desc_store_category_item", categoryName, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
-    await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/categories_item/${originalCategoryId}`)
+  const originalCategoryId = await getFromSaipos("desc_store_category_item", categoryName, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
+  await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/categories_item/${originalCategoryId}`)
+}
+
+async function executePromisesInChunks(promises, chunkSize) {
+  for (let i = 0; i < promises.length; i += chunkSize) {
+    const chunk = promises.slice(i, i + chunkSize)
+    await Promise.all(chunk)
+  }
+}
+
+async function getChoicesIds(choicesMenu) {
+  const choicePromises = choicesMenu.map(choice => 
+    getFromSaipos("desc_store_choice", choice, "id_store_choice", `${API_BASE_URL}/stores/${storeId}/choices`)
+  )
+  return Promise.all(choicePromises)
 }
 
 async function menu(chosenData, storeId) {
@@ -94,40 +108,53 @@ async function menu(chosenData, storeId) {
     ])
 
     const uniqueCategories = [...new Set(chosenData.map(item => item.category))]
+    let postCategoriesPromises = []
 
-    for (const name of uniqueCategories) {
-      const isDrink = name.split(' ').some(item => auxiliarVar.drinks.includes(item))
+    uniqueCategories.forEach((name, i) => {
+      const words = name.split(' ')
+      const isDrink = words.some(item => auxiliarVar.drinks.includes(item))
       const categoryToPost = new Category({
         desc_store_category_item: name,
         id_store_taxes_data: isDrink ? drinkTaxId : foodTaxId,
         print_type: isDrink ? 3 : 2,
+        order: uniqueCategories.length - i - 1
       })
-      await postToSaipos(categoryToPost, `${API_BASE_URL}/stores/${storeId}/categories_item`)
-    }
+      postCategoriesPromises.push(postToSaipos(categoryToPost, `${API_BASE_URL}/stores/${storeId}/categories_item`))
+    })
 
-    for (const item of chosenData) {
-      const categoryId = await getFromSaipos("desc_store_category_item", item.category, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
-      const productToPost = new Product ({
+    await executePromisesInChunks(postCategoriesPromises, 50)
+
+    let postProductsPromises = []
+
+    const categoryIds = await Promise.all(
+      chosenData.map(item => getFromSaipos("desc_store_category_item", item.category, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`))
+    )
+
+    chosenData.forEach(async (item, i) => {
+      const productToPost = new Product({
         desc_store_item: item.product,
-        id_store_category_item: categoryId,
+        id_store_category_item: categoryIds[i],
         detail: item.description,
         identifier_number: item.code,
         price: item.price,
-        id_store_variation: idStoreVariation
+        id_store_variation: idStoreVariation,
+        order: i
       })
 
-      if (item.choiceMenu[0] != [""]) {
-        for (const choice of item.choiceMenu) {
-          const choiceId = await getFromSaipos("desc_store_choice", choice, "id_store_choice", `${API_BASE_URL}/stores/${storeId}/choices`)
-          const order = item.choiceMenu.indexOf(choice)
+      if (item.choiceMenu[0] !== "") {
+        const choiceIds = await getChoicesIds(item.choiceMenu)
+        choiceIds.forEach((choiceId, j) => {
           productToPost.addChoice({
             id_store_choice: choiceId,
-            order: order
+            order: j
           })
-        }
+        })
       }
-      await postToSaipos(productToPost, `${API_BASE_URL}/stores/${storeId}/items`)
-    }
+      postProductsPromises.push(postToSaipos(productToPost, `${API_BASE_URL}/stores/${storeId}/items`))
+    })
+
+    await executePromisesInChunks(postProductsPromises, 50)
+
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CARDÁPIO', error)
     return ["CARDÁPIO: ",  { stack: error.stack }]

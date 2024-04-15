@@ -10,11 +10,19 @@ class OrderCard {
 
 async function orderCard(chosenData, storeId) {
   try {
+    const totalQuantity = chosenData.quantity
+    const batchSize = 100
+    const postPromises = []
 
-    const orderCardToPost = new OrderCard({
-      qtd: chosenData.quantity
-    })
-    await postToSaipos(orderCardToPost, `${API_BASE_URL}/stores/${storeId}/order_cards/insert-order-card-qtt`)
+    for (let i = 0; i < totalQuantity; i += batchSize) {
+      const batchQuantity = Math.min(batchSize, totalQuantity - i)
+      const orderCardToPost = new OrderCard({
+        qtd: batchQuantity
+      })
+      postPromises.push(postToSaipos(orderCardToPost, `${API_BASE_URL}/stores/${storeId}/order_cards/insert-order-card-qtt`))
+    }
+
+    await Promise.all(postPromises)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de MESAS', error)

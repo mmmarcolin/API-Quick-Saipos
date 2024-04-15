@@ -175,13 +175,15 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Função para envio do formulário
-  function formSubmitted(formData) {
+  async function formSubmitted(formData) {
     ['menu-remove', 'delivery-area-remove', 'choices-remove'].forEach(id => {
       document.getElementById(id).style.display = 'none'
-    })  
+    })   
 
     cleanSelection()
-    executeConfigure(formData)
+    logAndSendAlert(`INÍCIO: ${formData.generalData.storeId}`)
+    const timestamp =  await executeConfigure(formData)
+    logAndSendAlert(`FIM: ${formData.generalData.storeId} | ${timestamp} segundos`)
   }
 
   // Função para limpar seleção

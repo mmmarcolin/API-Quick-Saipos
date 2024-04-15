@@ -28,7 +28,7 @@ async function settings(chosenData, storeId) {
 
     const userData = await getFromSaipos("user", 1, "user", `${API_BASE_URL}/stores/${storeId}/find-all-users`, "user_type")
     const operations = []
-
+    console.log(userData)
     if (chosenData.admPermissions) {
       const admPermToPost = new AdmPerm(userData.permissions)
       operations.push(postToSaipos(admPermToPost.permissions, `${API_BASE_URL}/stores/${storeId}/update-permission`))

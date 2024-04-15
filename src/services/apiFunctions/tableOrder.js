@@ -11,15 +11,26 @@ class TableOrder {
 async function tableOrder(chosenData, storeId) {
   try {
 
-    const tableOrderToPost = new TableOrder({
-      qtd: chosenData.quantity
-    })
-    await postToSaipos(tableOrderToPost, `${API_BASE_URL}/stores/${storeId}/tables/insert-table-qtd`)
+    const totalQuantity = chosenData.quantity
+    const batchSize = 100
+    const postPromises = []
+
+    for (let i = 0; i < totalQuantity; i += batchSize) {
+      const batchQuantity = Math.min(batchSize, totalQuantity - i)
+      const tableOrderToPost = new TableOrder({
+        qtd: batchQuantity
+      })
+      postPromises.push(postToSaipos(tableOrderToPost, `${API_BASE_URL}/stores/${storeId}/tables/insert-table-qtd`))
+    }
+
+    await Promise.all(postPromises)
 
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de MESAS', error)
     return  ["MESA: ", { stack: error.stack }]
   }
 }
+
+
 
 module.exports = tableOrder

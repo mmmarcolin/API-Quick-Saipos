@@ -3,7 +3,6 @@ const { processCSV } = require('../utils/csvHandle')
 const { executeConfigure } = require('../services/executeConfigure')
 const path = require('path')
 const requestToSaipos = require('../services/requestsToSaipos')
-const ProgressBar = require('electron-progressbar');
 
 let win
 let tray = null
