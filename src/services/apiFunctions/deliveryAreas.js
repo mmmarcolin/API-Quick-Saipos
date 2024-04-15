@@ -101,8 +101,8 @@ async function deliveryAreas(chosenData, storeId) {
       })
 
       await postToSaipos(areaToPost, `${API_BASE_URL}/stores/${storeId}/districts/area`)
-      // const areaId = await getFromSaipos("properties", storeId, "id_store_district", `${API_BASE_URL}/stores/${storeId}/districts/area`, "id_store")
-      // await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/districts/area/${areaId}`)
+      const areaId = await getFromSaipos("properties", storeId, "id_store_district", `${API_BASE_URL}/stores/${storeId}/districts/area`, "id_store")
+      await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/districts/area/${areaId}`)
 
     } else {
       await putToSaipos({ delivery_area_option: 'D' }, `${API_BASE_URL}/stores/${storeId}`)
