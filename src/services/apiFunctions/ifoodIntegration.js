@@ -51,7 +51,6 @@ async function ifoodIntegration(chosenData, storeId) {
     await postToSaipos(enableToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
 
     const promises = chosenData.map(async data => {
-      console.log(data)
       const ifoodVerifyToPost = new IfoodVerify({
         _cod_store: data.code,
         _desc_store_partner: data.name,

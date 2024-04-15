@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function() {
           throw new Error(`HTTP error! Status: ${response.statusText}`)
         }
         const responseData = await response.json()
-        console.log('Response:', responseData)
         document.getElementById('store-data-state').value = responseData.state
         document.getElementById('store-data-city').value = responseData.city
         document.getElementById('store-data-district').value = responseData.neighborhood
@@ -195,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (element != document.getElementById("saipos-auth-token")) {
         if (element.type === 'checkbox') {
           element.checked = false
-        } else if (element.tagName === 'SELECT' || element.type === 'text' || element.type === 'number') {
+        } else if (element.tagName === 'SELECT' || element.type === 'text' || element.type === 'number' || element.type === 'file') {
           element.value = ""
         }
       }
@@ -308,9 +307,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // TESTES
   document.getElementById("store-id").value = 35504
-  document.getElementById("delivery-area-radius").checked = true
-  document.getElementById('store-data-state').value = "AC"
-  document.getElementById('store-data-city').value = "Bujari"
 
 // Enviar formulário 
   document.getElementById("form").addEventListener("submit", async function(event) {
@@ -493,7 +489,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // Console
       console.log(formData)
-      console.log(hasValidValue.allTrue(formData.storeDataChosen), hasValidValue.someTrue(formData.storeDataChosen))
       
       // Verificações
       !authTokenTest ? logAndSendAlert("Insira 'Token' válido") :

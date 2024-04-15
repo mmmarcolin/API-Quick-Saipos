@@ -25,7 +25,7 @@ async function processDataToGoogleSheet(data) {
   
   if (data.generalData.time.timestamp > 0 && data.generalData.storeId !== "33738") {
     const jsonData = JSON.stringify(data)
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwHy4Ttcql8TXzcSMvzrsXHyymj_LSHdiphm6ieLsWlIiSwq_RMVkTapsyvJwOZZaJu/exec'
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbyrw1WB9-faoK65MDF6N1WfELncKa1u6h45LixExRBcOfpkWCC-zRK30AEm_cRVBS-x/exec'
 
     fetch(scriptUrl, {
       method: 'POST',
@@ -42,7 +42,7 @@ async function processDataToGoogleSheet(data) {
       return response.text()
     })
     .then(data => {
-      console.log(`REGISTRADO: ${data.generalData.storeId}`)
+      console.log(`REGISTRO: ${data.generalData.storeId}`)
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -82,20 +82,21 @@ async function hasTruthyValue(value) {
   return false
 }
 
-// Comunicação com usuário
-async function logAndSendAlert(message) {
-  console.log(message)
-}
-
 // Execução do módulo
 async function executeModule(moduleName, data) {
   if (await hasTruthyValue(data[`${moduleName}Chosen`])) {
-    console.log(true, ": ", moduleName)
+    console.log(`EXECUTANDO: ${storeId} | ${moduleName}`)
     const err = await func[moduleName](data[`${moduleName}Chosen`], data.generalData.storeId)
     if (err && err.length > 0) {
+      await logAndSendAlert(`ERRO: ${storeId} | ${err[0].slice(0, -2)}`)
       data.generalData.errorLog.push({ moduleName, err })
     }
   }
+}
+
+// Comunicação com usuário
+async function logAndSendAlert(message) {
+  console.log(message)
 }
 
 // Execução da configuração
@@ -103,10 +104,10 @@ async function executeConfigure(data) {
   try {
     storeId = data.generalData.storeId
 
-    await logAndSendAlert(`INICIADO: ${storeId}`)
+    await logAndSendAlert(`INÍCIO: ${storeId}`)
     
     data.generalData.time.startTime = new Date()
-    data.generalDataerrorLog = []
+    data.generalData.errorLog = []
 
     const initialModules = ['ifoodIntegration', 'paymentTypes', 'storeData', 'choices', 'settings']
     const initialPromises = initialModules.map(moduleName => executeModule(moduleName, data))
@@ -120,7 +121,7 @@ async function executeConfigure(data) {
     await Promise.all(remainingModules)
 
     await processDataToGoogleSheet(data)
-    await logAndSendAlert(`FINALIZADO: ${storeId} | ${data.generalData.time.timestamp} segundos`)
+    await logAndSendAlert(`FIM: ${storeId} | ${data.generalData.time.timestamp} segundos`)
   } catch (error) {
     console.error('Ocorreu um erro ao CONFIGURAR:', error)
   }

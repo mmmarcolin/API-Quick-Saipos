@@ -44,21 +44,20 @@ class Item {
 
 async function choices(chosenData, storeId) {
   try {
-    const getResults = await Promise.all(
-      getFromSaipos("desc_store_variation", "Único", "id_store_variation", `${API_BASE_URL}/stores/${storeId}/variations`)
-    )
-
-    const idStoreVariation = getResults
+    const idStoreVariation = await getFromSaipos("desc_store_variation", "Único", "id_store_variation", `${API_BASE_URL}/stores/${storeId}/variations`)
 
     let previousChoice = null
     let choiceToPost = null
     let postPromises = []
 
-    for (const choiceData of chosenData.choicesData) {
-      const isFlavor = choiceData.choice.split(' ').some(item => auxiliarVar.pizza.includes(item) && auxiliarVar.pizzaFlavor.includes(item))
-      const isCrust = choiceData.choice.split(' ').some(item => auxiliarVar.pizza.includes(item) && auxiliarVar.pizzaCrust.includes(item))
-      const isDough = choiceData.choice.split(' ').some(item => auxiliarVar.pizza.includes(item) && auxiliarVar.pizzaDough.includes(item)) 
-      const isOther = !(isFlavor || isCrust || isDough)
+    for (const choiceData of chosenData.data) {
+      const words = choiceData.choice.split(' ')
+      let isFlavor, isCrust, isDough, isOther, isPizza
+      isPizza = words.some(item => auxiliarVar.pizza.includes(item))
+      isFlavor = words.some(item => auxiliarVar.pizzaFlavor.includes(item) && isPizza)
+      isCrust = words.some(item => auxiliarVar.pizzaCrust.includes(item) && isPizza)
+      isDough = words.some(item => auxiliarVar.pizzaDough.includes(item) && isPizza) 
+      isOther = !(isPizza)
 
       if (choiceData.choice !== previousChoice) {
         if (choiceToPost) {
@@ -70,7 +69,7 @@ async function choices(chosenData, storeId) {
           min_choices: isDough ? 1 : parseInt(choiceData.quantity[0]),
           max_choices: isDough ? 1 : parseInt(choiceData.quantity[1]),
           choice_type: isOther || isDough ? 2 : 1,
-          calc_method: isOther || isDough ? 1 : auxiliarVar.biggerCalc ? 3 : 2,
+          calc_method: isOther || isDough ? 1 : chosenData.apportionmentBigger ? 3 : 2,
           group_items_print: isOther ? "Y" : "N",
           kind: isFlavor ? "pizzaFlavor" : isDough ? "pizzaDough" : isCrust ? "pizzaCrust" : "other"
         })

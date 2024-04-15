@@ -7,4 +7,5 @@ contextBridge.exposeInMainWorld('api', {
     showAlert: (message) => ipcRenderer.send('show-alert', message),
     openExternal: (url) => ipcRenderer.invoke('open-external-link', url),
     sendSaiposAuthToken: (token) => ipcRenderer.send('saipos-auth-token', token),
+    onConfigurationResponse: (callback) => ipcRenderer.on('configuration-response', (event, message) => callback(message))
 })

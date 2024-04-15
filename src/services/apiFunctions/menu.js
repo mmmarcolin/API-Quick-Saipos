@@ -3,22 +3,16 @@ const{ auxiliarVar, API_BASE_URL } = require("../../utils/auxiliarVariables.js")
 
 
 class Category {
-  constructor(name) {
-    this.desc_store_category_item = name
-    this.isDrink = name.split(' ').some(item => auxiliarVar.drinks.includes(item))
-    this.id_store_taxes_data = null 
-    this.print_type = null
+  constructor(data) {
+    this.desc_store_category_item = data.desc_store_category_item
+    this.id_store_taxes_data = data.id_store_taxes_data
+    this.print_type = data.print_type
     this.enabled = "Y"
     this.id_store_category_item = 0
     this.order = 0
     this.average_preparation_time = 20
     this.background_color = null
     this.id_store_item_required = null
-  }
-
-  async setTaxAndPrintType(foodTaxId, drinkTaxId) {
-    this.id_store_taxes_data = this.isDrink ? drinkTaxId : foodTaxId
-    this.print_type = this.isDrink ? 3 : 2
   }
 }
 
@@ -46,8 +40,23 @@ class Product {
     this.availability = []
     this.production_owner = "P"
     this.cod_gtin = null
-    const price = data.price
-    this.variations = [this.createVariation(price, idStoreVariation)]
+    this.variations = [{
+      id_store_item_variation: 0,
+      id_store_item: 0,
+      id_store_variation: data.id_store_variation,
+      price: data.price,
+      order: 0,
+      enabled: "Y",
+      variation: {
+        id_store: storeId,
+        id_store_variation: data.id_store_variation,
+        desc_store_variation: "Único",
+        desc_store_variation_delivery: null,
+        generic_use: "N",
+        is_unique: "Y"
+      },
+      ingredients: []
+    }]
   }
 
   getItemType(desc_store_item) {
@@ -56,33 +65,19 @@ class Product {
     return isPizza ? "pizza" : "other"
   }
 
-  createVariation(price, idStoreVariation) {
-    return {
-      id_store_item_variation: 0,
-      id_store_item: 0,
-      id_store_variation: idStoreVariation,
-      price: price,
-      order: 0,
-      enabled: "Y",
-      variation: {
-        id_store: storeId,
-        id_store_variation: idStoreVariation,
-        desc_store_variation: "Único",
-        desc_store_variation_delivery: null,
-        generic_use: "N",
-        is_unique: "Y"
-      },
-      ingredients: []
-    }
-  }
-
   addChoice(data) {
-    this.choices.push({ id_store_choice: data })
+    this.choices.push({ 
+      id_store_choice: data.id_store_choice,
+      order: data.order,
+      id_store_item: 0, 
+      id_store_item_choice: 0
+    })
   }
 }
+
 async function deleteCategory(categoryName) {
-  const originalCategoryId = await getFromSaipos("desc_store_category_item", categoryName, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
-  deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/categories_item/${originalCategoryId}`)
+    const originalCategoryId = await getFromSaipos("desc_store_category_item", categoryName, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
+    await deleteFromSaipos(`${API_BASE_URL}/stores/${storeId}/categories_item/${originalCategoryId}`)
 }
 
 async function menu(chosenData, storeId) {
@@ -98,36 +93,44 @@ async function menu(chosenData, storeId) {
       deleteCategory("Bebidas")
     ])
 
-    const uniqueCategories = [...new Set(chosenData.menuData.map(item => item.category))].slice(1)
+    const uniqueCategories = [...new Set(chosenData.map(item => item.category))]
 
     for (const name of uniqueCategories) {
-      const categoryToPost = new Category(name)
-      await categoryToPost.setTaxAndPrintType(foodTaxId, drinkTaxId)
+      const isDrink = name.split(' ').some(item => auxiliarVar.drinks.includes(item))
+      const categoryToPost = new Category({
+        desc_store_category_item: name,
+        id_store_taxes_data: isDrink ? drinkTaxId : foodTaxId,
+        print_type: isDrink ? 3 : 2,
+      })
       await postToSaipos(categoryToPost, `${API_BASE_URL}/stores/${storeId}/categories_item`)
     }
 
-    for (const item of chosenData.menuData.slice(1)) {
+    for (const item of chosenData) {
       const categoryId = await getFromSaipos("desc_store_category_item", item.category, "id_store_category_item", `${API_BASE_URL}/stores/${storeId}/categories_item`)
-      const productData = {
+      const productToPost = new Product ({
         desc_store_item: item.product,
         id_store_category_item: categoryId,
         detail: item.description,
         identifier_number: item.code,
-        price: item.price
-      }
+        price: item.price,
+        id_store_variation: idStoreVariation
+      })
 
-      const productToPost = new Product(productData, idStoreVariation)
-      if (item.choiceMenu != [""]) {
-        for (const choice of item.choiceMenu.slice(1)) {
+      if (item.choiceMenu[0] != [""]) {
+        for (const choice of item.choiceMenu) {
           const choiceId = await getFromSaipos("desc_store_choice", choice, "id_store_choice", `${API_BASE_URL}/stores/${storeId}/choices`)
-          productToPost.addChoice(choiceId)
+          const order = item.choiceMenu.indexOf(choice)
+          productToPost.addChoice({
+            id_store_choice: choiceId,
+            order: order
+          })
         }
       }
       await postToSaipos(productToPost, `${API_BASE_URL}/stores/${storeId}/items`)
     }
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de CARDÁPIO', error)
-    return ["CARDÁPIO: ", { stack: error.stack }]
+    return ["CARDÁPIO: ",  { stack: error.stack }]
   }
 }
 

@@ -36,7 +36,6 @@ async function users(chosenData, storeId) {
     let promises
     if (chosenData.users.length > 0 ) {
       promises = chosenData.users.map(usersData => {
-        console.log(usersData)
         const userToPost = new User({
           full_name: usersData.desc,
           store_name: chosenData.domain,
