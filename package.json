@@ -32,9 +32,13 @@
             "./**/**",
             "resources/**/*"
         ],
+        "mac": {
+            "target": "dmg",
+            "icon": "build/icon.png"
+        },
         "win": {
             "target": "nsis",
-            "icon": "./resources/saiposLogo.ico"
+            "icon": "build/icon.png"
         }
     },
     "keywords": []
