@@ -107,7 +107,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     return result
   }
-  cleanSelection()
 
   // Função para tratar arrays de funcionários
   function handleWorkers(quantity, dailyRate, worker, extra) {
@@ -306,9 +305,6 @@ document.addEventListener("DOMContentLoaded", function() {
   toggleExclusiveCheckboxes("apportionment-proportional", "apportionment-bigger")
   toggleExclusiveCheckboxes("partners-basic-digital-menu", "partners-premium-digital-menu")
   toggleExclusiveCheckboxes("partners-instruction-counter", "partners-instruction-waiter")
-
-  // TESTES
-  document.getElementById("store-id").value = 35504
 
 // Enviar formulário 
   document.getElementById("form").addEventListener("submit", async function(event) {
