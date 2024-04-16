@@ -15,11 +15,7 @@
         "electron-builder": "^24.13.3"
     },
     "dependencies": {
-        "body-parser": "^1.20.2",
         "csv-parser": "^3.0.0",
-        "dotenv": "^16.4.5",
-        "electron-progressbar": "^2.2.1",
-        "express": "^4.19.2",
         "node-fetch": "^3.3.2"
     },
     "build": {
