@@ -12,7 +12,7 @@ function createWindow() {
     win = new BrowserWindow({
         icon: path.join(__dirname, '..', '..', 'public', 'assets', 'saiposlogo.png'),
         width: 940,
-        height: 890,
+        height: 900,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
         }
@@ -78,7 +78,7 @@ ipcMain.on('toggle-window-size', (event, shouldExpand) => {
         const minWidth = 340
         const minHeight = 450
         const maxWidth = 940
-        const maxHeight = 890
+        const maxHeight = 900
     
         let newWidth, newHeight
     

@@ -10,10 +10,12 @@
     },
     "author": "Matheus Marcolin",
     "license": "ISC",
+    "devDependencies": {
+        "electron": "^30.0.0",
+        "electron-builder": "^24.13.3"
+    },
     "dependencies": {
         "csv-parser": "^3.0.0",
-        "electron": "^30.0.0",
-        "electron-builder": "^24.13.3",
         "node-fetch": "^3.3.2"
     },
     "build": {
@@ -27,13 +29,9 @@
             "./**/**",
             "resources/**/*"
         ],
-        "mac": {
-            "target": "dmg",
-            "icon": "build/icon.png"
-        },
         "win": {
             "target": "nsis",
-            "icon": "build/icon.png"
+            "icon": "/public/assets/saiposLogo.png"
         }
     },
     "keywords": []
