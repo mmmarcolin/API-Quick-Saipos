@@ -26,7 +26,7 @@ async function processDataToGoogleSheet(data) {
 
   if (data.generalData.time.timestamp > 0 && storeId != "33738") {
     const jsonData = JSON.stringify(data)
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbwoo8ZA0Qf5vjkRPglJUWjhPKBTV_5DAxxCHQop4SQWCCEvWO8bIW7H3rPuw8oPMSms/exec'
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzZ_FKalqcqd2mQKVNuv4odpFhFWVlxmVE_NyeZZUNrpa34XNGA7Wa6TbAGIAqTZEY/exec'
 
     fetch(scriptUrl, {
       method: 'POST',
@@ -83,42 +83,79 @@ async function hasTruthyValue(value) {
   return false
 }
 
+// Mapeamento dos módulos em português
+const moduleNamesInPortuguese = {
+  ifoodIntegration: 'Integração Ifood',
+  paymentTypes: 'Formas de pagamento',
+  storeData: 'Dados da loja',
+  choices: 'Adicionais',
+  settings: 'Configurações',
+  saleStatus: 'Status de venda',
+  tableOrder: 'Mesas',
+  orderCard: 'Comandas',
+  shifts: 'Turnos',
+  waiters: 'Garçons',
+  deliveryMen: 'Entregadores',
+  users: 'Usuários',
+  deliveryAreas: 'Áreas de entrega',
+  menu: 'Cardápio',
+  partners: 'Canais de venda'
+}
+
 // Execução do módulo
 async function executeModule(moduleName, data) {
+  let success = false
   if (await hasTruthyValue(data[`${moduleName}Chosen`])) {
-    console.log(`EXECUTANDO: ${storeId} | ${moduleName}`)
+    console.log(`EXECUTANDO: ${data.generalData.storeId} | ${moduleName}`)
     const err = await func[moduleName](data[`${moduleName}Chosen`], data.generalData.storeId)
     if (err && err.length > 0) {
-      await console.log(`ERRO: ${storeId} | ${err[0].slice(0, -2)}`)
-      data.generalData.errorLog.push({ moduleName, err })
+      console.log(`ERRO: ${data.generalData.storeId} | ${err[0].slice(0, -2)}`)
+    } else {
+      success = true
     }
   }
+  return { moduleName, success }
 }
 
 // Execução da configuração
 async function executeConfigure(data) {
   try {
     storeId = data.generalData.storeId
-
     data.generalData.time.startTime = new Date()
-    data.generalData.errorLog = []
-
+    
+    
     const initialModules = ['ifoodIntegration', 'paymentTypes', 'storeData', 'choices', 'settings']
+    const moduleResults = {}
+    
     const initialPromises = initialModules.map(moduleName => executeModule(moduleName, data))
-
-    await Promise.all(initialPromises)
-
+    const initialResults = await Promise.all(initialPromises)
+    initialResults.forEach(result => moduleResults[result.moduleName] = result.success)
+    
     const remainingModules = Object.entries(func)
-      .filter(([moduleName]) => !initialModules.includes(moduleName))
-      .map(([moduleName]) => executeModule(moduleName, data))
-
-    await Promise.all(remainingModules)
-
+    .filter(([moduleName]) => !initialModules.includes(moduleName))
+    .map(([moduleName]) => executeModule(moduleName, data))
+    const remainingResults = await Promise.all(remainingModules)
+    remainingResults.forEach(result => moduleResults[result.moduleName] = result.success)
+    
+    
     await processDataToGoogleSheet(data)
-    return data.generalData.time.timestamp
+    const finalAlert = await createFinalReport(data, moduleResults)
+    
+    return finalAlert
   } catch (error) {
     console.error('Ocorreu um erro ao CONFIGURAR:', error)
   }
+}
+
+function createFinalReport(data, results) {
+  let report = `FIM: ${data.generalData.storeId} | ${data.generalData.time.timestamp} segundos\n\nMódulos cadastrados:\n`
+  for (let [module, success] of Object.entries(results)) {
+    if (success) { 
+      const moduleNameInPortuguese = moduleNamesInPortuguese[module] || module
+      report += `${moduleNameInPortuguese}\n`
+    }
+  }
+  return report
 }
 
 module.exports = { executeConfigure }

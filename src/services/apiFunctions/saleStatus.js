@@ -38,14 +38,14 @@ async function saleStatus(chosenData, storeId) {
         { desc: "Cozinha", order: 0, types: [1, 5, 6], statusId: saleStatusIds[0] },
         { desc: "Saiu para entrega", order: 1, types: [3], statusId: saleStatusIds[1] },
         { desc: "Entregue", order: 2, types: [5], statusId: saleStatusIds[2] },
-        { desc: "Cancelado", order: 3, types: [4], statusId: 0 }
+        { desc: "Cancelados", order: 3, types: [4], statusId: 0 }
       ],
       easyDelivery: [
         { desc: "Cozinha", order: 0, types: [1, 5, 6, 21], statusId: saleStatusIds[0] },
         { desc: "Aguardando entrega", order: 1, types: [2, 21], statusId: saleStatusIds[1] },
         { desc: "Saiu para entrega", order: 2, types: [3, 20], statusId: saleStatusIds[2] },
         { desc: "Entregue", order: 3, types: [5], statusId: 0 },
-        { desc: "Cancelado", order: 4, types: [4], statusId: 0 }
+        { desc: "Cancelados", order: 4, types: [4], statusId: 0 }
       ]
     }
 

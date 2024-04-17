@@ -181,8 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     cleanSelection()
     logAndSendAlert(`INÍCIO: ${formData.generalData.storeId}`)
-    const timestamp =  await executeConfigure(formData)
-    logAndSendAlert(`FIM: ${formData.generalData.storeId} | ${timestamp} segundos`)
+    logAndSendAlert(await executeConfigure(formData))
   }
 
   // Função para limpar seleção
@@ -226,6 +225,25 @@ document.addEventListener("DOMContentLoaded", function() {
       return false
     }
   }
+
+  // Integração Hubspot
+  const hubspotId = document.getElementById("hubspot-id")
+  hubspotId.addEventListener('blur', async function() {
+    try {
+    const response = await fetch(`url/${hubspotId.value}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': ""
+      }
+    })
+    if (response.ok) {
+      return response
+    }
+    } catch {
+      return false
+    }
+  })
 
   // Função para checar token de autorização
   async function apiTest(saiposAuthToken, id) {
@@ -432,7 +450,7 @@ document.addEventListener("DOMContentLoaded", function() {
           deliveryOption: elementValues.storeDataCnae ? (elementValues.deliveryOption ? elementValues.deliveryOption : "D") : "", 
           state: elementValues.storeDataCnae ? elementValues.storeDataState : "",
           city: elementValues.storeDataCnae ? elementValues.storeDataCity : "",
-          cnae: elementValues.storeDataCnae,
+          cnae: elementValues.storeDataCnae.replace(/\D+/g, ''),
           district: elementValues.storeDataDistrict,
           zipCode: elementValues.storeDataZip,
           address: elementValues.storeDataAddress,

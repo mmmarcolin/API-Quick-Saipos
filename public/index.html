@@ -54,8 +54,15 @@
                         KDS
                     </label>
                 </fieldset>
+                <!-- Hubspot -->
+                <fieldset id="saipos-auth-token-fieldset" class="field-container-one sixth-width-fieldset">
+                    <legend>Hubspot</legend>
+                    <div>
+                        <input type="text" id="hubspot-id" name="hubspot-id" placeholder="1234567890">
+                    </div>
+                </fieldset>
                 <!-- Formas de pagamento -->
-                <fieldset class="full-width-fieldset field-container-nine options-container select-all-pay">
+                <fieldset class="tenth-width-fieldset field-container-nine options-container select-all-pay">
                     <legend>Formas de pagamento</legend>
                     <label class="options-label">
                         <input type="checkbox" id="payment-types-all" name="payment-types-all">
@@ -333,7 +340,7 @@
                     </div>
                     <div>
                         <label for="waiters-daily-rate">Diária</label>
-                        <input type="text" id="waiters-daily-rate" name="waiters-daily-rate" pattern="[\d,]+" placeholder="30, 50">
+                        <input type="text" id="waiters-daily-rate" name="waiters-daily-rate" placeholder="30, 50">
                     </div>
                     <div>
                         <label for="delivery-men-quantity">Entregadores</label>
@@ -341,7 +348,7 @@
                     </div>
                     <div>
                         <label for="delivery-men-daily-rate">Diária</label>
-                        <input type="text" id="delivery-men-daily-rate" name="delivery-men-daily-rate" pattern="[\d,]+" placeholder="20, 30, 40">
+                        <input type="text" id="delivery-men-daily-rate" name="delivery-men-daily-rate" placeholder="20, 30, 40">
                     </div>
                 </fieldset>
                 <!-- Integração Ifood -->
@@ -405,7 +412,7 @@
                         <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
                         <span class="remove-file" id="delivery-area-remove">✔</span>
                     </label>
-                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID" pattern="\d+" value="33738" required>
+                    <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID" pattern="\d+" required>
                     <input type="submit" value="INICIAR" id="start-button" class="button">
                 </div>
             </div>

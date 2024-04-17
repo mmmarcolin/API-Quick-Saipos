@@ -163,7 +163,7 @@ async function partners(chosenData, storeId) {
     const operations = []
 
     if (chosenData.deliverySite) {
-      new PartnerEnable({storeId: storeId, id_partner_sale: 7})
+      await postToSaipos(new PartnerEnable({id_store: storeId, id_partner_sale: 7}), `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
       operations.push((async () => {
         const siteId = await getFromSaipos("id_store", storeId, "id_store_site_data", `${API_BASE_URL}/stores/${storeId}/site_data`)
         const siteToPost = new Site({
@@ -187,7 +187,7 @@ async function partners(chosenData, storeId) {
     }
 
     if (chosenData.basicMenu || chosenData.premiumMenu) {
-      new PartnerEnable({storeId: storeId, id_partner_sale: 32})
+      await postToSaipos(new PartnerEnable({id_store: storeId, id_partner_sale: 32}), `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
       operations.push((async () => {
         const menuId = await getFromSaipos("id_store", storeId, "id_store_table_data", `${API_BASE_URL}/stores/${storeId}/table_data`)
         const menuToPost = new Menu({

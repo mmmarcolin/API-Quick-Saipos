@@ -81,7 +81,7 @@ body.dark-mode #start-button {
 }
 
 body.dark-mode #store-id::placeholder {
-  color: #ccc;
+  color: #6a6a6a;
 }
 
 body.dark-mode .options-label input:checked ~ .checkbox-mark {
@@ -190,7 +190,8 @@ label {
   font-size: 14px;
 }
 
-#saipos-auth-token {
+#saipos-auth-token,
+#hubspot-id {
   font-size: 10px;
   height:20px;
   margin: 0;
@@ -265,6 +266,12 @@ label {
   box-shadow: 0 0 10px 1px rgb(232, 232, 232);
 }
 
+#store-id {
+  border: 2px solid #4972B1;
+  background-color: white;
+  color: #4972B1;
+}
+
 .button-container.collapsed {
   margin-bottom: 0.625rem;
 }
@@ -279,8 +286,12 @@ label {
   margin: 0;
 }
 
-.upload-button:hover, .auxiliar-button:hover, #store-id:hover {
+.upload-button:hover, .auxiliar-button:hover {
   background-color: #2f4c77;
+}
+
+#store-id:hover {
+  background-color: #ccc;
 }
 
 #start-button {
@@ -297,7 +308,7 @@ label {
 }
 
 #store-id::placeholder {
-  color: white;
+  color: #4972B1;
 }
 
 /* Colapsar */
@@ -321,7 +332,7 @@ label {
   }
 }
 
-@media only screen and (max-width: 800px) { 
+@media only screen and (max-width: 860px) { 
   .field-container-two,
   .field-container-three,
   .field-container-four,
@@ -337,7 +348,8 @@ label {
     grid-column: span 6;
     grid-gap: 10px;
   }
-  #saipos-auth-token-fieldset {
+  #saipos-auth-token-fieldset,
+  #hubspot-id {
     display: none;
   }
   

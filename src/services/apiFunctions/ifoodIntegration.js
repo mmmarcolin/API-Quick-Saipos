@@ -44,10 +44,7 @@ class PartnerEnable {
 async function ifoodIntegration(chosenData, storeId) {
   try {
 
-    const enableToPost = new PartnerEnable({ 
-      partnerId: 1,
-      id_store: storeId
-    })
+    const enableToPost = new PartnerEnable({ id_store: storeId })
     await postToSaipos(enableToPost, `${API_BASE_URL}/stores/${storeId}/partners_sale/enable_partner_sale`)
 
     const promises = chosenData.map(async data => {

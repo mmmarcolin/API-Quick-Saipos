@@ -18,21 +18,20 @@ async function shifts(chosenData, storeId) {
   try {
     const shiftId = await getFromSaipos("id_store", storeId, "id_store_shift", `${API_BASE_URL}/stores/${storeId}/shifts`)
 
-    const operations = chosenData.map((shiftData, index) => {
+    for (let i = 0; i < chosenData.length; i++) {     
       const shiftToPost = new Shift({
-        id_store_shift: index === 0 ? shiftId : 0,
-        desc_store_shift: shiftData.desc,
-        starting_time: shiftData.time,
-        service_charge: shiftData.serviceFee
+        id_store_shift: i === 0 ? shiftId : 0,
+        desc_store_shift: chosenData[i].desc,
+        starting_time: chosenData[i].time,
+        service_charge: chosenData[i].serviceFee
       })
-      if (index === 0) {
-        return putToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/${shiftId}`)
+      if (i === 0) {
+        await putToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/${shiftId}`)
       } else {
-        return postToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/`)
+        await postToSaipos(shiftToPost, `${API_BASE_URL}/stores/${storeId}/shifts/`)
       }
-    })
+    }
 
-    await Promise.all(operations)
   } catch (error) {
     console.error('Ocorreu um erro durante o cadastro de TURNOS', error)
     return ["TURNOS: ", { stack: error.stack }]
