@@ -1,10 +1,13 @@
+// Importações
 const { normalizeText } = require('../utils/auxiliarVariables')
-let saiposAuthToken = ''
 
+// Setar token
+let saiposAuthToken = ''
 function setToken(token) {
   saiposAuthToken = token
 }
 
+// Criar request base
 function createRequestOptions(method, data = null) {
   const options = {
     method: method,
@@ -19,15 +22,14 @@ function createRequestOptions(method, data = null) {
   return options
 }
 
+// Criar requisição
 async function makeFetchRequest(url, options) {
   try {
-    console.log(options)
     const response = await fetch(url, options)
     if (!response.ok) {
       throw new Error(response.status)
     }
     const responseData = await response.json()
-    // options.method !== 'GET' ? console.log('Response:', responseData) : null
     return responseData
   } catch (error) {
     console.error('Error:', error)
@@ -35,23 +37,28 @@ async function makeFetchRequest(url, options) {
   }
 }
 
+// Direcionar POST
 async function postToSaipos(data, url) {
-  // console.log(data)
   return makeFetchRequest(url, createRequestOptions('POST', data))
 }
 
+// Direcionar PUT
 async function putToSaipos(data, url) {
-  // console.log(data)
   return makeFetchRequest(url, createRequestOptions('PUT', data))
 }
 
+// Direcionar DELETE
+async function deleteFromSaipos(url) {
+  return makeFetchRequest(url, createRequestOptions('DELETE'))
+}
+
+// Direcionar GET
 async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url, extraPropertyToFind = null, extraPropertyToReturn = null) {
   const responseData = await makeFetchRequest(url, createRequestOptions('GET'))
   let result
   if (!responseData) {
     return null
   }
-  // console.log(responseData)
   if (Array.isArray(responseData)) {
     result = responseData.find(res => console.log(normalizeText(res[keyToFind]), normalizeText(desiredValue)))
     extraPropertyToFind ?
@@ -74,8 +81,5 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url, extraPro
   return result   
 }
 
-async function deleteFromSaipos(url) {
-  return makeFetchRequest(url, createRequestOptions('DELETE'))
-}
-
+// Exportações
 module.exports = { postToSaipos, getFromSaipos, putToSaipos, deleteFromSaipos, setToken }

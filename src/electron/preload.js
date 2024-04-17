@@ -1,6 +1,8 @@
 
+// Importações
 const { contextBridge, ipcRenderer } = require('electron')
 
+// Exposição de funções
 contextBridge.exposeInMainWorld('api', {
     processCSV: (...args) => ipcRenderer.invoke('process-csv', ...args),
     executeConfigure: (...args) => ipcRenderer.invoke('execute-configure', ...args),

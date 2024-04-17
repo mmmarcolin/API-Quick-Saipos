@@ -3,10 +3,10 @@ const api = window.api
 const toggleWindowSize = isVisible => api.toggleWindowSize(isVisible)
 const openExternal = url => api.openExternal(url)
 const showAlert = msg => api.showAlert(msg)
-function processCSV(...args) { return api.processCSV(...args) }
-function executeConfigure(...args) { return api.executeConfigure(...args) }
-function sendSaiposAuthToken(token) { return api.sendSaiposAuthToken(token) }
-function normalizeText(text) { return api.normalizeText(text) }
+const processCSV = (...args) => api.processCSV(...args)
+const executeConfigure = (...args) => api.executeConfigure(...args)
+const sendSaiposAuthToken = token => api.sendSaiposAuthToken(token)
+const normalizeText = text => api.normalizeText(text)
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -27,14 +27,14 @@ document.addEventListener("DOMContentLoaded", function() {
     })
   })
 
-  // Abrir link
+  // Abrir link externamente
   document.getElementById('doc-button').addEventListener('click', (event) => {
     event.preventDefault()
     const url = event.currentTarget.href
     openExternal(url)
   })
 
-  // Colapsar HTML
+  // Colapsar conteúdo
   document.getElementById('collapse-button').addEventListener('click', function() {
     var content = document.getElementById('collapsible-content')
     var buttonContainer = document.getElementById('button-container')
@@ -230,14 +230,16 @@ document.addEventListener("DOMContentLoaded", function() {
   // Integração Hubspot
   const hubspotTicketId = document.getElementById('hubspot-id')
   hubspotTicketId.addEventListener('blur', async function() {
-    let hubspotCompanyId, hubspotCompany, hubspotTicket
-  
+
     try {
+      let hubspotCompanyId, hubspotCompany, hubspotTicket
       const token = await api.requestToken()
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
+
+      // ID Empresa
       const responseCompanyId = await fetch(`https://api.hubapi.com/crm/v4/objects/tickets/${hubspotTicketId.value}/associations/company`, {
         method: 'GET',
         headers: headers
@@ -247,6 +249,7 @@ document.addEventListener("DOMContentLoaded", function() {
         hubspotCompanyId = responseCompanyIdData.results[0].toObjectId
       }
   
+      // Dados empresa
       const responseCompany = await fetch(`https://api.hubapi.com/crm/v3/objects/companies/search`, {
         method: 'POST',
         headers: headers,
@@ -271,6 +274,7 @@ document.addEventListener("DOMContentLoaded", function() {
         hubspotCompany = responseCompanyData.results[0].properties
       }
       
+      // Dados ticket
       const responseTicket = await fetch(`https://api.hubapi.com/crm/v3/objects/tickets/search`, {
         method: 'POST',
         headers: headers,
@@ -306,34 +310,34 @@ document.addEventListener("DOMContentLoaded", function() {
       cleanSelection()
       responseTicket.id_saipos != responseCompany.id_saipos ? logAndSendAlert("Empresa posivelmente errada, confira!") : null
 
-      document.getElementById('payment-types-pix').checked = hubspotTicket.pagamento__quicksaipos_.includes('Pix') ? true : null
-      document.getElementById('payment-types-master').checked = hubspotTicket.pagamento__quicksaipos_.includes('Mastercard') ? true : null
-      document.getElementById('payment-types-elo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Elo') ? true : null
-      document.getElementById('payment-types-visa').checked = hubspotTicket.pagamento__quicksaipos_.includes('Visa') ? true : null
-      document.getElementById('payment-types-amex').checked = hubspotTicket.pagamento__quicksaipos_.includes('Amex') ? true : null
-      document.getElementById('payment-types-hiper').checked = hubspotTicket.pagamento__quicksaipos_.includes('Hiper') ? true : null
-      document.getElementById('payment-types-sodexo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Sodexo') ? true : null
-      document.getElementById('payment-types-alelo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Alelo') ? true : null
-      document.getElementById('config-col42').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Colunas de impressão: 42') ? true : null
-      document.getElementById('config-permissions').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Permissões de ADM') ? true : null
-      document.getElementById('config-cancel-pass').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Motivo para cancelamento') ? true : null
-      document.getElementById('config-cancel-reason').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Senha para cancelamento') ? true : null
-      document.getElementById('config-kds').checked = hubspotTicket.configuracoes__quicksaipos_.includes('KDS') ? true : null
-      document.getElementById('user-waiter-app').checked = hubspotTicket.usuarios__quicksaipos_.includes('App Garçom') ? true : null
-      document.getElementById('user-cashier').checked = hubspotTicket.usuarios__quicksaipos_.includes('Caixa') ? true : null
-      document.getElementById('sale-status-left').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Saiu para entrega'? true : null
-      document.getElementById('sale-status-easy-delivery').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Entrega fácil'? true : null
-      document.getElementById('delivery-area-district').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Bairro"? true : null
-      document.getElementById('delivery-area-radius').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Raio e Mapa"? true : null
-      document.getElementById('apportionment-proportional').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Rateio proporcional'? true : null
-      document.getElementById('apportionment-bigger').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Maior Valor'? true : null
-      document.getElementById('partners-site-delivery').checked = hubspotTicket.site_com_dominio_saipos_ == 'Sim'? true : null
-      document.getElementById('partners-counter-pickup').checked = hubspotTicket.aceita_retirada_no_balcao == 'Sim'? true : null
-      document.getElementById('partners-basic-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio basic' ? true : null
-      document.getElementById('partners-premium-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio premium' ? true : null
-      document.getElementById('partners-instruction-counter').checked = hubspotTicket.instrucoes_de_pagamento == 'Passar no caixa e fazer o pagamento' ? true : null
-      document.getElementById('partners-instruction-waiter').checked = hubspotTicket.instrucoes_de_pagamento == 'Aguardar o garçom para fazer o pagamento'? true : null
-
+      // Inserção no formulário
+      document.getElementById('payment-types-pix').checked = hubspotTicket.pagamento__quicksaipos_.includes('Pix') ? true : false
+      document.getElementById('payment-types-master').checked = hubspotTicket.pagamento__quicksaipos_.includes('Mastercard') ? true : false
+      document.getElementById('payment-types-elo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Elo') ? true : false
+      document.getElementById('payment-types-visa').checked = hubspotTicket.pagamento__quicksaipos_.includes('Visa') ? true : false
+      document.getElementById('payment-types-amex').checked = hubspotTicket.pagamento__quicksaipos_.includes('Amex') ? true : false
+      document.getElementById('payment-types-hiper').checked = hubspotTicket.pagamento__quicksaipos_.includes('Hiper') ? true : false
+      document.getElementById('payment-types-sodexo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Sodexo') ? true : false
+      document.getElementById('payment-types-alelo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Alelo') ? true : false
+      document.getElementById('config-col42').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Colunas de impressão: 42') ? true : false
+      document.getElementById('config-permissions').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Permissões de ADM') ? true : false
+      document.getElementById('config-cancel-pass').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Motivo para cancelamento') ? true : false
+      document.getElementById('config-cancel-reason').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Senha para cancelamento') ? true : false
+      document.getElementById('config-kds').checked = hubspotTicket.configuracoes__quicksaipos_.includes('KDS') ? true : false
+      document.getElementById('user-waiter-app').checked = hubspotTicket.usuarios__quicksaipos_.includes('App Garçom') ? true : false
+      document.getElementById('user-cashier').checked = hubspotTicket.usuarios__quicksaipos_.includes('Caixa') ? true : false
+      document.getElementById('sale-status-left').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Saiu para entrega'? true : false
+      document.getElementById('sale-status-easy-delivery').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Entrega fácil'? true : false
+      document.getElementById('delivery-area-district').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Bairro"? true : false
+      document.getElementById('delivery-area-radius').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Raio e Mapa"? true : false
+      document.getElementById('apportionment-proportional').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Rateio proporcional'? true : false
+      document.getElementById('apportionment-bigger').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Maior Valor'? true : false
+      document.getElementById('partners-site-delivery').checked = hubspotTicket.site_com_dominio_saipos_ == 'Sim'? true : false
+      document.getElementById('partners-counter-pickup').checked = hubspotTicket.aceita_retirada_no_balcao == 'Sim'? true : false
+      document.getElementById('partners-basic-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio basic' ? true : false
+      document.getElementById('partners-premium-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio premium' ? true : false
+      document.getElementById('partners-instruction-counter').checked = hubspotTicket.instrucoes_de_pagamento == 'Passar no caixa e fazer o pagamento' ? true : false
+      document.getElementById('partners-instruction-waiter').checked = hubspotTicket.instrucoes_de_pagamento == 'Aguardar o garçom para fazer o pagamento'? true : false
       document.getElementById('partners-start-day').value = hubspotTicket.dias_inicio__quicksaipos_.replace(/\n/g, ',')
       document.getElementById('partners-end-day').value = hubspotTicket.dias_fim__quicksaipos_.replace(/\n/g, ',')
       document.getElementById('partners-start-time').value = hubspotTicket.horario_de_inicio__quicksaipos_.replace(/\n/g, ',')
@@ -352,7 +356,6 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('order-cards').value = hubspotTicket.quantidade_de_comandas__quicksaipos_.replace(/\n/g, ',')
       document.getElementById('domain').value = await normalizeText(hubspotTicket.subject.slice(8))
       document.getElementById('store-id').value = hubspotTicket.id_saipos.replace(/\n/g, ',')
-      
       document.getElementById('store-data-state').value = hubspotCompany.estado
       document.getElementById('store-data-city').value = hubspotCompany.city
       document.getElementById('store-data-district').value = hubspotCompany.bairro

@@ -26,7 +26,7 @@ async function processDataToGoogleSheet(data) {
 
   if (data.generalData.time.timestamp > 0 && storeId != "33738") {
     const jsonData = JSON.stringify(data)
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzZ_FKalqcqd2mQKVNuv4odpFhFWVlxmVE_NyeZZUNrpa34XNGA7Wa6TbAGIAqTZEY/exec'
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbw0Bav3zFGj4Cy82MiVVSPWy3I9bjhIAMDPdh9WBbdDQaP_9nREOWbvKGsbM18l7I8r_g/exec'
 
     fetch(scriptUrl, {
       method: 'POST',
@@ -83,25 +83,6 @@ async function hasTruthyValue(value) {
   return false
 }
 
-// Mapeamento dos módulos em português
-const moduleNamesInPortuguese = {
-  ifoodIntegration: 'Integração Ifood',
-  paymentTypes: 'Formas de pagamento',
-  storeData: 'Dados da loja',
-  choices: 'Adicionais',
-  settings: 'Configurações',
-  saleStatus: 'Status de venda',
-  tableOrder: 'Mesas',
-  orderCard: 'Comandas',
-  shifts: 'Turnos',
-  waiters: 'Garçons',
-  deliveryMen: 'Entregadores',
-  users: 'Usuários',
-  deliveryAreas: 'Áreas de entrega',
-  menu: 'Cardápio',
-  partners: 'Canais de venda'
-}
-
 // Execução do módulo
 async function executeModule(moduleName, data) {
   let success = false
@@ -148,7 +129,25 @@ async function executeConfigure(data) {
 }
 
 function createFinalReport(data, results) {
-  let report = `FIM: ${data.generalData.storeId} | ${data.generalData.time.timestamp} segundos\n\nMódulos cadastrados:\n`
+  const moduleNamesInPortuguese = {
+    ifoodIntegration: 'Integração Ifood',
+    paymentTypes: 'Formas de pagamento',
+    storeData: 'Dados da loja',
+    choices: 'Adicionais',
+    settings: 'Configurações',
+    saleStatus: 'Status de venda',
+    tableOrder: 'Mesas',
+    orderCard: 'Comandas',
+    shifts: 'Turnos',
+    waiters: 'Garçons',
+    deliveryMen: 'Entregadores',
+    users: 'Usuários',
+    deliveryAreas: 'Áreas de entrega',
+    menu: 'Cardápio',
+    partners: 'Canais de venda'
+  }
+  
+  let report = `FIM: ${data.generalData.storeId} | ${data.generalData.time.timestamp} segundos\n\MÓDULOS CADASTRADOS:\n`
   for (let [module, success] of Object.entries(results)) {
     if (success) { 
       const moduleNameInPortuguese = moduleNamesInPortuguese[module] || module
@@ -158,4 +157,5 @@ function createFinalReport(data, results) {
   return report
 }
 
+// Exportações
 module.exports = { executeConfigure }

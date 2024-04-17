@@ -1,3 +1,4 @@
+// Variáveis de verificação de string
 const auxiliarVar = {
     drinks: [
         "Refrigerantes", "Refrigerante", "Sucos", "Suco", "Bebidas",
@@ -39,8 +40,10 @@ const auxiliarVar = {
     ]
 }
 
+// URL base da API Saipos
 const API_BASE_URL = "https://api.saipos.com/v1"
 
+// Normalizar texto
 const normalizeText = (text) => 
     text.toString()
     .normalize("NFD")
@@ -50,6 +53,7 @@ const normalizeText = (text) =>
     .replace(/[^a-zA-Z0-9]/g, "")
     .toLowerCase()
 
+// Exportações
 module.exports = { 
     auxiliarVar: auxiliarVar, 
     API_BASE_URL, 

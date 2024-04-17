@@ -1,6 +1,8 @@
+// Importações
 const fs = require('fs')
 const csv = require('csv-parser')
 
+// Tratar arquivo
 function processCSV(filePath, headers) {
     let mappings = []
     headers[0] == "Categoria" ? mappings = menuMappings :
@@ -31,6 +33,7 @@ function processCSV(filePath, headers) {
     })
 }
 
+// Tratar dados
 function processData(data, mappings) {
     return data.map(item => {
         const rowObject = {}
@@ -52,6 +55,7 @@ function processData(data, mappings) {
     })
 }
 
+// Mapeamento das variáveis de colunas
 const choicesMappings = [
     { key: 'choice', field: 'Adicional' },
     { key: 'item', field: 'Item' },
@@ -74,4 +78,5 @@ const deliveryAreasMappings = [
     { key: 'deliveryMenFee', field: 'Entregador' }
 ]
 
+// Exportações
 module.exports = { processCSV }
