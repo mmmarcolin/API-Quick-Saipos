@@ -95,6 +95,15 @@ body.dark-mode #store-id:hover {
   border: 1px solid #202020;
 }
 
+input:focus,
+select:focus {
+  outline: 1px solid #4972B1
+}
+
+body.dark-mode input.dark-mode:focus {
+  outline: 1px solid #000000
+}
+
 /* Fieldsets */
 #partners { grid-column: span 12; }
 .full-width-fieldset { grid-column: span 12; }
