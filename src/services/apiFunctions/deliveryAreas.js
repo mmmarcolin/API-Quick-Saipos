@@ -108,21 +108,18 @@ async function deliveryAreas(chosenData, storeId) {
     } else {
       await putToSaipos({ delivery_area_option: 'D' }, `${API_BASE_URL}/stores/${storeId}`)
 
-      const stateId = await getFromSaipos("desc_state", chosenData.state, "id_state",`${API_BASE_URL}/states`)
-      const cityId = await getFromSaipos("desc_city", chosenData.state, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
-
       const dataDistricToPost = new DataDistrict({ 
         id_city: cityId,
-        desc_districts: chosenData.data.map(item => item.districts)
+        desc_districts: chosenData.data.map(item => item.deliveryArea)
       })
       await postToSaipos(dataDistricToPost, `${API_BASE_URL}/districts/insert-district-list`)
 
       const districtPromises = chosenData.data.map(deliveryArea =>
         getFromSaipos("desc_district", deliveryArea.deliveryArea, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
       )
-  
+      
       const districtIds = await Promise.all(districtPromises)
-  
+      console.log(districtIds)
       const districtsBatch = []
       const postPromises = []
   

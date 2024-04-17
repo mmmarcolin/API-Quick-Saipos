@@ -53,7 +53,7 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url, extraPro
   }
   // console.log(responseData)
   if (Array.isArray(responseData)) {
-    // result = responseData.find(res => console.log(normalizeText(res[keyToFind]), normalizeText(desiredValue)))
+    result = responseData.find(res => console.log(normalizeText(res[keyToFind]), normalizeText(desiredValue)))
     extraPropertyToFind ?
     result = responseData.find(res => normalizeText(res[keyToFind][extraPropertyToFind]) === normalizeText(desiredValue)) :
     result = responseData.find(res => normalizeText(res[keyToFind]) === normalizeText(desiredValue)) 
@@ -70,7 +70,7 @@ async function getFromSaipos(keyToFind, desiredValue, keyToReturn, url, extraPro
   result = extraPropertyToReturn != null ? result[keyToReturn][extraPropertyToReturn] :
   result = keyToReturn != null ? result[keyToReturn] : result
 
-  // console.log(keyToReturn, ': ', result)
+  console.log(keyToReturn, ': ', result)
   return result   
 }
 

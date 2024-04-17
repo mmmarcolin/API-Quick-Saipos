@@ -27,24 +27,24 @@ async function updateSaleStatus(saleStatusData) {
 
 async function saleStatus(chosenData, storeId) {
   try {
-    const saleStatusIds = await Promise.all([
-      getFromSaipos("order", 1, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
-      getFromSaipos("order", 2, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
-      getFromSaipos("order", 3, "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`)
+    const [firstSlSt, secondSlSt, thirdSlSt] = await Promise.all([
+      getFromSaipos("desc_store_sale_status", "Cozinha", "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
+      getFromSaipos("desc_store_sale_status", "Entregue", "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`),
+      getFromSaipos("desc_store_sale_status", "Cancelados", "id_store_sale_status", `${API_BASE_URL}/stores/${storeId}/sale_statuses`)
     ])
 
     const statuses = {
       delivery: [
-        { desc: "Cozinha", order: 0, types: [1, 5, 6], statusId: saleStatusIds[0] },
-        { desc: "Saiu para entrega", order: 1, types: [3], statusId: saleStatusIds[1] },
-        { desc: "Entregue", order: 2, types: [5], statusId: saleStatusIds[2] },
+        { desc: "Cozinha", order: 0, types: [1, 5, 6], statusId: firstSlSt },
+        { desc: "Saiu para entrega", order: 1, types: [3], statusId: secondSlSt },
+        { desc: "Entregue", order: 2, types: [5, 26], statusId: thirdSlSt },
         { desc: "Cancelados", order: 3, types: [4], statusId: 0 }
       ],
       easyDelivery: [
-        { desc: "Cozinha", order: 0, types: [1, 5, 6, 21], statusId: saleStatusIds[0] },
-        { desc: "Aguardando entrega", order: 1, types: [2, 21], statusId: saleStatusIds[1] },
-        { desc: "Saiu para entrega", order: 2, types: [3, 20], statusId: saleStatusIds[2] },
-        { desc: "Entregue", order: 3, types: [5], statusId: 0 },
+        { desc: "Cozinha", order: 0, types: [1, 5, 6, 21], statusId: firstSlSt },
+        { desc: "Aguardando entrega", order: 1, types: [2, 21], statusId: secondSlSt },
+        { desc: "Saiu para entrega", order: 2, types: [3, 20], statusId: thirdSlSt },
+        { desc: "Entregue", order: 3, types: [5, 26], statusId: 0 },
         { desc: "Cancelados", order: 4, types: [4], statusId: 0 }
       ]
     }
