@@ -6,6 +6,7 @@ const showAlert = msg => api.showAlert(msg)
 function processCSV(...args) { return api.processCSV(...args) }
 function executeConfigure(...args) { return api.executeConfigure(...args) }
 function sendSaiposAuthToken(token) { return api.sendSaiposAuthToken(token) }
+function normalizeText(text) { return api.normalizeText(text) }
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('store-data-district').value = responseData.neighborhood
         document.getElementById('store-data-address').value = responseData.street
       } catch (error) {
-        console.error('Erro ao buscar dados do CEP:', error)
+        console.error('Erro na requisição CEP:', error)
       }
     }
   })
@@ -227,21 +228,144 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Integração Hubspot
-  const hubspotId = document.getElementById("hubspot-id")
-  hubspotId.addEventListener('blur', async function() {
+  const hubspotTicketId = document.getElementById('hubspot-id')
+  hubspotTicketId.addEventListener('blur', async function() {
+    let hubspotCompanyId, hubspotCompany, hubspotTicket
+  
     try {
-    const response = await fetch(`url/${hubspotId.value}`, {
-      method: 'GET',
-      headers: {
+      const token = await api.requestToken()
+      const headers = {
         'Content-Type': 'application/json',
-        'Authorization': ""
+        'Authorization': `Bearer ${token}`
       }
-    })
-    if (response.ok) {
-      return response
-    }
-    } catch {
-      return false
+      const responseCompanyId = await fetch(`https://api.hubapi.com/crm/v4/objects/tickets/${hubspotTicketId.value}/associations/company`, {
+        method: 'GET',
+        headers: headers
+      })
+      const responseCompanyIdData = await responseCompanyId.json()
+      if (responseCompanyId.ok) {
+        hubspotCompanyId = responseCompanyIdData.results[0].toObjectId
+      }
+  
+      const responseCompany = await fetch(`https://api.hubapi.com/crm/v3/objects/companies/search`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          "filterGroups": [{
+            "filters": [{
+              "propertyName": "hs_object_id",
+              "operator": "EQ",
+              "value": hubspotCompanyId
+            }]
+          }],
+          "properties": [
+            "estado", "city", "bairro", "address", "zip", "endereco_numero", "endereco_complemento",
+            "cnpj", "inscricao_estadual", "cnae", "id_saipos"
+          ],
+          "limit": 1
+        })
+      })
+      const responseCompanyData = await responseCompany.json()
+      if (responseCompany.ok) {
+        console.log(responseCompanyData.results[0].properties)
+        hubspotCompany = responseCompanyData.results[0].properties
+      }
+      
+      const responseTicket = await fetch(`https://api.hubapi.com/crm/v3/objects/tickets/search`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          "filterGroups": [{
+            "filters": [{
+              "propertyName": "hs_object_id",
+              "operator": "EQ",
+              "value": hubspotTicketId.value 
+            }]
+          }],
+          "properties": [
+            "subject", "id_saipos", "n1_2_areas_de_entrega_", "n2__metodo_de_calculo_para_pizzas_e_", 
+            "nome_das_lojas_no_ifood", "n1_4_nome_dos_garcons_", "n1_5_valor_da_diaria_de_garcons_",
+            "n1_3_nome_dos_entregadores_", "n1_4_diaria_dos_entregadores_", "site_com_dominio_saipos_",
+            "aceita_retirada_no_balcao", "cardapio_com_dominio_saipos_", "instrucoes_de_pagamento",
+            "valor_minimo_de_pedido_", "quantidade_de_mesas_no_salao_",
+            "ids_do_ifood", "configuracoes__quicksaipos_", "pagamento__quicksaipos_", "usuarios__quicksaipos_",
+            "status_de_venda__quicksaipos_", "descricao_turno__quicksaipos_", "horario_turno__quicksaipos_",
+            "taxa_turno__quicksaipos_", "dias_fim__quicksaipos_", "horario_de_inicio__quicksaipos_",
+            "horario_de_fim__quicksaipos_", "quantidade_de_comandas__quicksaipos_", 
+            "dias_inicio__quicksaipos_", "cardapio___tipo_de_solicitacao"          
+          ],
+          "limit": 1
+        })
+      })
+      const responseTicketData = await responseTicket.json()
+      if (responseTicket.ok) {
+        console.log(responseTicketData.results[0].properties)
+        hubspotTicket = responseTicketData.results[0].properties
+      }
+      
+      cleanSelection()
+      responseTicket.id_saipos != responseCompany.id_saipos ? logAndSendAlert("Empresa posivelmente errada, confira!") : null
+
+      document.getElementById('payment-types-pix').checked = hubspotTicket.pagamento__quicksaipos_.includes('Pix') ? true : null
+      document.getElementById('payment-types-master').checked = hubspotTicket.pagamento__quicksaipos_.includes('Mastercard') ? true : null
+      document.getElementById('payment-types-elo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Elo') ? true : null
+      document.getElementById('payment-types-visa').checked = hubspotTicket.pagamento__quicksaipos_.includes('Visa') ? true : null
+      document.getElementById('payment-types-amex').checked = hubspotTicket.pagamento__quicksaipos_.includes('Amex') ? true : null
+      document.getElementById('payment-types-hiper').checked = hubspotTicket.pagamento__quicksaipos_.includes('Hiper') ? true : null
+      document.getElementById('payment-types-sodexo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Sodexo') ? true : null
+      document.getElementById('payment-types-alelo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Alelo') ? true : null
+      document.getElementById('config-col42').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Colunas de impressão: 42') ? true : null
+      document.getElementById('config-permissions').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Permissões de ADM') ? true : null
+      document.getElementById('config-cancel-pass').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Motivo para cancelamento') ? true : null
+      document.getElementById('config-cancel-reason').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Senha para cancelamento') ? true : null
+      document.getElementById('config-kds').checked = hubspotTicket.configuracoes__quicksaipos_.includes('KDS') ? true : null
+      document.getElementById('user-waiter-app').checked = hubspotTicket.usuarios__quicksaipos_.includes('App Garçom') ? true : null
+      document.getElementById('user-cashier').checked = hubspotTicket.usuarios__quicksaipos_.includes('Caixa') ? true : null
+      document.getElementById('sale-status-left').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Saiu para entrega'? true : null
+      document.getElementById('sale-status-easy-delivery').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Entrega fácil'? true : null
+      document.getElementById('delivery-area-district').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Bairro"? true : null
+      document.getElementById('delivery-area-radius').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Raio e Mapa"? true : null
+      document.getElementById('apportionment-proportional').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Rateio proporcional'? true : null
+      document.getElementById('apportionment-bigger').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Maior Valor'? true : null
+      document.getElementById('partners-site-delivery').checked = hubspotTicket.site_com_dominio_saipos_ == 'Sim'? true : null
+      document.getElementById('partners-counter-pickup').checked = hubspotTicket.aceita_retirada_no_balcao == 'Sim'? true : null
+      document.getElementById('partners-basic-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio basic' ? true : null
+      document.getElementById('partners-premium-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio premium' ? true : null
+      document.getElementById('partners-instruction-counter').checked = hubspotTicket.instrucoes_de_pagamento == 'Passar no caixa e fazer o pagamento' ? true : null
+      document.getElementById('partners-instruction-waiter').checked = hubspotTicket.instrucoes_de_pagamento == 'Aguardar o garçom para fazer o pagamento'? true : null
+
+      document.getElementById('partners-start-day').value = hubspotTicket.dias_inicio__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('partners-end-day').value = hubspotTicket.dias_fim__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('partners-start-time').value = hubspotTicket.horario_de_inicio__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('partners-end-time').value = hubspotTicket.horario_de_fim__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('partners-minimum-value').value = hubspotTicket.valor_minimo_de_pedido_.replace(/\n/g, ',')
+      document.getElementById('shift-desc').value = hubspotTicket.descricao_turno__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('shift-time').value = hubspotTicket.horario_turno__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('shift-service-fee').value = hubspotTicket.taxa_turno__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('waiters-quantity').value = hubspotTicket.n1_4_nome_dos_garcons_.replace(/\n/g, ',')
+      document.getElementById('waiters-daily-rate').value = hubspotTicket.n1_5_valor_da_diaria_de_garcons_.replace(/\n/g, ',')
+      document.getElementById('delivery-men-quantity').value = hubspotTicket.n1_3_nome_dos_entregadores_.replace(/\n/g, ',')
+      document.getElementById('delivery-men-daily-rate').value = hubspotTicket.n1_4_diaria_dos_entregadores_.replace(/\n/g, ',')
+      document.getElementById('partners-ifood-code').value = hubspotTicket.ids_do_ifood.replace(/\n/g, ',')
+      document.getElementById('partners-ifood-name').value = hubspotTicket.nome_das_lojas_no_ifood.replace(/\n/g, ',')
+      document.getElementById('table-orders').value = hubspotTicket.quantidade_de_mesas_no_salao_.replace(/\n/g, ',')
+      document.getElementById('order-cards').value = hubspotTicket.quantidade_de_comandas__quicksaipos_.replace(/\n/g, ',')
+      document.getElementById('domain').value = await normalizeText(hubspotTicket.subject.slice(8))
+      document.getElementById('store-id').value = hubspotTicket.id_saipos.replace(/\n/g, ',')
+      
+      document.getElementById('store-data-state').value = hubspotCompany.estado
+      document.getElementById('store-data-city').value = hubspotCompany.city
+      document.getElementById('store-data-district').value = hubspotCompany.bairro
+      document.getElementById('store-data-address').value = hubspotCompany.address
+      document.getElementById('store-data-number').value = hubspotCompany.endereco_numero
+      document.getElementById('store-data-zip').value = hubspotCompany.zip
+      document.getElementById('store-data-complement').value = hubspotCompany.endereco_complemento
+      document.getElementById('store-data-cnpj').value = hubspotCompany.cnpj
+      document.getElementById('store-data-state-registration').value = hubspotCompany.inscricao_estadual
+      document.getElementById('store-data-cnae').value = hubspotCompany.cnae
+
+    } catch (error) {
+      console.error("Erro na requisição Hubspot: ", error)
     }
   })
 

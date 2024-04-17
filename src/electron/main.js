@@ -3,10 +3,11 @@ const { processCSV } = require('../utils/csvHandle')
 const { executeConfigure } = require('../services/executeConfigure')
 const path = require('path')
 const requestToSaipos = require('../services/requestsToSaipos')
+const { normalizeText } = require('../utils/auxiliarVariables')
+require('dotenv').config()
 
 let win
 let tray = null
-let progressBar
 
 function createWindow() {
     win = new BrowserWindow({
@@ -100,6 +101,10 @@ ipcMain.handle('process-csv', async (event, ...args) => {
     return processCSV(...args)
 })
 
+ipcMain.handle('normalize-text', async (event, text) => {
+    return normalizeText(text)
+})
+
 ipcMain.handle('execute-configure', async (event, ...args) => {
     return executeConfigure(...args)
 })
@@ -112,3 +117,10 @@ ipcMain.on('saipos-auth-token', (event, token) => {
     requestToSaipos.setToken(token)
 })
 
+ipcMain.handle('get-token', async (event) => {
+    const token = process.env.HUBSPOT_AUTH_TOKEN
+    if (!token) {
+        throw new Error("Token is not defined in environment variables")
+    }
+    return token
+})

@@ -39,7 +39,7 @@ function processData(data, mappings) {
             if (value === undefined || value === null || value.trim() === '') {
                 value = (mapping.key === 'choiceMenu' || mapping.key === 'quantity') ? [''] : ''
             } else {
-                if (['price', 'deliveryMenFee', 'fee'].includes(mapping.key)) {
+                if (['price', 'deliveryMenFee', 'deliveryFee', ''].includes(mapping.key)) {
                     value = value.replace(/,/g, '.').replace(/[^\d.]/g, '')
                 }
                 if ((mapping.key === 'choiceMenu' || mapping.key === 'quantity') && value) {
