@@ -23,16 +23,16 @@
         "appId": "quick.saipos",
         "productName": "Quick Saipos",
         "directories": {
-            "buildResources": "resources",
+            "buildResources": "public/assets/saiposLogo.ico",
             "output": "release"
         },
         "files": [
             "./**/**",
-            "resources/**/*"
+            "public/assets/*"
         ],
         "win": {
             "target": "nsis",
-            "icon": "/public/assets/saiposLogo.png"
+            "icon": "/public/assets/saiposLogo.ico"
         }
     },
     "keywords": []
