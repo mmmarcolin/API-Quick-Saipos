@@ -26,6 +26,8 @@ function createRequestOptions(method, data = null) {
 async function makeFetchRequest(url, options) {
   try {
     const response = await fetch(url, options)
+    console.log(options)
+    console.log(url)
     if (!response.ok) {
       throw new Error(response.status)
     }

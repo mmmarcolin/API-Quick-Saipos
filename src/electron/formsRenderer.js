@@ -270,7 +270,6 @@ document.addEventListener("DOMContentLoaded", function() {
       })
       const responseCompanyData = await responseCompany.json()
       if (responseCompany.ok) {
-        console.log(responseCompanyData.results[0].properties)
         hubspotCompany = responseCompanyData.results[0].properties
       }
       
@@ -303,7 +302,6 @@ document.addEventListener("DOMContentLoaded", function() {
       })
       const responseTicketData = await responseTicket.json()
       if (responseTicket.ok) {
-        console.log(responseTicketData.results[0].properties)
         hubspotTicket = responseTicketData.results[0].properties
       }
       
@@ -311,62 +309,77 @@ document.addEventListener("DOMContentLoaded", function() {
       responseTicket.id_saipos != responseCompany.id_saipos ? logAndSendAlert("Empresa posivelmente errada, confira!") : null
 
       // Inserção no formulário
-      document.getElementById('payment-types-pix').checked = hubspotTicket.pagamento__quicksaipos_.includes('Pix') ? true : false
-      document.getElementById('payment-types-master').checked = hubspotTicket.pagamento__quicksaipos_.includes('Mastercard') ? true : false
-      document.getElementById('payment-types-elo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Elo') ? true : false
-      document.getElementById('payment-types-visa').checked = hubspotTicket.pagamento__quicksaipos_.includes('Visa') ? true : false
-      document.getElementById('payment-types-amex').checked = hubspotTicket.pagamento__quicksaipos_.includes('Amex') ? true : false
-      document.getElementById('payment-types-hiper').checked = hubspotTicket.pagamento__quicksaipos_.includes('Hiper') ? true : false
-      document.getElementById('payment-types-sodexo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Sodexo') ? true : false
-      document.getElementById('payment-types-alelo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Alelo') ? true : false
-      document.getElementById('config-col42').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Colunas de impressão: 42') ? true : false
-      document.getElementById('config-permissions').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Permissões de ADM') ? true : false
-      document.getElementById('config-cancel-pass').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Motivo para cancelamento') ? true : false
-      document.getElementById('config-cancel-reason').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Senha para cancelamento') ? true : false
-      document.getElementById('config-kds').checked = hubspotTicket.configuracoes__quicksaipos_.includes('KDS') ? true : false
-      document.getElementById('user-waiter-app').checked = hubspotTicket.usuarios__quicksaipos_.includes('App Garçom') ? true : false
-      document.getElementById('user-cashier').checked = hubspotTicket.usuarios__quicksaipos_.includes('Caixa') ? true : false
-      document.getElementById('sale-status-left').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Saiu para entrega'? true : false
-      document.getElementById('sale-status-easy-delivery').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Entrega fácil'? true : false
-      document.getElementById('delivery-area-district').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Bairro"? true : false
-      document.getElementById('delivery-area-radius').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Raio e Mapa"? true : false
-      document.getElementById('apportionment-proportional').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Rateio proporcional'? true : false
-      document.getElementById('apportionment-bigger').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Maior Valor'? true : false
-      document.getElementById('partners-site-delivery').checked = hubspotTicket.site_com_dominio_saipos_ == 'Sim'? true : false
-      document.getElementById('partners-counter-pickup').checked = hubspotTicket.aceita_retirada_no_balcao == 'Sim'? true : false
-      document.getElementById('partners-basic-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio basic' ? true : false
-      document.getElementById('partners-premium-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio premium' ? true : false
-      document.getElementById('partners-instruction-counter').checked = hubspotTicket.instrucoes_de_pagamento == 'Passar no caixa e fazer o pagamento' ? true : false
-      document.getElementById('partners-instruction-waiter').checked = hubspotTicket.instrucoes_de_pagamento == 'Aguardar o garçom para fazer o pagamento'? true : false
-      document.getElementById('partners-start-day').value = hubspotTicket.dias_inicio__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('partners-end-day').value = hubspotTicket.dias_fim__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('partners-start-time').value = hubspotTicket.horario_de_inicio__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('partners-end-time').value = hubspotTicket.horario_de_fim__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('partners-minimum-value').value = hubspotTicket.valor_minimo_de_pedido_.replace(/\n/g, ',')
-      document.getElementById('shift-desc').value = hubspotTicket.descricao_turno__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('shift-time').value = hubspotTicket.horario_turno__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('shift-service-fee').value = hubspotTicket.taxa_turno__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('waiters-quantity').value = hubspotTicket.n1_4_nome_dos_garcons_.replace(/\n/g, ',')
-      document.getElementById('waiters-daily-rate').value = hubspotTicket.n1_5_valor_da_diaria_de_garcons_.replace(/\n/g, ',')
-      document.getElementById('delivery-men-quantity').value = hubspotTicket.n1_3_nome_dos_entregadores_.replace(/\n/g, ',')
-      document.getElementById('delivery-men-daily-rate').value = hubspotTicket.n1_4_diaria_dos_entregadores_.replace(/\n/g, ',')
-      document.getElementById('partners-ifood-code').value = hubspotTicket.ids_do_ifood.replace(/\n/g, ',')
-      document.getElementById('partners-ifood-name').value = hubspotTicket.nome_das_lojas_no_ifood.replace(/\n/g, ',')
-      document.getElementById('table-orders').value = hubspotTicket.quantidade_de_mesas_no_salao_.replace(/\n/g, ',')
-      document.getElementById('order-cards').value = hubspotTicket.quantidade_de_comandas__quicksaipos_.replace(/\n/g, ',')
-      document.getElementById('domain').value = await normalizeText(hubspotTicket.subject.slice(8))
-      document.getElementById('store-id').value = hubspotTicket.id_saipos.replace(/\n/g, ',')
-      document.getElementById('store-data-state').value = hubspotCompany.estado
-      document.getElementById('store-data-city').value = hubspotCompany.city
-      document.getElementById('store-data-district').value = hubspotCompany.bairro
-      document.getElementById('store-data-address').value = hubspotCompany.address
-      document.getElementById('store-data-number').value = hubspotCompany.endereco_numero
-      document.getElementById('store-data-zip').value = hubspotCompany.zip
-      document.getElementById('store-data-complement').value = hubspotCompany.endereco_complemento
-      document.getElementById('store-data-cnpj').value = hubspotCompany.cnpj
-      document.getElementById('store-data-state-registration').value = hubspotCompany.inscricao_estadual
-      document.getElementById('store-data-cnae').value = hubspotCompany.cnae
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-pix').checked = hubspotTicket.pagamento__quicksaipos_.includes('Pix') ? true : false : null;
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-master').checked = hubspotTicket.pagamento__quicksaipos_.includes('Mastercard') ? true : false : null;
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-elo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Elo') ? true : false : null;
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-visa').checked = hubspotTicket.pagamento__quicksaipos_.includes('Visa') ? true : false : null;
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-amex').checked = hubspotTicket.pagamento__quicksaipos_.includes('Amex') ? true : false : null;
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-hiper').checked = hubspotTicket.pagamento__quicksaipos_.includes('Hiper') ? true : false : null;
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-sodexo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Sodexo') ? true : false : null;
+      hubspotTicket.pagamento__quicksaipos_ ? document.getElementById('payment-types-alelo').checked = hubspotTicket.pagamento__quicksaipos_.includes('Alelo') ? true : false : null;
 
+      hubspotTicket.configuracoes__quicksaipos_ ? document.getElementById('config-col42').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Colunas de impressão: 42') ? true : false : null;
+      hubspotTicket.configuracoes__quicksaipos_ ? document.getElementById('config-permissions').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Permissões de ADM') ? true : false : null;
+      hubspotTicket.configuracoes__quicksaipos_ ? document.getElementById('config-cancel-pass').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Motivo para cancelamento') ? true : false : null;
+      hubspotTicket.configuracoes__quicksaipos_ ? document.getElementById('config-cancel-reason').checked = hubspotTicket.configuracoes__quicksaipos_.includes('Senha para cancelamento') ? true : false : null;
+      hubspotTicket.configuracoes__quicksaipos_ ? document.getElementById('config-kds').checked = hubspotTicket.configuracoes__quicksaipos_.includes('KDS') ? true : false : null;
+
+      hubspotTicket.usuarios__quicksaipos_ ? document.getElementById('user-waiter-app').checked = hubspotTicket.usuarios__quicksaipos_.includes('App Garçom') ? true : false : null;
+      hubspotTicket.usuarios__quicksaipos_ ? document.getElementById('user-cashier').checked = hubspotTicket.usuarios__quicksaipos_.includes('Caixa') ? true : false : null;
+
+      hubspotTicket.status_de_venda__quicksaipos_ ? document.getElementById('sale-status-left').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Saiu para entrega' ? true : false : null;
+      hubspotTicket.status_de_venda__quicksaipos_ ? document.getElementById('sale-status-easy-delivery').checked = hubspotTicket.status_de_venda__quicksaipos_ == 'Entrega fácil' ? true : false : null;
+
+      hubspotTicket.n1_2_areas_de_entrega_ ? document.getElementById('delivery-area-district').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Bairro" ? true : false : null;
+      hubspotTicket.n1_2_areas_de_entrega_ ? document.getElementById('delivery-area-radius').checked = hubspotTicket.n1_2_areas_de_entrega_ == "Por Raio e Mapa" ? true : false : null;
+
+      hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ ? document.getElementById('apportionment-proportional').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Rateio proporcional' ? true : false : null;
+      hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ ? document.getElementById('apportionment-bigger').checked = hubspotTicket.n2__metodo_de_calculo_para_pizzas_e_ == 'Maior Valor' ? true : false : null;
+
+      hubspotTicket.site_com_dominio_saipos_ ? document.getElementById('partners-site-delivery').checked = hubspotTicket.site_com_dominio_saipos_ == 'Sim' ? true : false : null;
+      hubspotTicket.aceita_retirada_no_balcao ? document.getElementById('partners-counter-pickup').checked = hubspotTicket.aceita_retirada_no_balcao == 'Sim' ? true : false : null;
+      hubspotTicket.cardapio___tipo_de_solicitacao ? document.getElementById('partners-basic-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio basic' ? true : false : null;
+      hubspotTicket.cardapio___tipo_de_solicitacao ? document.getElementById('partners-premium-digital-menu').checked = hubspotTicket.cardapio___tipo_de_solicitacao == 'Cardapio premium' ? true : false : null;
+      hubspotTicket.instrucoes_de_pagamento ? document.getElementById('partners-instruction-counter').checked = hubspotTicket.instrucoes_de_pagamento == 'Passar no caixa e fazer o pagamento' ? true : false : null;
+      hubspotTicket.instrucoes_de_pagamento ? document.getElementById('partners-instruction-waiter').checked = hubspotTicket.instrucoes_de_pagamento == 'Aguardar o garçom para fazer o pagamento' ? true : false : null;
+
+      hubspotTicket.dias_inicio__quicksaipos_ ? document.getElementById('partners-start-day').value = hubspotTicket.dias_inicio__quicksaipos_ ? hubspotTicket.dias_inicio__quicksaipos_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.dias_fim__quicksaipos_ ? document.getElementById('partners-end-day').value = hubspotTicket.dias_fim__quicksaipos_ ? hubspotTicket.dias_fim__quicksaipos_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.horario_de_inicio__quicksaipos_ ? document.getElementById('partners-start-time').value = hubspotTicket.horario_de_inicio__quicksaipos_ ? hubspotTicket.horario_de_inicio__quicksaipos_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.horario_de_fim__quicksaipos_ ? document.getElementById('partners-end-time').value = hubspotTicket.horario_de_fim__quicksaipos_ ? hubspotTicket.horario_de_fim__quicksaipos_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.valor_minimo_de_pedido_ ? document.getElementById('partners-minimum-value').value = hubspotTicket.valor_minimo_de_pedido_ ? hubspotTicket.valor_minimo_de_pedido_.replace(/\n/g, ',') : '' : null;
+
+      hubspotTicket.descricao_turno__quicksaipos_ ? document.getElementById('shift-desc').value = hubspotTicket.descricao_turno__quicksaipos_ ? hubspotTicket.descricao_turno__quicksaipos_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.horario_turno__quicksaipos_ ? document.getElementById('shift-time').value = hubspotTicket.horario_turno__quicksaipos_ ? hubspotTicket.horario_turno__quicksaipos_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.taxa_turno__quicksaipos_ ? document.getElementById('shift-service-fee').value = hubspotTicket.taxa_turno__quicksaipos_ ? hubspotTicket.taxa_turno__quicksaipos_.replace(/\n/g, ',') : '' : null;
+
+      hubspotTicket.n1_4_nome_dos_garcons_ ? document.getElementById('waiters-quantity').value = hubspotTicket.n1_4_nome_dos_garcons_ ? hubspotTicket.n1_4_nome_dos_garcons_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.n1_5_valor_da_diaria_de_garcons_ ? document.getElementById('waiters-daily-rate').value = hubspotTicket.n1_5_valor_da_diaria_de_garcons_ ? hubspotTicket.n1_5_valor_da_diaria_de_garcons_.replace(/\n/g, ',') : '' : null;
+
+      hubspotTicket.n1_3_nome_dos_entregadores_ ? document.getElementById('delivery-men-quantity').value = hubspotTicket.n1_3_nome_dos_entregadores_ ? hubspotTicket.n1_3_nome_dos_entregadores_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.n1_4_diaria_dos_entregadores_ ? document.getElementById('delivery-men-daily-rate').value = hubspotTicket.n1_4_diaria_dos_entregadores_ ? hubspotTicket.n1_4_diaria_dos_entregadores_.replace(/\n/g, ',') : '' : null;
+
+      hubspotTicket.ids_do_ifood ? document.getElementById('partners-ifood-code').value = hubspotTicket.ids_do_ifood ? hubspotTicket.ids_do_ifood.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.nome_das_lojas_no_ifood ? document.getElementById('partners-ifood-name').value = hubspotTicket.nome_das_lojas_no_ifood ? hubspotTicket.nome_das_lojas_no_ifood.replace(/\n/g, ',') : '' : null;
+
+      hubspotTicket.quantidade_de_mesas_no_salao_ ? document.getElementById('table-orders').value = hubspotTicket.quantidade_de_mesas_no_salao_ ? hubspotTicket.quantidade_de_mesas_no_salao_.replace(/\n/g, ',') : '' : null;
+      hubspotTicket.quantidade_de_comandas__quicksaipos_ ? document.getElementById('order-cards').value = hubspotTicket.quantidade_de_comandas__quicksaipos_ ? hubspotTicket.quantidade_de_comandas__quicksaipos_.replace(/\n/g, ',') : '' : null;
+      
+      hubspotTicket.subject ? document.getElementById('domain').value = await normalizeText(hubspotTicket.subject.slice(8)) : null
+      hubspotTicket.id_saipos ? document.getElementById('store-id').value = hubspotTicket.id_saipos ? hubspotTicket.id_saipos.replace(/\n/g, ',') : '' : null
+      hubspotCompany.estado ? document.getElementById('store-data-state').value = hubspotCompany.estado : null
+      hubspotCompany.city ? document.getElementById('store-data-city').value = hubspotCompany.city : null
+      hubspotCompany.bairro ? document.getElementById('store-data-district').value = hubspotCompany.bairro : null
+      hubspotCompany.address ? document.getElementById('store-data-address').value = hubspotCompany.address : null
+      hubspotCompany.endereco_numero ? document.getElementById('store-data-number').value = hubspotCompany.endereco_numero : null
+      hubspotCompany.zip ? document.getElementById('store-data-zip').value = hubspotCompany.zip : null
+      hubspotCompany.endereco_complemento ? document.getElementById('store-data-complement').value = hubspotCompany.endereco_complemento : null
+      hubspotCompany.cnpj ? document.getElementById('store-data-cnpj').value = hubspotCompany.cnpj : null
+      hubspotCompany.inscricao_estadual ? document.getElementById('store-data-state-registration').value = hubspotCompany.inscricao_estadual : null
+      hubspotCompany.cnae ? document.getElementById('store-data-cnae').value = hubspotCompany.cnae : null
+    
+    
+    
     } catch (error) {
       console.error("Erro na requisição Hubspot: ", error)
     }

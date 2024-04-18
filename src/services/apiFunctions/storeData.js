@@ -118,9 +118,9 @@ async function storeData(chosenData, storeId) {
     ])
     
     const cityId = await getFromSaipos("desc_city", chosenData.city, "id_city", `${API_BASE_URL}/cities?filter=%7B%22where%22:%7B%22id_state%22:${stateId}%7D%7D`)
+    await postToSaipos({id_city: cityId, desc_districts: [chosenData.district]}, `${API_BASE_URL}/districts/insert-district-list`)
     const districtId = await getFromSaipos("desc_district", chosenData.district, "id_district", `${API_BASE_URL}/districts?filter=%7B%22where%22:%7B%22id_city%22:${cityId}%7D%7D`)
 
-    await postToSaipos({id_city: cityId, desc_districts: districtId}, `${API_BASE_URL}/districts/insert-district-list`)
 
     let cestToPut, fixedIe
     if (stateId === 16) {
@@ -156,7 +156,7 @@ async function storeData(chosenData, storeId) {
       cnpj: normalizeText(chosenData.cnpj),
       id_district: districtId,
       ie: fixedIe || chosenData.stateReg,
-      zip_code: normalizeText(chosenData.zipCode),
+      zip_code: normalizeText(chosenData.zipCode).slice(0, 5) + '-' + chosenData.zipCode.slice(5),
       address: chosenData.address,
       address_number: chosenData.addressNumber,
       address_complement: chosenData.addressComplement,
@@ -168,8 +168,8 @@ async function storeData(chosenData, storeId) {
 
     await Promise.all([
       postToSaipos([cnaeToPost], `${API_BASE_URL}/stores/${storeId}/cnaes/upsertStoreCnaes`),
-      putToSaipos(storeDataToPut, `${API_BASE_URL}/stores/${storeId}`),
-      putToSaipos(contingencyToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile`)
+      putToSaipos(contingencyToPut, `${API_BASE_URL}/stores/${storeId}/taxes_profile`),
+      putToSaipos(storeDataToPut, `${API_BASE_URL}/stores/${storeId}`)
     ])
 
   } catch (error) {
