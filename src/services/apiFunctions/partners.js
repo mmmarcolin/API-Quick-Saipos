@@ -173,7 +173,7 @@ async function partners(chosenData, storeId) {
           id_store: storeId
         })
 
-        if (siteId === "") {
+        if (siteId === null) {
           await postToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data`)
         } else {
           await putToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data/${siteId}`)

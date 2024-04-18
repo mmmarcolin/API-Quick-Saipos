@@ -114,11 +114,16 @@ document.addEventListener("DOMContentLoaded", function() {
     let result = []
   
     if (typeof quantity === 'string' && quantity.includes(",")) {
-      quantity = quantity.split(",").map(item => parseInt(item.trim(), 10))
-    } else if (typeof quantity === 'string') {
-      quantity = parseInt(quantity, 10)
+      quantity = quantity.split(",")
+    } else  {
+      let quantityNum = parseInt(quantity)
+      if (quantityNum == NaN) {
+        quantity = [quantity]
+      } else {
+        quantity = quantityNum
+      }
     }
-  
+    
     if (typeof dailyRate === 'string' && dailyRate.includes(",")) {
       dailyRate = dailyRate.split(",").map(item => parseInt(item, 10))
     } else if (typeof dailyRate === 'string') {

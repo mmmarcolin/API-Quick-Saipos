@@ -19,6 +19,7 @@ function createRequestOptions(method, data = null) {
   if (data) {
     options.body = JSON.stringify(data)
   }
+  console.log(options)
   return options
 }
 
