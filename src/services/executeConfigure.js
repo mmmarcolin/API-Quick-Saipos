@@ -147,7 +147,7 @@ function createFinalReport(data, results) {
     partners: 'Canais de venda'
   }
   
-  let report = `FIM: ${data.generalData.storeId} | ${data.generalData.time.timestamp} segundos\n\MÓDULOS CADASTRADOS:\n`
+  let report = `FIM: ${data.generalData.storeId} | ${data.generalData.time.timestamp} segundos\n\nMÓDULOS CADASTRADOS:\n`
   for (let [module, success] of Object.entries(results)) {
     if (success) { 
       const moduleNameInPortuguese = moduleNamesInPortuguese[module] || module
