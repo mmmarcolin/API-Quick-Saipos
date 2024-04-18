@@ -48,6 +48,9 @@ function processData(data, mappings) {
                 if ((mapping.key === 'choiceMenu' || mapping.key === 'quantity') && value) {
                     value = value.split(',').map(part => part.trim())
                 }
+                if (mapping.key === 'description') {
+                    value = value.slice(0, 400)
+                }
             }
             rowObject[mapping.key] = value
         })
