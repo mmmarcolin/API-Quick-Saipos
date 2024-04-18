@@ -23,9 +23,14 @@
         "appId": "quick.saipos",
         "productName": "Quick Saipos",
         "directories": {
-            "buildResources": "public/assets/saiposLogo.ico",
-            "output": "release"
+            "output": "release ${version}"
         },
+        "extraFiles": [
+            {
+              "from": ".env",
+              "to": "."
+            }
+        ],
         "files": [
             "./**/**",
             "public/assets/*"

@@ -28,8 +28,8 @@ function createWindow() {
         if (!app.isQuiting) {
             event.preventDefault()
             win.hide()
+            return false
         }
-        return false
     })
 }
 
@@ -66,8 +66,6 @@ app.on('window-all-closed', () => {
         app.quit()
     }
 })
-
-
 
 // Ações externas
 ipcMain.on('toggle-window-size', (event, shouldExpand) => {

@@ -1,6 +1,6 @@
 .gitattributes
 .hintrc
 /node_modules
-/release
+/release 2.1.0
 .env
 debug.js
