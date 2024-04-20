@@ -173,10 +173,10 @@ async function partners(chosenData, storeId) {
           id_store: storeId
         })
 
-        if (siteId === null) {
-          await postToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data`)
-        } else {
+        if (siteId) {
           await putToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data/${siteId}`)
+        } else {
+          await postToSaipos(siteToPost, `${API_BASE_URL}/stores/${storeId}/site_data`)
         }
 
         await postToSaipos(scheduleToPost, `${API_BASE_URL}/stores/${storeId}/schedules_service/insert-all`)
@@ -196,10 +196,10 @@ async function partners(chosenData, storeId) {
           id_store: storeId
         })
 
-        if (menuId === "") {
-          await postToSaipos(menuToPost, `${API_BASE_URL}/stores/${storeId}/table_data`)
-        } else {
+        if (menuId) {
           await putToSaipos(menuToPost, `${API_BASE_URL}/stores/${storeId}/table_data/${menuId}`)
+        } else {
+          await postToSaipos(menuToPost, `${API_BASE_URL}/stores/${storeId}/table_data`)
         }
 
         await postToSaipos(scheduleToPost, `${API_BASE_URL}/stores/${storeId}/table_data_schedules_service/insert-all`)
