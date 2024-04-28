@@ -1,6 +1,6 @@
 {
     "name": "quick-saipos",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "This repository contains Quick Saipos, a program developed to streamline the deployment process at Saipos. It optimizes the insertion of client information into a form via Electron. The program utilizes Puppeteer to automate the insertion of client data directly into the system, enhancing efficiency and maximizing time utilization.",
     "main": "src/electron/main.js",
     "scripts": {

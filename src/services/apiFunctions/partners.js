@@ -117,7 +117,7 @@ async function partners(chosenData, storeId) {
       cre: 52,
       deb: 53,
       creElo: 21,
-      creMaster: 21,
+      creMaster: 19,
       creVis: 18,
       creAmex: 15,
       creHiper: 20,
