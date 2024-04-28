@@ -23,7 +23,7 @@
         "appId": "quick.saipos",
         "productName": "Quick Saipos",
         "directories": {
-            "output": "release ${version}"
+            "output": "release"
         },
         "extraFiles": [
             {
