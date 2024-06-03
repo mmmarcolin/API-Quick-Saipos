@@ -1,0 +1,100 @@
+/* Width */
+
+@media only screen and (max-width: 925px) { 
+    .field-container-two,
+    .field-container-three,
+    .field-container-four,
+    .field-container-five,
+    .field-container-six,
+    .field-container-nine,
+    #partners  {
+        flex-direction: column; 
+        align-items: stretch; 
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; 
+        grid-column: span 6;
+        grid-gap: 10px;
+    }
+    #saipos-auth-token-fieldset,
+    #hubspot-id {
+        display: none;
+    }
+    .row2-option {
+        flex-direction: column; 
+        align-items: baseline;
+    }
+    #button-container {
+        grid-column: span 12;
+    }
+    #aux-div {
+        display: grid;
+        grid-column: span 12;
+    }
+    body {
+        align-items: baseline;
+    }
+}
+@media only screen and (max-width: 700px) { 
+    #button-container {
+        grid-template-rows: repeat(1, 1fr); 
+    }
+}
+@media only screen and (max-width: 650px) { 
+    .field-container-two,
+    .field-container-three,
+    .field-container-four,
+    .field-container-five,
+    .field-container-six,
+    .field-container-nine,
+    #partners  {
+        flex-direction: column; 
+        align-items: stretch; 
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; 
+        grid-column: span 12;
+        grid-gap: 10px;
+    }
+    #display-buttons-container {
+        display: flex;
+        gap: .75em;
+        width: 100%;
+        padding: 1.5rem .75rem 0.75rem .75rem;
+    }
+    #message-container {
+        width: 20rem;
+    }
+    #aux-div {
+        display: grid;
+        grid-column: span 12;
+    }
+}
+@media only screen and (max-width: 475px) { 
+    .small-images {
+        display: none
+    }
+}
+@media only screen and (max-width: 445px) { 
+    #message-container {
+        width: 15rem;
+    }
+}
+@media only screen and (max-width: 349px) { 
+    #container-top {
+        margin-bottom: 3rem;
+    }
+}
+@media only screen and (max-width: 300px) { 
+    #aux-div {
+        display: flex;
+        grid-column: span 12;
+    }
+}
+
+/* Height */
+@media only screen and (max-height: 980px) {
+    body {
+        align-items: baseline;
+    }
+} 

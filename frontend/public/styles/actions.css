@@ -1,0 +1,28 @@
+#container-top:active {
+    transform: scale(0.99)
+}
+#execute-button:active {
+    transform: scale(0.97) 
+}
+.button:active,
+.display-buttons:active {
+    transform: scale(0.95) 
+}
+.upload-button:hover, 
+.aux-buttons:hover,
+.display-buttons:hover {
+    background-color: #294473;
+}
+#store-id:hover,
+input[type="checkbox"]:hover,
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="time"]:hover,
+select:hover {
+    background-color: #e3e3e3;
+}
+#execute-button:hover {
+    background-color: #015801;
+}

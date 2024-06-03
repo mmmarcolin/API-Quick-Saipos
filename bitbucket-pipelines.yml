@@ -1,0 +1,13 @@
+image: node:20.12
+
+pipelines:
+  branches:
+    master:
+      - step: &DeployProduction
+          name: Build and Deploy - Production (DataOpsAccount)
+          deployment: Production
+          script:
+            - apt-get install git -y
+            - npm install -g serverless
+            - serverless config credentials --provider aws --key ${AWS_DEPLOY_ACCESS_KEY_ID} --secret ${AWS_DEPLOY_SECRET_ACCESS_KEY}
+            - npm run deploy -- production

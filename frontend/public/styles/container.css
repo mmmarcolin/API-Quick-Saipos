@@ -1,0 +1,26 @@
+#container {
+    display: flex;
+    flex-direction: column;
+    align-content: baseline;
+    width: 60rem;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    margin: 1.5rem;
+    border-radius: 0.4rem; 
+    box-shadow: 3px 3px 5px 5px #294473;
+    background-color: #f8f8f8;
+}
+#container-top {
+    display: flex;
+    justify-content: space-evenly;
+    cursor: default;
+    height: 3rem;
+    transition: transform 0.1s ease-in-out;
+}
+#container-form {
+    max-width: 60rem;
+    border-radius: 0.3125rem;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-gap: 0.625rem;
+}

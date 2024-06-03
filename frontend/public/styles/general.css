@@ -1,0 +1,20 @@
+/* @font-face {
+    font-family: "Tailwind Black";
+    src: url("./../assets/TailwindBlack.ttf") format("truetype");
+} */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box; 
+    margin: 0;
+    padding: 0;
+}
+body {
+    display: flex;
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #4972B1;
+}

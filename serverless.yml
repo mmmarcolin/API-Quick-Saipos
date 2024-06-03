@@ -1,0 +1,69 @@
+service: saipos-calendar
+
+# General configuration for the service provider and environmental settings
+provider:
+  name: aws  # Specifies Amazon Web Services as the cloud provider
+  runtime: nodejs20.x  # Specifies the runtime environment for Node.js 20.x
+  stage: ${env:STAGE, "dev"}  # Deploys to the "dev" stage by default, configurable via environment variable
+  region: ${env:AWS_DEFAULT_REGION, "us-east-1"}  # Default deployment region, configurable via environment variable
+  logRetentionInDays: 14  # Log retention period set for 14 days
+  role: ${env:AWS_LAMBDA_ROLE, "none"}  # IAM role for the Lambda functions, should be set in environment variables
+  deploymentBucket:  # S3 bucket for storing deployment artifacts
+    name: ${env:AWS_DEPLOY_BUCKET_NAME, "none"}
+  stackTags:  # Tags applied to all resources in the stack
+    ManagedBy: Serverless Framework
+    Environment: ${env:STAGE, "dev"}
+    RepositoryName: ${self:service, "NONAME"}
+  environment:  # Environment variables for OAuth and API access
+    API_TOKEN: ${env:API_TOKEN, "none"}
+    HUBSPOT_TOKEN: ${env:HUBSPOT_TOKEN, "none"}
+
+# Definition of the functions that handle API requests
+functions:
+  fromForm:
+    handler: backend/app.fromForm 
+    timeout: 300
+    events:
+      - http:
+          path: /form-to-quick
+          method: post  
+          cors: true 
+  fromHubspot:
+    handler: backend/app.fromHubspot 
+    timeout: 300
+    events:
+      - http:
+          path: /hubspot-to-quick
+          method: post  
+          cors: true 
+  hubspotData:
+    handler: backend/app.hubspotData 
+    timeout: 10
+    events:
+      - http:
+          path: /hubspot-data
+          method: post  
+          cors: true 
+          
+  # A function to serve HTML pages
+  serveHtml:
+    handler: backend/app.serveHtml
+    timeout: 5
+    package: # Additional files to be included
+      include:
+        - frontend/**
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+
+# List of plugins used to enhance or extend functionality in development and deployment
+plugins:
+  - serverless-offline  # Simulates AWS Lambda and API Gateway locally to speed up development
+  - serverless-dotenv-plugin  # Loads environment variables from a .env file into serverless
+
+# Custom configuration for specific plugins or settings
+custom:
+  serverless-offline:
+    host: 0.0.0.0  # Specifies the local server host, allowing access from all network interfaces

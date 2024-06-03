@@ -1,0 +1,276 @@
+/* Main colors */
+:root {
+    --color-tint: 10;
+    --color-tint-grey: 6.66;
+    --color-black: #000;
+    --color-white: #fff;
+    --color-beige: #f2f2ea;
+    --color-red: #cc4e3d;
+    --color-pink: #e55ccf;
+    --color-purple: #a73abf;
+    --color-blue: #3674b2;
+    --color-green: #36b274;
+    --color-cyan: #36b2b2;
+    --color-yellow: #e5ab45;
+    --color-orange: #d97c42;
+    --color-brown: #b26336;
+    --color-chartreuse: #c6d601;
+    --color-background: #eee;
+    --color-brand: #7994af;
+    --color-info: #4972B1;
+    --color-warning: #e5ab45;
+    --color-success: #36b274;
+    --color-error: #cc4e3d;
+    --color-warning-light: #f4cf7c;
+    --color-info-light: #5090cc;
+    --color-success-light: rgba(54, 178, 116, 0.4);
+    --color-error-light: #e57363;
+}
+.font-normal {
+    font-size: 80px;
+}
+.c-flash_icon {
+    width: 1em;
+    height: 1em;
+    border: 0.1em solid transparent;
+    border-radius: 50%;
+    margin: 0.2em auto;
+    padding: 0;
+    position: relative;
+    cursor: default;
+}
+.c-flash_icon--warning,
+.c-flash_icon--question,
+.c-flash_icon--info {
+    text-align: center;
+}
+.c-flash_icon--warning {
+    color: var(--color-warning);
+    border-color: var(--color-warning-light);
+}
+.c-flash_icon--info {
+    color: var(--color-info);
+    border-color: var(--color-info-light);
+}
+.c-flash_icon--question {
+    color: var(--color-info);
+    border-color: var(--color-info-light);
+}
+.c-flash_icon--error {
+    border-color: var(--color-error-light);
+}
+.c-flash_icon--error .x-mark {
+    position: absolute;
+    font-size: 0.5em;
+    height: 1em;
+    width: 1em;
+    top: 0.25em;
+    left: 0.31em;
+}
+.c-flash_icon--error .line {
+    position: absolute;
+    height: 0.2em;
+    width: 1.2em;
+    background-color: var(--color-error);
+    display: block;
+    top: 0.45em;
+    border-radius: 0.025em;
+}
+.c-flash_icon--error .line.left {
+    transform: rotate(45deg);
+    left: -0.1em;
+}
+.c-flash_icon--error .line.right {
+    transform: rotate(-45deg);
+    right: -0.1em;
+}
+.c-flash_icon--error.animate {
+    animation: animate-error-icon 0.5s;
+}
+.c-flash_icon--error.animate .x-mark {
+    animation: animate-x-mark 0.5s;
+}
+.c-flash_icon--success {
+    border-color: var(--color-success);
+}
+.c-flash_icon--success::before,
+.c-flash_icon--success::after {
+    content: "";
+    border-radius: 50%;
+    position: absolute;
+    width: 0.7em;
+    height: 1em;
+    transform: rotate(45deg);
+}
+.c-flash_icon--success::before {
+    border-radius: 1em 0 0 1em;
+    width: 0.5em;
+    top: 0.2125em;
+    left: -0.15em;
+    transform: rotate(-45deg);
+}
+.c-flash_icon--success::after {
+    border-radius: 0 1em 1em 0;
+    top: 0.04em;
+    left: 0.265em;
+    transform: rotate(-45deg);
+    transform-origin: 0 0.5em;
+}
+.c-flash_icon--success .placeholder {
+    width: 1em;
+    height: 1em;
+    border: 0.1em solid var(--color-success-light);
+    border-radius: 50%;
+    position: absolute;
+    left: -0.1em;
+    top: -0.1em;
+    z-index: 2;
+}
+.c-flash_icon--success .fix {
+    width: 0.1em;
+    height: 1em;
+    position: absolute;
+    left: 0.175em;
+    top: 0.05em;
+    z-index: 1;
+    transform: rotate(-45deg);
+}
+.c-flash_icon--success .line {
+    height: 0.1em;
+    background-color: var(--color-success);
+    display: block;
+    border-radius: 0.025em;
+    position: absolute;
+    z-index: 2;
+}
+.c-flash_icon--success .line.tip {
+    width: 0.3125em;
+    left: 0.05em;
+    top: 0.475em;
+    transform: rotate(45deg);
+}
+.c-flash_icon--success .line.long {
+    width: 0.5875em;
+    right: 0.05em;
+    top: 0.375em;
+    transform: rotate(-45deg);
+}
+.c-flash_icon--success.animate::after {
+    animation: rotatePlaceholder 4.25s ease-in;
+}
+.c-flash_icon--success.animate .tip {
+    animation: animate-success-tip 1s;
+}
+.c-flash_icon--success.animate .long {
+    animation: animate-success-long 1s;
+}
+
+/* Success icon animation */
+@keyframes animate-success-tip {
+    0% {
+        width: 0;
+        left: 0.0125em;
+        top: 0.1375em;
+    }    54% {
+        width: 0;
+        left: 0.0125em;
+        top: 0.1375em;
+    }    70% {
+        width: 0.475em;
+        left: -0.1em;
+        top: 0.4em;
+    }    84% {
+        width: 0.2375em;
+        left: 0.12em;
+        top: 0.5em;
+    }    100% {
+        width: 0.3125em;
+        left: 0.05em;
+        top: 0.475em;
+    }}
+@keyframes animate-success-long {
+    0% {
+        width: 0;
+        right: 0.55em;
+        top: 0.575em;
+    }    65% {
+        width: 0;
+        right: 0.55em;
+        top: 0.575em;
+    }    84% {
+        width: 0.65em;
+        right: 0;
+        top: 0.35em;
+    }    100% {
+        width: 0.5875em;
+        right: 0.05em;
+        top: 0.375em;
+    }}
+@keyframes rotatePlaceholder {
+    0% {
+        transform: rotate(-45deg);
+    }    5% {
+        transform: rotate(-45deg);
+    }    12% {
+        transform: rotate(-405deg);
+    }    100% {
+        transform: rotate(-405deg);
+    }}
+    
+/* Error icon animation */
+@keyframes animate-error-icon {
+    0% {
+        transform: rotateX(100deg);
+        opacity: 0;
+    }    100% {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }}
+@keyframes animate-x-mark {
+    0% {
+        transform: scale(0.4);
+        margin-top: 0.325em;
+        opacity: 0;
+    }    50% {
+        transform: scale(0.4);
+        margin-top: 0.325em;
+        opacity: 0;
+    }    80% {
+        transform: scale(1.15);
+        margin-top: -0.075em;
+    }    100% {
+        transform: scale(1);
+        margin-top: 0;
+        opacity: 1;
+    }}
+
+/* Loading icon animation */
+.c-flash_icon--loading {
+    border: 0.1em solid var(--color-blue);
+    border-top-color: transparent;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }    100% {
+        transform: rotate(360deg);
+    }}
+
+@keyframes pop-up {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
