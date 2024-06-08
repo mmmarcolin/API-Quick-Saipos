@@ -87,14 +87,31 @@ export async function partners(quickData) {
         
         const scheduleToPost = new Schedule()
         for (const [day, value] of Object.entries(quickData.weekDays)) {
-            if (!value) continue
+            if (!value) continue;
             
-            const dayIndex = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(day) + 1
-            scheduleToPost.addWeekDay({
-                day_week: dayIndex,
-                start_time: quickData.startTime,
-                end_time: quickData.endTime,
-            })
+            const dayIndex = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(day) + 1;
+            const nextDayIndex = (dayIndex % 7) + 1;
+            const startTime = quickData.startTime;
+            const endTime = quickData.endTime;
+        
+            if (endTime < startTime) {
+                scheduleToPost.addWeekDay({
+                    day_week: dayIndex,
+                    start_time: startTime,
+                    end_time: "23:59",
+                });
+                scheduleToPost.addWeekDay({
+                    day_week: nextDayIndex,
+                    start_time: "00:00",
+                    end_time: endTime,
+                });
+            } else {
+                scheduleToPost.addWeekDay({
+                    day_week: dayIndex,
+                    start_time: startTime,
+                    end_time: endTime,
+                });
+            }
         }
                 
         if (quickData.deliverySite) {
@@ -116,6 +133,7 @@ export async function partners(quickData) {
                 everyResults.push(siteId);
 
                 innerOperations.push((siteId ? fetchSaipos : fetchSaipos)({
+                    method: siteId ? "PUT" : "POST",
                     byEndpoint: `site_data/${siteId || ""}`,
                     insertData: new Site({
                         pickup_counter: quickData.pickupCounter,

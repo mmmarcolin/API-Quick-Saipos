@@ -1,11 +1,22 @@
-import { PartnerEnable } from "./../Classes/PartnerEnable.js";
-import { IfoodVerify } from "./../Classes/IfoodVerify.js";
+import { PartnerEnable } from "../Classes/PartnerEnable.js";
+import { IfoodVerify } from "../Classes/IfoodVerify.js";
 import { Ifood } from "./../Classes/Ifood.js";
-import { fetchSaipos } from "./../requestsToSaipos.js";
+import { fetchSaipos } from "../requestsToSaipos.js";
+import { IfoodConfig } from "../Classes/IfoodConfig.js";
 
 export async function ifoodIntegration(quickData) {
     const operations = [];
     const everyResults = [];
+
+    async function getSaleStatusId(value) {
+        return await fetchSaipos({
+            method: "GET",
+            byEndpoint: "sale_statuses",
+            findValue: value,
+            atKey: "desc_store_sale_status",
+            andReturn: "id_store_sale_status"
+        })
+    }
 
     try {
         const enableIntegrationResult = await fetchSaipos({
@@ -15,7 +26,7 @@ export async function ifoodIntegration(quickData) {
         });
         everyResults.push(enableIntegrationResult);
 
-        for (const integration of quickData) {
+        for (const integration of quickData.data) {
             operations.push((async () => {
                 const verifyRes = await fetchSaipos({
                         method: "POST",
@@ -42,6 +53,24 @@ export async function ifoodIntegration(quickData) {
                 }
             })());
         }
+
+
+        const saleStatusId = await Promise.all([
+            getSaleStatusId("Cozinha"),
+            getSaleStatusId("Saiu para entrega"),
+            getSaleStatusId("Entregue"),
+        ])
+        everyResults.push(...saleStatusId)
+
+        operations.push(await fetchSaipos({
+            method: "POST",
+            byEndpoint: "chat-crawler-ifood-services/set-config",
+            insertData: new IfoodConfig({
+                username: quickData.ifoodUsername,
+                password: quickData.ifoodPassword,
+                saleStatusId: saleStatusId
+            })
+        }))
 
         everyResults.push(...await Promise.all(operations));
     } catch (error) {

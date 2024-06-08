@@ -18,7 +18,7 @@ export async function fetchSaipos({
                 "Authorization": saiposToken,
                 "Content-Type": "application/json"
             },
-            body: insertData ? options.body = JSON.stringify(insertData) : null
+            body: insertData ? JSON.stringify(insertData) : null
         }
 
         const baseUrl = "https://api.saipos.com/v1"
@@ -26,33 +26,20 @@ export async function fetchSaipos({
             ? `${baseUrl}/${byEndpoint}`
             : `${baseUrl}/stores/${storeId}/${byEndpoint}`
 
-        // console.log("FETCH", {   
-        //     method, 
-        //     byEndpoint, 
-        //     findValue,
-        //     atKey,
-        //     andReturn,
-        //     useSaiposBaseUrl,
-        //     insertData,
-        // },{
-        //     url: url,
-        //     options: options
-        // })
-
         response = await fetch(url, options)
-        // console.log("RESPONSE", response)
-        if (!response.ok) {
-            throw new Error(`HTTP: ${response.status}`);  
-        }
-        
+        if (!response.ok) throw new Error(`HTTP: ${response.status}`);  
         responseData = await response.json()
-        // console.log("RESPONSEDATA", responseData)
-        
+
         if (method === "GET") {
             handledData = await handleResponseData(responseData, findValue, atKey, andReturn)
+
+            if (handledData.err) {
+                handledData = handledData.msg
+                throw new Error();
+            } 
         }
 
-        return handledData || true
+        return handledData || responseData[andReturn]
     } catch (error) {
         return { error: true, response: handledData || responseData || response }
     }
@@ -60,9 +47,7 @@ export async function fetchSaipos({
 
 export async function handleResponseData(responseData, findValue, atKey, andReturn) {
     function getValueByPath(obj, path) {
-        if (path === "") {
-            return obj;
-        }
+        if (path === "") return obj;
 
         return path.split(/[\.\[\]\'\"]/).filter(p => p).reduce((acc, key) => {
             return acc[key];
@@ -70,16 +55,30 @@ export async function handleResponseData(responseData, findValue, atKey, andRetu
     }
 
     try {
-        let result = responseData
+        let result = responseData;
         if (Array.isArray(responseData)) {
-            result = responseData.find(res => normalizeText(getValueByPath(res, atKey)) || "" == normalizeText(findValue)) 
-            if (!result) {return `Valor ${findValue} não encontrado na chave ${atKey}.`}
-        }        
-
-        result = getValueByPath(result, andReturn)
-        if (!result) return `Chave ${andReturn} não encontrada no objeto resposta.`
-
-        return result
+            if (Array.isArray(findValue)) {
+                const results = findValue.map(value => responseData.find(res => normalizeText(getValueByPath(res, atKey)) === normalizeText(value)));
+                const returnValueArray = results.map(result => result && result[andReturn]);
+                if (returnValueArray.includes(undefined)) return {err, msg: `Pelo menos um valor de ${findValue} não foi encontrado na chave ${atKey}.`};
+                result = returnValueArray;
+            } else {
+                if (findValue === "every") {
+                    result = result
+                } else if (responseData.length === 1 || findValue === "") {
+                    result = responseData[0];
+                } else {
+                    result = responseData.find(res => normalizeText(getValueByPath(res, atKey)) === normalizeText(findValue));
+                    if (!result) return {err: true, msg: `Valor ${findValue} não encontrado na chave ${atKey}.`};
+                }
+                result = getValueByPath(result, andReturn)
+            }
+        } else {
+            result = getValueByPath(result, andReturn);
+            if (!result) return {err, msg: `Chave ${andReturn} não encontrada no objeto resposta.`};
+        }
+        
+        return result;
     } catch (error) {
         console.log(error)
         return responseData;  

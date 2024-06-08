@@ -26,6 +26,8 @@
     --color-success-light: rgba(54, 178, 116, 0.4);
     --color-error-light: #e57363;
 }
+
+/* General icon style */
 .font-normal {
     font-size: 80px;
 }
@@ -39,23 +41,29 @@
     position: relative;
     cursor: default;
 }
-.c-flash_icon--warning,
-.c-flash_icon--question,
-.c-flash_icon--info {
-    text-align: center;
-}
+
+/* Warning icon style */
 .c-flash_icon--warning {
-    color: var(--color-warning);
-    border-color: var(--color-warning-light);
+    color: var(--color-warning); 
+    border-color: var(--color-warning-light); 
 }
+.letter {
+    font-size: 3.7rem;
+}
+
+/* Info icon style */
 .c-flash_icon--info {
     color: var(--color-info);
     border-color: var(--color-info-light);
 }
+
+/* Question icon style */
 .c-flash_icon--question {
     color: var(--color-info);
     border-color: var(--color-info-light);
 }
+
+/* Error icon style */
 .c-flash_icon--error {
     border-color: var(--color-error-light);
 }
@@ -90,6 +98,18 @@
 .c-flash_icon--error.animate .x-mark {
     animation: animate-x-mark 0.5s;
 }
+
+/* Loading icon style */
+.c-flash_icon--loading {
+    border: 0.1em solid var(--color-blue);
+    border-top-color: transparent;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    animation: spin 1s linear infinite;
+}
+
+/* Success icon style */
 .c-flash_icon--success {
     border-color: var(--color-success);
 }
@@ -245,14 +265,6 @@
     }}
 
 /* Loading icon animation */
-.c-flash_icon--loading {
-    border: 0.1em solid var(--color-blue);
-    border-top-color: transparent;
-    border-radius: 50%;
-    width: 1em;
-    height: 1em;
-    animation: spin 1s linear infinite;
-}
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -271,6 +283,22 @@
     }
     100% {
         transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Warning icon animation */
+@keyframes animate-warning-icon {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
         opacity: 1;
     }
 }

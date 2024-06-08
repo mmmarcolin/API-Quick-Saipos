@@ -7,7 +7,7 @@ import "./public/styles/responsivity.css";
 import "./public/styles/animations.css";
 
 // Function imports
-import { Display } from "./src/classes/Display.js";
+import { Display } from "./src/Classes/Display.js";
 import { logicHubspotData } from "./src/logic/logicHubspotData.js";
 import { logicSaiposData } from "./src/logic/logicSaiposData.js";
 import { insertCepData } from "./src/utils/insertCepData.js";
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     $("saipos-auth-token").value = localStorage.getItem("saiposToken") || "";
 
     // Click listener to integrate Hubspot
-    $("hubspot-id").addEventListener("input", logicHubspotData);
+    $("hubspot-button").addEventListener("click", logicHubspotData);
     
     // Click listener to execute configuration
     $("execute-button").addEventListener("click", logicSaiposData);

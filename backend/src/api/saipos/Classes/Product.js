@@ -1,4 +1,4 @@
-import { storeId } from "./../../../config/variables.js"
+import { auxiliarVar, storeId } from "./../../../config/variables.js"
 
 export class Product {
     constructor(data) {

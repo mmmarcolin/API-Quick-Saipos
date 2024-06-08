@@ -8,6 +8,7 @@ function kebabToCamel(str) {
 
 // Function to insert data retrieved from Hubspot
 export async function insertHubspotData(hsData) {
+
     try {
         // Checkboxes
         const checkFieldIds = [
@@ -69,7 +70,8 @@ export async function insertHubspotData(hsData) {
             "store-data-complement",
             "store-data-cnpj",
             "store-data-state-registration",
-            "store-data-cnae"
+            "store-data-cnae",
+            "store-data-phone"
         ]
         
         // Add each response

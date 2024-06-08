@@ -17,12 +17,11 @@ export async function menu(quickData) {
                 atKey: "desc_store_category_item",
                 andReturn: "id_store_category_item"
             })
-            everyResults.push(originalCategoryId)
             
-            everyResults.push(await fetchSaipos({
+            await fetchSaipos({
                 method: "DELETE",
                 byEndpoint: `categories_item/${originalCategoryId}`
-            }))
+            })
         } catch (error) {
             const message = "Categorias pré existentes já excluidas ou com produtos dentro."
             return { error: true, response: message };
@@ -60,7 +59,7 @@ export async function menu(quickData) {
     }
     
     try {
-        const [idStoreVariation, foodTaxId, drinkTaxId, ...storageDeletion] = await Promise.all([
+        const [idStoreVariation, foodTaxId, drinkTaxId] = await Promise.all([
             fetchSaipos({
                 method: "GET",
                 byEndpoint: "variations",
@@ -73,7 +72,7 @@ export async function menu(quickData) {
             deleteCategory("Comida"),
             deleteCategory("Bebidas"),
         ])
-        everyResults.push(idStoreVariation, foodTaxId, drinkTaxId, ...storageDeletion)
+        everyResults.push(idStoreVariation, foodTaxId, drinkTaxId)
 
         const uniqueCategories = [...new Set(quickData.map(item => item.category))]
         uniqueCategories.forEach((name, i) => {

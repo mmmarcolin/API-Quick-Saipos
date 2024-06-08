@@ -1,5 +1,5 @@
 
-export async function getTicketData(HUBSPOT_TOKEN, hubspotTicketId) {
+export async function getTicketData(hubspotTicketId) {
     try {
         //  Perform request
         const responseTicket = await fetch(`https://api.hubapi.com/crm/v3/objects/tickets/search`, {
@@ -45,7 +45,9 @@ export async function getTicketData(HUBSPOT_TOKEN, hubspotTicketId) {
                     "horario_de_fim__quicksaipos_", 
                     "quantidade_de_comandas__quicksaipos_", 
                     "dias_inicio__quicksaipos_", 
-                    "cardapio___tipo_de_solicitacao"          
+                    "cardapio___tipo_de_solicitacao",
+                    "hs_object_id"   ,
+                    "tipo_de_estabelecimento_ticket"   
                 ],
                 limit: 1
             })

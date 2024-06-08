@@ -1,4 +1,4 @@
-export async function getCompanyData(HUBSPOT_TOKEN, hubspotCompanyId) {
+export async function getCompanyData(hubspotCompanyId) {
     try {
         //  Perform request
         const responseCompany = await fetch(`https://api.hubapi.com/crm/v3/objects/companies/search`, {

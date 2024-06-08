@@ -12,19 +12,12 @@ export function validateFields(data, requiredFields) {
         if (!value) {
             addError(field, " is required");
         } else {
-            
             // Perform specific validations based on the field name
             switch (field) {
-                case "saipos_token":
-                    // Validate date format (YYYY-MM-DDTHH:MM:SS)
-                    if (value.length !== 64 || !/^[a-zA-Z0-9]+$/.test(value))
-                        addError("", "Token Saipos inválido.");
-                    break;
-
-                case "hubspot_id":
-                    // Validate email format using a regular expression
+                case "store_id":
+                    // Validate Hubspot ID format using a regular expression
                     if (value.length !== 10 || !/^\d+$/.test(value))
-                        addError("", "ID Hubspot inválido.");
+                        addError("", "ID Hubspot não encontrado.");
                     break;
             }
         }
@@ -35,7 +28,7 @@ export function validateFields(data, requiredFields) {
 }
 
 // Validates fields for validating form
-export const validateForm = data => validateFields(data, ["saipos_token", "saipos_data"]);
+export const validateForm = data => validateFields(data, []);
 
 // Validates fields for validating Hubspot integration
-export const validateIntegration = data => validateFields(data, ["saipos_token", "hubspot_id"]);
+export const validateIntegration = data => validateFields(data, ["store_id", "saipos_token"]);

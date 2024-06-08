@@ -66,7 +66,6 @@ export async function storeData(quickData) {
             if (/[\d]/.test(quickData.stateReg)) {
                 fixedIe = quickData.stateReg.padStart(13, "0")
             }
-
             const taxesDataId = await fetchSaipos({
                 method: "GET",
                 byEndpoint: "taxes_datas",
@@ -84,11 +83,11 @@ export async function storeData(quickData) {
                 andReturn: "taxes_data_cfop[0].id_store_taxes_data_cfop"
             })
             everyResults.push(taxesDataCfopId)
+            console.log("taxesDataCfopId", taxesDataCfopId)
 
             operations.push(fetchSaipos({
                 method: "PUT",
-                useSaiposBaseUrl: true,
-                byEndpoint: `taxes_profile/${taxesDataId}`,
+                byEndpoint: `taxes_datas/${taxesDataId}`,
                 insertData: new Cest({
                     id_store_taxes_data: taxesDataId,
                     id_store_taxes_data_cfop: taxesDataCfopId,

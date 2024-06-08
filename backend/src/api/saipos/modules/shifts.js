@@ -15,6 +15,7 @@ export async function shifts(quickData) {
 
         for (let i = 0; i < quickData.length; i++) {        
             operations.push((i === 0 ? fetchSaipos : fetchSaipos)({
+                method: i === 0 ? "PUT" : "POST",
                 byEndpoint: `shifts/${i === 0 ? shiftId : ""}`,
                 insertData: new Shift({
                     id_store_shift: i === 0 ? shiftId : 0,

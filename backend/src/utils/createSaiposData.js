@@ -2,8 +2,8 @@ import { normalizeText } from "./../config/variables.js";
 
 // Function to create data to execute configure
 export async function createSaiposData(formData, handledData) {
-    // Return handling
-    return { 
+    // create object
+    const results = { 
         paymentTypesChosen: {
             pix: formData.paymentTypesPix,
             elo: formData.paymentTypesElo,
@@ -32,7 +32,7 @@ export async function createSaiposData(formData, handledData) {
             quantity: formData.orderCards
         },
         storeDataChosen: {
-            deliveryOption: handledData.someStoreData ? formData.deliveryOption || "D" : "", 
+            deliveryOption: handledData.someStoreData ? formData.deliveryAreaRadius ? "A" : "D" : "", 
             state: handledData.someStoreData ? formData.storeDataState : "",
             city: handledData.someStoreData ? formData.storeDataCity : "",
             cnae: handledData.someStoreData ? formData.storeDataCnae.replace(/\D+/g, "") : "",
@@ -43,6 +43,7 @@ export async function createSaiposData(formData, handledData) {
             addressComplement: handledData.someStoreData ? formData.storeDataComplement : "",
             stateReg: handledData.someStoreData ? normalizeText(formData.storeDataStateRegistration) : "",
             cnpj: handledData.someStoreData ? normalizeText(formData.storeDataCnpj) : "",
+            phone: handledData.someStoreData ? normalizeText(formData.storeDataCnpj).slice(-11) : "",
         },
         partnersChosen: {
             deliverySite: formData.partnersSiteDelivery, 
@@ -59,17 +60,21 @@ export async function createSaiposData(formData, handledData) {
         },
         usersChosen: {
             users: handledData.someUser ? handledData.usersData : "",
-            domain: handledData.someUser && handledData.usersData ? formData.domain : ""
+            domain: handledData.someUser ? formData.domain : ""
         },
-        ifoodIntegrationChosen: handledData.ifoodData,
+        ifoodIntegrationChosen: {
+            data: handledData.ifoodData,
+            username: handledData.ifoodData && formData.configAccAval ? formData.partnersIfoodUsername : "",
+            password: handledData.ifoodData && formData.configAccAval ? formData.partnersIfoodPassword : "",
+        },
         shiftsChosen: handledData.shiftData,
         deliveryMenChosen: handledData.deliveryMenData,
         waitersChosen: handledData.usersData,
         deliveryAreasChosen: {
             data: handledData.deliveryAreaData,
-            state: handledData.deliveryAreaData ? formData.storeDataState: "",
-            city: handledData.deliveryAreaData ? formData.storeDataCity: "",
-            deliveryOption: handledData.deliveryAreaData ? formData.deliveryOption: ""
+            state: handledData.deliveryAreaData ? formData.storeDataState : "",
+            city: handledData.deliveryAreaData ? formData.storeDataCity : "",
+            deliveryOption: handledData.deliveryAreaData ? formData.deliveryAreaRadius ? "A" : "D" : "",
         },
         choicesChosen: {
             data: handledData.choicesData,
@@ -80,7 +85,11 @@ export async function createSaiposData(formData, handledData) {
         generalData: {
             storeId: formData.storeId,
             time: {},
-            errorLog: []
         }, 
     }
+
+    // Results handling
+    console.log("createSaiposData: " + JSON.stringify(results));
+    if (results) return results;
+    throw new Error("Error creating insertion object.");
 }

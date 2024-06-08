@@ -6,8 +6,8 @@ import { logicRegistration } from "./src/logic/logicRegistration.js";
 import { handleRequest } from "./src/handleRequest.js";
 
 // Handlers for data operations
-// export const fromHubspot = async (event) => handleRequest(event, validateForm, logicRegistration, "hub");
-export const fromForm = async (event) => handleRequest(event, validateForm, logicRegistration, "form");
+// export const fromHubspot = async (event) => handleRequest(event, validateForm, logicRegistration);
+export const fromForm = async (event) => handleRequest(event, validateForm, logicRegistration);
 export const hubspotData = async (event) => handleRequest(event, validateIntegration, logicHubspotIntegration); 
 
 // Handler to serve HTML

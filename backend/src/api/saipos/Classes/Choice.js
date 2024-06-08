@@ -1,5 +1,8 @@
+import { storeId } from "./../../../config/variables.js"
+import { Item } from "./Item.js"
+
 export class Choice {
-    constructor(data, storeId) {
+    constructor(data) {
         this.id_store = storeId
         this.id_store_choice = 0
         this.desc_store_choice = data.desc_store_choice

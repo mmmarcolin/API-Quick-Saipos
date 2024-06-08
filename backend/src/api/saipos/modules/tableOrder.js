@@ -13,7 +13,7 @@ export async function tableOrder(quickData) {
 
             operations.push(fetchSaipos({
                 method: "POST",
-                byEndpoint: "tables/insert-table-qtt",
+                byEndpoint: "tables/insert-table-qtd",
                 insertData: new TableOrder({
                     qtd: batchQuantity
                 })

@@ -21,7 +21,7 @@ export class Cest {
         this.produzido_em_escala = "S"
         this.cnpj_fabricante = null
         this.cod_beneficio_fiscal = null
-        this.id_store = storeId
+        this.id_store = parseInt(storeId)
         this.id_origem_mercadoria = 1
         this.id_ncm = 2
         this.cod_icms_desoneracao = null

@@ -2,12 +2,11 @@ import { storeId } from "./../../../config/variables.js"
 
 export class StoreData {
     constructor(data, original) {
-        this.id_store = storeId
+        this.id_store = parseInt(storeId)
         this.corporate_name = original.corporate_name
         this.trade_name = original.trade_name
         this.phone_1 = original.phone_1
         this.phone_2 = original.phone_2
-        this.lat_lng = original.lat_lng
         this.cnpj = data.cnpj
         this.ie = data.ie
         this.id_district = data.id_district

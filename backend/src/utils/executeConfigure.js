@@ -1,4 +1,5 @@
 // Imports
+import { formatDate } from "./formatDate.js"
 import { choices } from "./../api/saipos/modules/choices.js";
 import { deliveryAreas } from "./../api/saipos/modules/deliveryAreas.js";
 import { deliveryMen } from "./../api/saipos/modules/deliveryMen.js";
@@ -17,6 +18,7 @@ import { waiters } from "./../api/saipos/modules/waiters.js";
 import { checkTruthyValue } from "./checkTruthyValue.js";
 
 // Functions object
+const moduleResults = {};
 const func = {
     ifoodIntegration, saleStatus, tableOrder, 
     orderCard, settings, storeData, 
@@ -26,43 +28,54 @@ const func = {
 };
 
 // Function to execute configure
-export async function executeConfigure(data) {
+export async function executeConfigure(quickData) {
     try {
         // Variables initialization
-        const moduleResults = {};
-        data.generalData.time.startTime = new Date();
+        const startTime = new Date();
         
         // Initial and Final modules
         const initialModules = ["ifoodIntegration", "paymentTypes", "storeData", "choices", "settings"];
         const finalModules = ["saleStatus", "tableOrder", "orderCard", "shifts", "waiters", "deliveryMen", "users", "deliveryAreas", "menu", "partners"];
 
         // Execute and collect results for both initial and final modules
-        await executeModules(initialModules, data, moduleResults);
-        await executeModules(finalModules, data, moduleResults);
+        await executeModules(initialModules, quickData);
+        await executeModules(finalModules, quickData);
 
-        // Process results
-        return {configData: data, configResults: moduleResults};
+        // Finish time variables
+        const endTime = new Date();
+        quickData.generalData.time.delta = parseFloat((endTime - startTime) / 1000).toFixed(0);
+        quickData.generalData.time.timestamp = await formatDate(endTime)    
+
+        // Results handling
+        console.log("createFinalReport: " + JSON.stringify(quickData, moduleResults));
+        if (quickData && moduleResults) return { quickData, moduleResults };
+        throw new Error("Error executing configure");
     } catch (error) {
-        console.error("Error executing configure: ", error);
+        console.error("Error executing configure", error);
         throw error;
     }
 }
 
 // Function to execute a list of modules and update results
-async function executeModules(modules, data, moduleResults) {
-    const promises = modules.map(moduleName => executeModule(moduleName, data));
-    const results = await Promise.all(promises);
-    console.log(results)
-    // results.forEach(result => moduleResults[result.moduleName] = result.success);
+async function executeModules(modules, quickData) {
+    const responses = await Promise.all(
+        modules.map(moduleName => executeModule(moduleName, quickData))
+    );
+    
+    modules.forEach((moduleName, index) => {
+        moduleResults[moduleName] = responses[index];
+    });
 }
 
 // Execute each module
-async function executeModule(moduleName, data) {
-    // Actual execution if module should be executed
-    if (await checkTruthyValue(data[`${moduleName}Chosen`])) {
-        console.log(`EXECUTANDO: ${data.generalData.storeId} | ${moduleName}`);
+async function executeModule(moduleName, quickData) {
+    let moduleError
+    if (await checkTruthyValue(quickData[`${moduleName}Chosen`]))
+        moduleError = await func[moduleName](quickData[`${moduleName}Chosen`]);
 
-        const res = await func[moduleName](data[`${moduleName}Chosen`]);
-        return res.forEach((r) => console.log({module: moduleName, response: r.response }))
-    }
+    return !moduleError 
+        ? "NÃO EXECUTADO" 
+        : moduleError.length === 0 
+            ? "SUCESSO" : 
+            "POSSÍVEL FALHA";
 }

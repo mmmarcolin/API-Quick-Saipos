@@ -1,5 +1,4 @@
-// Function to create register final report
-export function createFinalReport(data, results) {
+export async function createFinalReport(data, moduleResults) {
     try {
         // Translate modules
         const moduleNamesInPortuguese = {
@@ -18,23 +17,49 @@ export function createFinalReport(data, results) {
             deliveryAreas: "Áreas de entrega",
             menu: "Cardápio",
             partners: "Canais de venda"
-        }
-        
-        // Create and return report
-        let report = `FIM: ${data.generalData.storeId} | ${data.generalData.time.timestamp} segundos\n\nMÓDULOS CADASTRADOS:\n`
-        for (let [module, success] of Object.entries(results)) {
-            if (success) { 
-                const moduleNameInPortuguese = moduleNamesInPortuguese[module] || module
-                report += `${moduleNameInPortuguese}\n`
+        };
+
+        // Initialize the report sections
+        let results = [`CADASTRO CONCLUÍDO: ${data.generalData.storeId} | ${data.generalData.time.delta} segundos`, ""];
+
+        // Classify each module result into categories
+        let executedSuccessfully = [];
+        let possibleFailures = [];
+        let notExecuted = [];
+
+        // Fill each array
+        for (let [module, value] of Object.entries(moduleResults)) {
+            const moduleNameInPortuguese = moduleNamesInPortuguese[module] || module;  // Fallback to the original name if not found
+            
+            switch (value) {
+                case "SUCESSO":
+                    executedSuccessfully.push(`• ${moduleNameInPortuguese};`);
+                    break;
+                case "NÃO EXECUTADO":
+                    notExecuted.push(`• ${moduleNameInPortuguese};`);
+                    break;
+                case "POSSÍVEL FALHA":
+                    possibleFailures.push(`• ${moduleNameInPortuguese};`);
+                    break;
+                default:
+                    break;
             }
         }
 
+        // Append categorized results to the report
+        if (executedSuccessfully.length > 0)
+            results.push("EXECUTADOS COM SUCESSO ✅", ...executedSuccessfully, "");
+        if (possibleFailures.length > 0)
+            results.push("POSSÍVEIS FALHAS ⚠️", ...possibleFailures, "");
+        if (notExecuted.length > 0)
+            results.push("NÃO EXECUTADOS ➖", ...notExecuted, "");
+
         // Results handling
-        console.log("createFinalReport: " + JSON.stringify(report));
-        if (report) return report;
+        console.log("createFinalReport: " + JSON.stringify(results));
+        if (results) return results;
         throw new Error("Error creating final report");
     } catch (error) {
-        console.error("Error posting to Google Sheets", error)
-        throw error
+        console.error("Error creating final report", error);
+        throw error;
     }
 }

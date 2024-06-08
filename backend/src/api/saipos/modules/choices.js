@@ -35,12 +35,14 @@ export async function choices(quickData) {
                         insertData: choiceToPost
                     }))
                 }
-                
+
+                const minChoices = parseInt(choiceData.quantity[0])
+                const maxChoices = parseInt(choiceData.quantity[1])
                 choiceToPost = new Choice({
                     desc_store_choice: choiceData.choice,
-                    min_choices: isDough ? 1 : parseInt(choiceData.quantity[0]),
-                    max_choices: isDough ? 1 : parseInt(choiceData.quantity[1]),
-                    choice_type: isOther || isDough ? 2 : 1,
+                    min_choices: isDough ? 1 : minChoices,
+                    max_choices: isDough ? 1 : maxChoices,
+                    choice_type: minChoices === 1 && maxChoices === 1 ? 2 : 1,
                     calc_method: isOther || isDough ? 1 : quickData.apportionmentBigger ? 3 : 2,
                     group_items_print: isOther ? "Y" : "N",
                     kind: isFlavor ? "pizzaFlavor" : isDough ? "pizzaDough" : isCrust ? "pizzaCrust" : "other"
@@ -70,6 +72,7 @@ export async function choices(quickData) {
     } catch (error) {
         console.error("Error registering choices.", error)
     } finally {
+        console.log(everyResults)
         return everyResults.filter(result => result.error)
     }
 }

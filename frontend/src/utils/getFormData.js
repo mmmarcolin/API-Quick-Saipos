@@ -54,6 +54,7 @@ const fieldMap = {
     storeDataCnpj: "value",
     storeDataStateRegistration: "value",
     storeDataCnae: "value",
+    storeDataPhone: "value",
     shiftDesc: "value",
     shiftTime: "value",
     shiftServiceFee: "value",
@@ -63,27 +64,38 @@ const fieldMap = {
     deliveryMenDailyRate: "value",
     partnersIfoodCode: "value",
     partnersIfoodName: "value",
+    partnersIfoodUsername: "value",
+    partnersIfoodPassword: "value",
     tableOrders: "value",
     orderCards: "value",
     domain: "value",
+    storeId: "value",
+    saiposAuthToken: "value",
     
     // File fields
     menuCsv: "file",
     choicesCsv: "file",
     deliveryAreaCsv: "file",
-    storeId: "value"
 };
+
 
 // Retrieve flatted form data
 export async function getFormData() {
     try {
-        const formData = {};
-        for (const [key, type] of Object.entries(fieldMap)) {
+        const formData = new FormData();
+
+        // Adiciona manualmente os valores ao FormData
+        Object.entries(fieldMap).forEach(([key, type]) => {
             const element = $(camelToKebab(key));
-            formData[key] = type === "checked" ? element.checked || "" : 
-            type === "file" ? element.files[0] || "" : 
-            element.value.trim() || "";
-        }
+    
+            if (type === "checked")
+                formData.append(key, element.checked ? "true" : "false");
+            else if (type === "file" && element.files.length > 0)
+                formData.append(key, element.files[0]);
+            else if (type !== "file")
+                formData.append(key, element.value.trim() || "");
+        });
+
         return formData;
     } catch (error) {
         throw error
