@@ -18,13 +18,15 @@ export async function settings(quickData) {
         const allUsers = await fetchSaipos({
             method: "GET",
             byEndpoint: "find-all-users",
-            findValue: true,
+            findValue: "every",
             andReturn: "",
         })
         everyResults.push(allUsers)
-        let userData = allUsers.reduce((oldest, item) => {
-            return (new Date(oldest.created_at) < new Date(item.created_at)) ? oldest : item;
+
+        const oldestUser = allUsers.reduce((oldest, item) => {
+            return (new Date(oldest.user.created_at) < new Date(item.user.created_at)) ? oldest : item;
         });
+        let userData = oldestUser.user
 
         const settingIds = await fetchSaipos({
             method: "GET",
@@ -49,7 +51,7 @@ export async function settings(quickData) {
             operations.push(fetchSaipos({ 
                 method: "POST",
                 byEndpoint: "update-permission", 
-                insertData: new AdmPermissions(userData.permissions).permissions 
+                insertData: new AdmPermissions(userData.permissions).permissions
             }))
         }
 

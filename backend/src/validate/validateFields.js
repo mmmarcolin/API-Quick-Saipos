@@ -3,6 +3,8 @@ export function validateFields(data, requiredFields) {
     // Helper function to add formatted error messages to the errors array
     const errors = [];
     const addError = (field, message) => errors.push(`${field}${message}`);
+    const saiposTokenRegex = /^[a-zA-Z0-9]{64}$/;
+    const storeIdRegex = /^\d{5}$/;
 
     // Iterate over each required field to check for validity
     requiredFields.forEach(field => {
@@ -14,10 +16,15 @@ export function validateFields(data, requiredFields) {
         } else {
             // Perform specific validations based on the field name
             switch (field) {
+                case "saipos_token":
+                    if (!saiposTokenRegex.test(value))
+                    addError(field, " must be exactly 64 alphanumeric characters");
+                    break;
                 case "store_id":
-                    // Validate Hubspot ID format using a regular expression
-                    if (value.length !== 10 || !/^\d+$/.test(value))
-                        addError("", "ID Hubspot não encontrado.");
+                    if (!storeIdRegex.test(value))
+                    addError(field, " must consist of exactly 5 digits");
+                    break;
+                default:
                     break;
             }
         }

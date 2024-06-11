@@ -1,3 +1,6 @@
+// Imports
+import { getEnvVar } from "./../../config/variables.js";
+
 export async function getContactData(hubspotContactId) {
     try {
         //  Perform request
@@ -5,7 +8,7 @@ export async function getContactData(hubspotContactId) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${HUBSPOT_TOKEN}`
+                "Authorization": `Bearer ${getEnvVar().HUBSPOT_TOKEN}`
             },
             body: JSON.stringify({
                 filterGroups: [{
@@ -27,7 +30,7 @@ export async function getContactData(hubspotContactId) {
         // Results handling
         console.log("getContactData: " + JSON.stringify(results));
         if (results) return results;
-        throw new Error("Error getting contact Data");
+        throw new Error("ID Hubspot não encontrado.");
     } catch (error) {
         console.error("Error getting contact Data", error)    
         throw error

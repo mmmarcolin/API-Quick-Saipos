@@ -22,7 +22,8 @@ export async function partners(quickData) {
         "Débito Mastercard",
         "Débito Visa",
         "Vale Sodexo",
-        "Vale Alelo"
+        "Vale Alelo",
+        "Vale Ticket"
     ]
     
     const paymentMappings = {
@@ -39,7 +40,8 @@ export async function partners(quickData) {
         "Débito Mastercard": "debMaster",
         "Débito Visa": "debVisa",
         "Vale Sodexo": "valSod",
-        "Vale Alelo": "valAle"
+        "Vale Alelo": "valAle",
+        "Vale Ticket": "valTic"
     }
     
     const saiposPaymentId = {
@@ -57,6 +59,33 @@ export async function partners(quickData) {
         debVisa: 5,
         valSod: 129,
         valAle: 122,
+        valTic: 125,
+    }
+
+    const colorHex = {
+        black: "#000000",
+        white: "#FFFFFF",
+        red: "#FF0000",
+        orange: "#FFA500",
+        yellow: "#FFFF00",
+        green: "#008000",
+        blue: "#0000FF",
+        purple: "#800080",
+        pink: "#FFC0CB",
+    }
+
+    const photo = {
+        hamburger: [, ],
+        pizza: [, ],
+        sushi: [, ],
+        acai: [, ],
+        pastel: [, ],
+        pasta: [, ],
+        meal: [, ],
+        meat: [, ],
+        drink: [, ],
+        beverage: [, ],
+        generic: [, ],
     }
 
     try {
@@ -114,6 +143,21 @@ export async function partners(quickData) {
             }
         }
                 
+        if (quickData.saiposBot) { 
+            everyResults.push(...await Promise.all([
+                fetchSaipos({
+                    method: "POST",
+                    byEndpoint: "use-chatbot",
+                    insertData: { use_chatbot: "Y" }
+                }),
+                fetchSaipos({
+                    method: "POST",
+                    byEndpoint: "partners_sale/enable_partner_sale",
+                    insertData: new PartnerEnable(51)
+                })
+            ]))
+        }
+        
         if (quickData.deliverySite) {
             operations.push((async () => {
                 const innerOperations = [];
@@ -132,13 +176,17 @@ export async function partners(quickData) {
                 });
                 everyResults.push(siteId);
 
-                innerOperations.push((siteId ? fetchSaipos : fetchSaipos)({
+                innerOperations.push(fetchSaipos({
                     method: siteId ? "PUT" : "POST",
                     byEndpoint: `site_data/${siteId || ""}`,
                     insertData: new Site({
                         pickup_counter: quickData.pickupCounter,
+                        pickup_delivery: quickData.pickupDelivery,
                         url_site: quickData.domain,
                         minimum_value: quickData.minimumValue,
+                        primary_color: colorHex[quickData.color],
+                        id_photo_site_cover: photo[quickData.images][0],
+                        id_photo_site_background: photo[quickData.images][1]
                     })
                 }));
 
@@ -182,11 +230,13 @@ export async function partners(quickData) {
                 });
                 everyResults.push(menuId);
 
-                innerOperations.push((menuId ? fetchSaipos : fetchSaipos)({
+                innerOperations.push(fetchSaipos({
                     byEndpoint: `table_data/${menuId || ""}`,
                     insertData: new Menu({
                         premiumMenu: quickData.premiumMenu,
                         url_site: quickData.domain,
+                        primary_color: colorHex[quickData.color],
+                        id_photo_site_cover: photo[quickData.images][0]
                     })
                 }));
 

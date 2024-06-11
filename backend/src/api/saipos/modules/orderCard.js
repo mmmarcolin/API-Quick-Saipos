@@ -4,7 +4,7 @@ import { fetchSaipos } from "./../requestsToSaipos.js"
 export async function orderCard(quickData) {
     const operations = [];
     const everyResults = [];
-    const totalQuantity = quickData.quantity
+    const totalQuantity = parseInt(quickData.quantity)
     const batchSize = 50
 
     try {

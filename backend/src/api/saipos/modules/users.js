@@ -23,14 +23,16 @@ export async function users(quickData) {
             const allUsers= await fetchSaipos({
                 method: "GET",
                 byEndpoint: "find-all-users",
-                findValue: true,
+                findValue: "every",
                 andReturn: "",
             })
             everyResults.push(allUsers)
-            userToPrintId = allUsers.reduce((oldest, item) => {
-                return (new Date(oldest.created_at) < new Date(item.created_at)) ? oldest : item;
+            const oldestUser = allUsers.reduce((oldest, item) => {
+                return (new Date(oldest.user.created_at) < new Date(item.user.created_at)) ? oldest : item;
             });
+            userToPrintId = oldestUser.id_user
         }
+        console.log("userToPrintId", userToPrintId)
         
         if (quickData.users.length > 0 ) {
             for (const usersData of quickData.users) {
@@ -40,7 +42,7 @@ export async function users(quickData) {
                     insertData: new User({
                         full_name: usersData.desc,
                         store_name: quickData.domain,
-                        print_to_user: userToPrintId.id_user
+                        print_to_user: userToPrintId
                     }),
                 }))
             }

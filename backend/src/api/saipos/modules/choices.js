@@ -19,6 +19,7 @@ export async function choices(quickData) {
         everyResults.push(idStoreVariation)
         
         for (const choiceData of quickData.data) {
+            if (!choiceData.choice) continue
             const words = choiceData.choice.split(" ")
             let isFlavor, isCrust, isDough, isOther, isPizza
             isPizza = words.some(item => auxiliarVar.pizza.includes(item))
@@ -72,7 +73,7 @@ export async function choices(quickData) {
     } catch (error) {
         console.error("Error registering choices.", error)
     } finally {
-        console.log(everyResults)
+        console.log(JSON.stringify(everyResults))
         return everyResults.filter(result => result.error)
     }
 }

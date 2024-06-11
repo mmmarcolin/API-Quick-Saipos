@@ -27,20 +27,22 @@ export async function fetchSaipos({
             : `${baseUrl}/stores/${storeId}/${byEndpoint}`
 
         response = await fetch(url, options)
+        if (!response.ok) console.log(url, JSON.stringify(options), response)
         if (!response.ok) throw new Error(`HTTP: ${response.status}`);  
         responseData = await response.json()
-
+        
         if (method === "GET") {
             handledData = await handleResponseData(responseData, findValue, atKey, andReturn)
-
+            
             if (handledData.err) {
                 handledData = handledData.msg
-                throw new Error();
+                throw new Error(handledData);
             } 
         }
-
-        return handledData || responseData[andReturn]
+    
+        return handledData || responseData[andReturn] || responseData ||response
     } catch (error) {
+        console.log(error)
         return { error: true, response: handledData || responseData || response }
     }
 }
@@ -80,7 +82,7 @@ export async function handleResponseData(responseData, findValue, atKey, andRetu
         
         return result;
     } catch (error) {
-        console.log(error)
+        console.error(error)
         return responseData;  
     }
 }

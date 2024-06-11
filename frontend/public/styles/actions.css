@@ -1,28 +1,27 @@
 #container-top:active {
-    transform: scale(0.99)
+    transform: scale(0.97)
 }
-#execute-button:active {
-    transform: scale(0.97) 
+.input:hover, 
+.checkmark:hover,
+.upload-label:hover {
+    background-color: #f4f7fc;
+    border: 1px solid #4972B1;
 }
 .button:active,
 .display-buttons:active {
-    transform: scale(0.95) 
+    transform: scale(0.97) 
 }
-.upload-button:hover, 
-.aux-buttons:hover,
+.button:hover,
 .display-buttons:hover {
-    background-color: #294473;
+    background-color: #fff6f4;
+    border: 1px solid #5E190B;
 }
-#store-id:hover,
-input[type="checkbox"]:hover,
-input[type="text"]:hover,
-input[type="email"]:hover,
-input[type="password"]:hover,
-input[type="number"]:hover,
-input[type="time"]:hover,
-select:hover {
-    background-color: #e3e3e3;
+.checkbox-label input:checked ~ .checkmark {
+    background-color: #4972B1;
+    color: #f8f8f8;
 }
-#execute-button:hover {
-    background-color: #015801;
+.checkmark::before {
+    text-align: center;
+    width: 100%;
+    content: attr(data-text);
 }

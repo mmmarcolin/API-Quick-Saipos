@@ -13,7 +13,8 @@ export async function paymentTypes(quickData) {
         amex: [["Crédito American Express", 3, "03"]],
         hiper: [["Crédito Hipercard", 3, "07"]],
         sodexo: [["Vale Alelo", 7, null]],
-        alelo: [["Vale Sodexo", 7, null]]
+        alelo: [["Vale Sodexo", 7, null]],
+        ticket: [["Vale Ticket", 7, null]]
     }
 
     try {

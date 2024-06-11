@@ -43,7 +43,7 @@ export const parseFormData = async (event) => {
             reject(error);
         });
 
-        bb.write(event.isBase64Encoded ? decodeBase64(event.body) : event.body, 'binary');
+        bb.write(event.isBase64Encoded ? decodeBase64(event.body) : event.body, 'utf-8');
         bb.end();
     });
 };

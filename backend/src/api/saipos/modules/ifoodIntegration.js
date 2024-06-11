@@ -62,13 +62,35 @@ export async function ifoodIntegration(quickData) {
         ])
         everyResults.push(...saleStatusId)
 
+        // const listMessagesId = (await fetchSaipos({
+        //     method: "GET",
+        //     byEndpoint: "chat-crawler-ifood-services/get-config",
+        //     andReturn: "listMessage"
+        // }))
+        // everyResults.push(...listMessagesId)
+
+        // const messagesId = [
+        //     listMessagesId[0].id, 
+        //     listMessagesId[6].id, 
+        //     listMessagesId[7].id
+        // ]
+
+        // operations.push(await fetchSaipos({
+        //     method: "POST",
+        //     byEndpoint: "chat-crawler-ifood-services/set-config",
+        //     insertData: new IfoodConfig({
+        //         username: quickData.username,
+        //         password: quickData.password,
+        //     })
+        // }))
         operations.push(await fetchSaipos({
             method: "POST",
             byEndpoint: "chat-crawler-ifood-services/set-config",
             insertData: new IfoodConfig({
-                username: quickData.ifoodUsername,
-                password: quickData.ifoodPassword,
-                saleStatusId: saleStatusId
+                username: quickData.username,
+                password: quickData.password,
+                saleStatusId: saleStatusId,
+                // configId: messagesId
             })
         }))
 

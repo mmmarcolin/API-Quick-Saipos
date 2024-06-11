@@ -1,19 +1,21 @@
+// Imports
+import { getEnvVar } from "./../../config/variables.js";
 
-export async function getTicketData(hubspotTicketId) {
+export async function getTicketData(storeId) {
     try {
         //  Perform request
         const responseTicket = await fetch(`https://api.hubapi.com/crm/v3/objects/tickets/search`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${HUBSPOT_TOKEN}`
+                "Authorization": `Bearer ${getEnvVar().HUBSPOT_TOKEN}`
             },
             body: JSON.stringify({
                 filterGroups: [{
                     filters: [{
-                        propertyName: "hs_object_id",
+                        propertyName: "id_saipos",
                         operator: "EQ",
-                        value: hubspotTicketId
+                        value: storeId
                     }]
                 }],
                 properties: [
@@ -58,7 +60,7 @@ export async function getTicketData(hubspotTicketId) {
         // Results handling
         console.log("getTicketData: " + JSON.stringify(results));
         if (results) return results;
-        throw new Error("Error getting Ticket Data");
+        throw new Error("ID Hubspot não encontrado.");
     } catch (error) {
         console.error("Error getting Ticket Data", error)
         throw error

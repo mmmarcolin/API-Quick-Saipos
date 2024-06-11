@@ -1,3 +1,6 @@
+// Imports
+import { getEnvVar } from "./../../config/variables.js";
+
 export async function getContactId(hubspotTicketId) {
     try {   
         //  Perform request
@@ -5,7 +8,7 @@ export async function getContactId(hubspotTicketId) {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${HUBSPOT_TOKEN}`
+                "Authorization": `Bearer ${getEnvVar().HUBSPOT_TOKEN}`
             }
         })
         const responseContactId = await responseContact.json()

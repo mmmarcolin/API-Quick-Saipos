@@ -1,8 +1,8 @@
 export class Item {
     constructor(data) {
-        this.id_store_choice_item = data.id_store_choice_item
+        this.id_store_choice_item = 0
         this.desc_store_choice_item = data.desc_store_choice_item
-        this.id_store_choice = data.id_store_choice
+        this.id_store_choice = 0
         this.detail = data.detail
         this.code = data.code
         this.enabled = "Y"

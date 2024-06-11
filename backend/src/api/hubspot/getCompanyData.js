@@ -1,3 +1,5 @@
+import { getEnvVar } from "./../../config/variables.js";
+
 export async function getCompanyData(hubspotCompanyId) {
     try {
         //  Perform request
@@ -5,7 +7,7 @@ export async function getCompanyData(hubspotCompanyId) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${HUBSPOT_TOKEN}`
+                "Authorization": `Bearer ${getEnvVar().HUBSPOT_TOKEN}`
             },
             body: JSON.stringify({
                 filterGroups: [{
@@ -37,7 +39,7 @@ export async function getCompanyData(hubspotCompanyId) {
         // Results handling
         console.log("getCompanyData: " + JSON.stringify(results));
         if (results) return results;
-        throw new Error("Error getting Company Data");
+        throw new Error("ID Hubspot não encontrado.");
     } catch (error) {
         console.error("Error getting Company Data", error)    
         throw error

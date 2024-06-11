@@ -58,20 +58,7 @@ export async function checkboxesRelation() {
 
     // Sync group checkboxes
     syncCheckboxes($("payment-types-all"), ".select-all-pay input[type=checkbox]:not(#payment-types-all)", true);
-    syncCheckboxes($("config-all"), ".select-all-conf input[type=checkbox]:not(#config-all)", true);
-
-    // Sync individual and new text input and file input checkboxes
-    syncCheckboxes($("partners-site-delivery"), "partners-counter-pickup");
-    syncCheckboxes($("partners-premium-digital-menu"), "partners-instruction-counter");
-    syncCheckboxes($("partners-ifood-code"), "config-acc-aval");
-    syncCheckboxes($("choices-csv"), "apportionment-proportional");
-    syncCheckboxes($("menu-csv"), "checkbox-for-file");
-    syncCheckboxes($("delivery-area-csv"), "delivery-area-radius");
 
     // Exclusive checkboxes
-    toggleExclusiveCheckboxes($("sale-status-left"), $("sale-status-easy-delivery"));
-    toggleExclusiveCheckboxes($("delivery-area-district"), $("delivery-area-radius"));
-    toggleExclusiveCheckboxes($("apportionment-proportional"), $("apportionment-bigger"));
-    toggleExclusiveCheckboxes($("partners-basic-digital-menu"), $("partners-premium-digital-menu"));
-    toggleExclusiveCheckboxes($("partners-instruction-counter"), $("partners-instruction-waiter"));
+    toggleExclusiveCheckboxes($("sale-status-delivery"), $("sale-status-easy-delivery"));
 }

@@ -8,7 +8,7 @@ export async function createFinalReport(data, moduleResults) {
             choices: "Adicionais",
             settings: "Configurações",
             saleStatus: "Status de venda",
-            tableOrder: "Mesas",
+            orderTable: "Mesas",
             orderCard: "Comandas",
             shifts: "Turnos",
             waiters: "Garçons",
@@ -30,16 +30,16 @@ export async function createFinalReport(data, moduleResults) {
         // Fill each array
         for (let [module, value] of Object.entries(moduleResults)) {
             const moduleNameInPortuguese = moduleNamesInPortuguese[module] || module;  // Fallback to the original name if not found
-            
+
             switch (value) {
                 case "SUCESSO":
-                    executedSuccessfully.push(`• ${moduleNameInPortuguese};`);
+                    executedSuccessfully.push(`• ${moduleNameInPortuguese}`);
                     break;
                 case "NÃO EXECUTADO":
-                    notExecuted.push(`• ${moduleNameInPortuguese};`);
+                    notExecuted.push(`• ${moduleNameInPortuguese}`);
                     break;
                 case "POSSÍVEL FALHA":
-                    possibleFailures.push(`• ${moduleNameInPortuguese};`);
+                    possibleFailures.push(`• ${moduleNameInPortuguese}`);
                     break;
                 default:
                     break;

@@ -116,6 +116,7 @@ export async function storeData(quickData) {
                 address_number: quickData.addressNumber,
                 address_complement: quickData.addressComplement,
                 delivery_area_option: quickData.deliveryOption,
+                phone: quickData.phone
             }, originalStoreData)
         }))
         

@@ -13,26 +13,27 @@ export async function createSaiposData(formData, handledData) {
             hiper: formData.paymentTypesHiper,
             sodexo: formData.paymentTypesSodexo,
             alelo: formData.paymentTypesAlelo,
+            ticket: formData.paymentTypesTicket,
         },
         settingsChosen: {
-            col42: formData.configCol42,
-            kds: formData.configKds,
-            cancelReason: formData.configCancelReason,
-            cancelPassword: formData.configCancelPass,
-            admPermissions: formData.configPermissions
+            col42: true,
+            admPermissions: true,
+            kds: formData.settingsKds,
+            cancelReason: formData.settingsCancelReason,
+            cancelPassword: formData.settingsCancelPassword
         },
         saleStatusChosen: {
-            delivery: formData.saleStatusLeft,
+            delivery: formData.saleStatusDelivery,
             easyDelivery: formData.saleStatusEasyDelivery
         },
-        tableOrderChosen: {
-            quantity: formData.tableOrders
+        orderTableChosen: {
+            quantity: formData.orderTables
         },
         orderCardChosen: {
             quantity: formData.orderCards
         },
         storeDataChosen: {
-            deliveryOption: handledData.someStoreData ? formData.deliveryAreaRadius ? "A" : "D" : "", 
+            deliveryOption: handledData.someStoreData ? formData.deliveryAreaType?.charAt(0).toUpperCase() : "",
             state: handledData.someStoreData ? formData.storeDataState : "",
             city: handledData.someStoreData ? formData.storeDataCity : "",
             cnae: handledData.someStoreData ? formData.storeDataCnae.replace(/\D+/g, "") : "",
@@ -46,17 +47,21 @@ export async function createSaiposData(formData, handledData) {
             phone: handledData.someStoreData ? normalizeText(formData.storeDataCnpj).slice(-11) : "",
         },
         partnersChosen: {
-            deliverySite: formData.partnersSiteDelivery, 
-            basicMenu: formData.partnersBasicDigitalMenu,
-            premiumMenu: formData.partnersPremiumDigitalMenu,
-            pickupCounter: handledData.somePartners ? formData.partnersCounterPickup : "",
+            deliverySite: formData.partners.includes("delivery-site"), 
+            basicMenu: formData.partners.includes("basic-menu"),
+            premiumMenu: formData.partners.includes("premium-menu"),
+            saiposBot: formData.partnersSaiposBot,
+            images: handledData.somePartners ? formData.partnersImages : "",
+            color: handledData.somePartners ? formData.partnersColors : "",
+            pickupCounter: handledData.somePartners ? formData.partnersPickupMethod.includes("counter") : "",
+            pickupDelivery: handledData.somePartners ? formData.partnersPickupMethod.includes("delivery") : "",
             domain: handledData.somePartners ? formData.domain : "",
             minimumValue: handledData.somePartners ? formData.partnersMinimumValue : "",
             startTime: handledData.somePartners ? formData.partnersStartTime : "",
             endTime: handledData.somePartners ? formData.partnersEndTime : "",
             weekDays: handledData.somePartners ? handledData.weekDaysData : "",
-            waiterInstruction: handledData.somePartners ? formData.partnersInstructionWaiter : "",
-            counterInstruction: handledData.somePartners ? formData.partnersInstructionCounter : "",
+            waiterInstruction: handledData.somePartners ? formData.partnersInstruction == "partnersInstructionWaiter": "",
+            counterInstruction: handledData.somePartners ? formData.partnersInstructionCounter == "partnersInstructionCounter" : "",
         },
         usersChosen: {
             users: handledData.someUser ? handledData.usersData : "",
@@ -64,8 +69,8 @@ export async function createSaiposData(formData, handledData) {
         },
         ifoodIntegrationChosen: {
             data: handledData.ifoodData,
-            username: handledData.ifoodData && formData.configAccAval ? formData.partnersIfoodUsername : "",
-            password: handledData.ifoodData && formData.configAccAval ? formData.partnersIfoodPassword : "",
+            username: handledData.someIfoodAutoSending ? formData.ifoodUsername : "",
+            password: handledData.someIfoodAutoSending ? formData.ifoodPassword : "",
         },
         shiftsChosen: handledData.shiftData,
         deliveryMenChosen: handledData.deliveryMenData,
@@ -74,15 +79,16 @@ export async function createSaiposData(formData, handledData) {
             data: handledData.deliveryAreaData,
             state: handledData.deliveryAreaData ? formData.storeDataState : "",
             city: handledData.deliveryAreaData ? formData.storeDataCity : "",
-            deliveryOption: handledData.deliveryAreaData ? formData.deliveryAreaRadius ? "A" : "D" : "",
+            deliveryOption: handledData.deliveryAreaData ? formData.deliveryAreaType?.charAt(0).toUpperCase() : "",
         },
         choicesChosen: {
             data: handledData.choicesData,
-            apportionmentBigger: handledData.choicesData ? formData.apportionmentBigger : "",
-            apportionmentProportional: handledData.choicesData ? formData.apportionmentProportional : ""
+            apportionmentBigger: handledData.choicesData ? formData.apportionmentMethod === "apportionment-bigger" : "",
+            apportionmentProportional: handledData.choicesData ? formData.apportionmentMethod === "apportionment-proportional" : ""
         },
         menuChosen: handledData.menuData,
         generalData: {
+            saiposAuthToken: formData.saiposAuthToken,
             storeId: formData.storeId,
             time: {},
         }, 

@@ -24,7 +24,7 @@ export async function menu(quickData) {
             })
         } catch (error) {
             const message = "Categorias pré existentes já excluidas ou com produtos dentro."
-            return { error: true, response: message };
+            console.error("Categorias pré existentes já excluidas ou com produtos dentro.")
         }
     }
 

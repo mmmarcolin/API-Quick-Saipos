@@ -17,12 +17,12 @@ export async function logicRegistration(formData) {
         // Handle data
         const handledData = await processHandlers(formData);
         const saiposData = await createSaiposData(formData, handledData);
-        
+
         // Validating data
         const validationError = await validateData(formData, saiposData, handledData);
-        if (validationError.length > 0) 
+        if (validationError.length > 2) 
             return { statusCode: 400, body: { message: validationError, status: "alert" }};
-        
+
         // Execute, report and log
         const { quickData, moduleResults } = await executeConfigure(saiposData);
         const report = await createFinalReport(quickData, moduleResults);

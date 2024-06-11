@@ -12,7 +12,7 @@ import { saleStatus } from "./../api/saipos/modules/saleStatus.js";
 import { settings } from "./../api/saipos/modules/settings.js";
 import { shifts } from "./../api/saipos/modules/shifts.js";
 import { storeData } from "./../api/saipos/modules/storeData.js";
-import { tableOrder } from "./../api/saipos/modules/tableOrder.js";
+import { orderTable } from "./../api/saipos/modules/orderTable.js";
 import { users } from "./../api/saipos/modules/users.js";
 import { waiters } from "./../api/saipos/modules/waiters.js";
 import { checkTruthyValue } from "./checkTruthyValue.js";
@@ -20,7 +20,7 @@ import { checkTruthyValue } from "./checkTruthyValue.js";
 // Functions object
 const moduleResults = {};
 const func = {
-    ifoodIntegration, saleStatus, tableOrder, 
+    ifoodIntegration, saleStatus, orderTable, 
     orderCard, settings, storeData, 
     shifts, waiters, deliveryMen, 
     users, deliveryAreas, choices, 
@@ -35,7 +35,7 @@ export async function executeConfigure(quickData) {
         
         // Initial and Final modules
         const initialModules = ["ifoodIntegration", "paymentTypes", "storeData", "choices", "settings"];
-        const finalModules = ["saleStatus", "tableOrder", "orderCard", "shifts", "waiters", "deliveryMen", "users", "deliveryAreas", "menu", "partners"];
+        const finalModules = ["saleStatus", "orderTable", "orderCard", "shifts", "waiters", "deliveryMen", "users", "deliveryAreas", "menu", "partners"];
 
         // Execute and collect results for both initial and final modules
         await executeModules(initialModules, quickData);
@@ -70,12 +70,15 @@ async function executeModules(modules, quickData) {
 // Execute each module
 async function executeModule(moduleName, quickData) {
     let moduleError
-    if (await checkTruthyValue(quickData[`${moduleName}Chosen`]))
+    if (await checkTruthyValue(quickData[`${moduleName}Chosen`])) {
         moduleError = await func[moduleName](quickData[`${moduleName}Chosen`]);
+        (moduleError.length !== 0) ? moduleError.forEach(err => console.log(`executeConfigure > ${moduleName}: ${JSON.stringify(err.response)}`)) : null
+    }
 
-    return !moduleError 
-        ? "NÃO EXECUTADO" 
-        : moduleError.length === 0 
-            ? "SUCESSO" : 
+    if (moduleName === "settings" && !(["kds", "cancelReason", "cancelPassword"].some(key => quickData.settingsChosen[key]))) 
+        return "NÃO EXECUTADO"
+    
+    return !moduleError ? "NÃO EXECUTADO" 
+        : moduleError.length === 0 ? "SUCESSO" : 
             "POSSÍVEL FALHA";
 }

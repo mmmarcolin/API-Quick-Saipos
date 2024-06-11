@@ -3,9 +3,18 @@ import { getFormData } from "./../utils/getFormData.js";
 import { display } from "./../../main.js";
 import { requestSaiposData } from "./../api/requestSaiposData.js";
 import { validatedFormData } from "./../utils/validateFormData.js";
+import { generalVerify } from "./../utils/generalVerify.js";
 
 // Logic of Hubspot integration
 export async function logicSaiposData() {
+    // Verify id size and chars
+    const { isStoreIdValid, isAuthTokenValid } = await generalVerify()
+    if (!isAuthTokenValid || !isStoreIdValid) {
+        isStoreIdValid ? display.alert("ID da loja deve possuir 5 dígitos") : null
+        isAuthTokenValid ? display.alert("Saipos Token deve possuir 64 caracteres") : null
+        return 
+    }
+
     try {
         // Check disable button
         if (this.disabled) return;
@@ -20,17 +29,8 @@ export async function logicSaiposData() {
         // Error validation
         const validationError = await validatedFormData(formData);
         if (validationError) {
-            switch (validationError.status) {
-                case "alert":
-                    display.alert(validationError.data)
-                    return
-                case "info":
-                    const userResponse = await display.info(validationError.data)
-                    if (userResponse === "abort") return
-                    display.loading("Realizando cadastro...");
-                default:
-                    break;
-            }
+            const userResponse = await display.question(validationError.data);
+            if (userResponse !== "continue") return;
         } 
 
         // Send data to API

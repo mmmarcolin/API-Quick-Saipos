@@ -5,8 +5,8 @@ export class StoreData {
         this.id_store = parseInt(storeId)
         this.corporate_name = original.corporate_name
         this.trade_name = original.trade_name
-        this.phone_1 = original.phone_1
-        this.phone_2 = original.phone_2
+        this.phone_1 = data.phone
+        this.phone_2 = data.phone
         this.cnpj = data.cnpj
         this.ie = data.ie
         this.id_district = data.id_district

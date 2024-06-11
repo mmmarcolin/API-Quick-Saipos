@@ -14,7 +14,7 @@ export class Display {
         this.overlay.id = "overlay";
         document.body.appendChild(this.overlay);
 
-        this.displayMessage("none", "");
+        this.displayMessage("none");
         this.setupGlobalListeners();
     }
 
@@ -24,7 +24,6 @@ export class Display {
             const { id } = event.target;
             switch (id) {
                 case 'ok-button-display':
-                case 'continue-button-display':
                 case 'overlay':
                 case 'wait-button-display':
                     this.displayMessage("none");
@@ -33,6 +32,9 @@ export class Display {
                     cleanForms();
                     this.displayMessage("none");
                     break;
+                case 'continue-button-display':
+                    this.loading("Realizando cadastro...")
+                    break
             }
         });
     }
@@ -40,23 +42,26 @@ export class Display {
     // Handle message lines
     messageHTML(messages) {
         return Array.isArray(messages) 
-        ? messages.map(msg => `<span>${msg}</span>`).join('<br>') 
-        : `<span>${messages}</span>`;
+        ? messages.map(msg => `<span class="message-content">${msg}</span>`).join('<br>') 
+        : `<span class="message-content">${messages}</span>`;
     }
 
     // Hide and show message and overlay
-    displayMessage(displayState, newHTML) {
+    displayMessage(displayState, newHTML = "", bodyPointer= "auto") {
         this.messageContainer.style.display = displayState;
         this.overlay.style.display = displayState;
         this.messageContainer.innerHTML = newHTML;
+
+        document.body.style.pointerEvents = bodyPointer
+        document.body.style.userSelect = bodyPointer;
     }
 
     // Show loading animation
     loading(message) {       
         this.displayMessage("block", `
             <div class="c-flash_icon c-flash_icon--loading font-normal"></div>
-            <span>${message}</span>
-        `);
+            <span class="message-content">${message}</span>
+        `, "none");
     }
 
     // Show error messages
@@ -107,11 +112,11 @@ export class Display {
         `);
     }
 
-    // Show informational messages with options to continue or review
-    info(messages) {
+    // Show question messages with options to continue or review
+    question(messages) {
         return new Promise((resolve, reject) => {
             this.displayMessage("block", `
-                <div class="c-flash_icon c-flash_icon--info font-normal">
+                <div class="c-flash_icon c-flash_icon--question font-normal">
                     <div class="letter">?</div>
                 </div>
                 ${this.messageHTML(messages)}
@@ -122,16 +127,7 @@ export class Display {
             `);
 
             $("continue-button-display").onclick = () => {
-                this.displayMessage("none", "");
                 resolve('continue');
-            };
-            $("overlay").onclick = () => {
-                this.displayMessage("none", "");
-                resolve('abort');
-            };
-            $("wait-button-display").onclick = () => {
-                this.displayMessage("none", "");
-                resolve('abort');
             };
         });
     }

@@ -5,261 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quick Saipos</title>
     <link rel="icon" type="image/svg" href="./assets/quickLogo.svg">
-    <link rel="stylesheet" href="./styles/general.css"><link rel="stylesheet" href="./styles/actions.css"><link rel="stylesheet" href="./styles/container.css"><link rel="stylesheet" href="./styles/content.css"><link rel="stylesheet" href="./styles/responsivity.css"><link rel="stylesheet" href="./styles/animations.css">
+    <link rel="stylesheet" href="./styles/container.css"><link rel="stylesheet" href="./styles/content.css"><link rel="stylesheet" href="./styles/actions.css"><link rel="stylesheet" href="./styles/animations.css"><link rel="stylesheet" href="./styles/responsivity.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Formulário -->
-    <form action="#" id="container" method="post">
-        <!-- Top -->
-        <div id="container-top" class="full-width-fieldset">
-            <img src="./assets/quickLogo.svg" class="small-images" alt="Quick logo">
-            <h1 id="saipos-title">Quick Saipos</h1>
-            <img src="./assets/saiposLogo.svg" class="small-images" alt="Saipos logo">
+    <div id="background" style="background-image: url(./../public/assets/abstractBackground.svg);"></div>
+    <div id="container">
+        <div id="container-top">
+            <img src="./assets/quickLogo.svg" alt="Quick Saipos logo" class="img">
+            <h1 id="title">Quick Saipos</h1>
+            <img src="./assets/saiposLogo.svg" alt="Saipos logo" class="img">
         </div>
-        <!-- Fieldsets -->
-        <div id="container-form" class="full-width-fieldset">
-            <fieldset id="saipos-auth-token-fieldset" class="field-container-one sixth-width-fieldset">
-                <legend>Token</legend>
-                <div>
-                    <input type="text" id="saipos-auth-token" name="saipos-auth-token" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
-                </div>
-            </fieldset>
-            <!-- Configurações -->
-            <fieldset class="tenth-width-fieldset field-container-six options-container select-all-conf">
-                <legend>Configurações</legend>
-                <label class="options-label">
-                    <input type="checkbox" id="config-all" name="config-all">
-                    <span class="checkbox-mark"></span>
-                    Todos
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="config-col42" name="config-col42" checked>
-                    <span class="checkbox-mark"></span>
-                    Colunas 42
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="config-permissions" name="config-permissions" checked>
-                    <span class="checkbox-mark"></span>
-                    Permissões
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="config-cancel-pass" name="config-cancel-pass">
-                    <span class="checkbox-mark"></span>
-                    Senha canc.
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="config-cancel-reason" name="config-cancel-reason">
-                    <span class="checkbox-mark"></span>
-                    Motivo canc. 
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="config-kds" name="config-kds">
-                    <span class="checkbox-mark"></span>
-                    KDS
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="config-acc-aval" name="config-acc-aval">
-                    <span class="checkbox-mark"></span>
-                    Acel. Aval.
-                </label>
-            </fieldset>
-            <!-- Hubspot -->
-            <fieldset id="saipos-auth-token-fieldset" class="field-container-one sixth-width-fieldset">
-                <legend>Hubspot</legend>
-                <div>
-                    <input type="text" id="hubspot-id" name="hubspot-id" placeholder="1234567890">
-                </div>
-            </fieldset>
-            <!-- Formas de pagamento -->
-            <fieldset class="tenth-width-fieldset field-container-nine options-container select-all-pay">
-                <legend>Formas de pagamento</legend>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-all" name="payment-types-all">
-                    <span class="checkbox-mark"></span> 
-                    Todos
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-pix" name="payment-types-pix" checked>
-                    <span class="checkbox-mark"></span>
-                    Pix
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-master" name="payment-types-master" checked>
-                    <span class="checkbox-mark"></span>
-                    Master
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-elo" name="payment-types-elo" checked>
-                    <span class="checkbox-mark"></span>
-                    Elo 
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-visa" name="payment-types-visa" checked>
-                    <span class="checkbox-mark"></span>
-                    Visa
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-amex" name="payment-types-amex" checked>
-                    <span class="checkbox-mark"></span>
-                    Amex
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-hiper" name="payment-types-hiper">
-                    <span class="checkbox-mark"></span>
-                    Hiper
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-sodexo" name="payment-types-sodexo">
-                    <span class="checkbox-mark"></span>
-                    Sodexo
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="payment-types-alelo" name="payment-types-alelo">
-                    <span class="checkbox-mark"></span>
-                    Alelo
-                </label>
-            </fieldset>
-            <!-- Usuários -->
-            <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
-                <legend>Usuários</legend>
-                <label class="options-label">
-                    <input type="checkbox" id="user-waiter-app" name="user-waiter-app" checked>
-                    <span class="checkbox-mark"></span>
-                    App Garçom
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="user-cashier" name="user-cashier" checked>
-                    <span class="checkbox-mark"></span>
-                    Caixa
-                </label>
-            </fieldset>
-            <!-- Status da venda -->
-            <fieldset class="quarter-width-fieldset field-container-three options-container row2-option">
-                <legend>Status da venda</legend>
-                <label class="options-label">
-                    <input type="checkbox" id="sale-status-left" name="sale-status-left" checked>
-                    <span class="checkbox-mark"></span>
-                    Saiu
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="sale-status-easy-delivery" name="sale-status-easy-delivery">
-                    <span class="checkbox-mark"></span>
-                    Entrega Fácil
-                </label>
-            </fieldset>
-            <!-- Áreas de entrega -->
-            <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
-                <legend>Áreas de entrega</legend>
-                <label class="options-label">
-                    <input type="checkbox" id="delivery-area-district" name="delivery-area-district" checked>
-                    <span class="checkbox-mark"></span>
-                    Bairro
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="delivery-area-radius" name="delivery-area-radius">
-                    <span class="checkbox-mark"></span>
-                    Raio
-                </label>
-            </fieldset>
-            <!-- Cardápio -->
-            <fieldset class="quarter-width-fieldset field-container-two options-container row2-option">
-                <legend>Cardápio pizza</legend>
-                <label class="options-label">
-                    <input type="checkbox" id="apportionment-proportional" name="apportionment-proportional" checked>
-                    <span class="checkbox-mark"></span>
-                    Proporcional
-                </label>
-                <label class="options-label">
-                    <input type="checkbox" id="apportionment-bigger" name="apportionment-bigger">
-                    <span class="checkbox-mark"></span>
-                    Maior
-                </label>
-            </fieldset>
-            <!-- Canais de venda -->
-            <fieldset id="partners" class="">
-                <legend>Canais de venda</legend>
-                <div class="field-container-six options-container">
-                    <label class="options-label">
-                        <input type="checkbox" id="partners-site-delivery" name="partners-site-delivery">
-                        <span class="checkbox-mark"></span>
-                        Site delivery
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="partners-counter-pickup" name="partners-counter-pickup">
-                        <span class="checkbox-mark"></span>
-                        Retirada
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="partners-basic-digital-menu" name="partners-basic-digital-menu">
-                        <span class="checkbox-mark"></span>
-                        Card. Basic
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="partners-premium-digital-menu" name="partners-premium-digital-menu">
-                        <span class="checkbox-mark"></span>
-                        Card. Premium
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="partners-instruction-counter" name="partners-instruction-counter">
-                        <span class="checkbox-mark"></span>
-                        Instr. caixa
-                    </label>
-                    <label class="options-label">
-                        <input type="checkbox" id="partners-instruction-waiter" name="partners-instruction-waiter">
-                        <span class="checkbox-mark"></span>
-                        Instr. garçom
-                    </label>
-                </div> 
-                <div class="field-container-five">
-                    <div>
-                        <label for="partners-start-day">Dia início</label>
-                        <select id="partners-start-day">
-                            <option value="" selected>Selecione</option>
-                            <option value="monday">Segunda-feira</option>
-                            <option value="tuesday">Terça-feira</option>
-                            <option value="wednesday">Quarta-feira</option>
-                            <option value="thursday">Quinta-feira</option>
-                            <option value="friday">Sexta-feira</option>
-                            <option value="saturday">Sábado</option>
-                            <option value="sunday">Domingo</option>                           
-                        </select>
-                    </div>
-                    <div>
-                        <label for="partners-end-day">Dia fim</label>
-                        <select id="partners-end-day">
-                            <option value="" selected>Selecione</option>
-                            <option value="monday">Segunda-feira</option>
-                            <option value="tuesday">Terça-feira</option>
-                            <option value="wednesday">Quarta-feira</option>
-                            <option value="thursday">Quinta-feira</option>
-                            <option value="friday">Sexta-feira</option>
-                            <option value="saturday">Sábado</option>
-                            <option value="sunday">Domingo</option>                           
-                        </select>
-                    </div>
-                    <div>
-                        <label for="partners-start-time">Horário início</label>
-                        <input type="text" id="partners-start-time" name="partners-start-time" placeholder="0800">
-                    </div>
-                    <div>
-                        <label for="partners-end-time">Horário fim</label>
-                        <input type="text" id="partners-end-time" name="partners-end-time" placeholder="1800">
-                    </div>
-                    <div>
-                        <label for="partners-minimum-value">Mínimo (R$)</label>
-                        <input type="text" id="partners-minimum-value" name="partners-minimum-value" placeholder="35,90">
-                    </div>
-                </div>
-            </fieldset>
-            <!-- Dados da loja -->
-            <fieldset class="full-width-fieldset field-container-five">
-                <legend>Dados da loja</legend>
-                <div>
-                    <label for="store-data-state">Estado</label>
-                    <select id="store-data-state">
+        <form action="#" id="container-form">
+            <fieldset id="store-data-fieldset" class="six-col-fieldset fieldset">
+                <legend>Dados da Loja</legend>
+                <div class="field">
+                    <label class="input-label" for="store-data-state">Estado:</label>
+                    <select id="store-data-state" class="input">
                         <option value="" selected>Selecione</option>
                         <option value="AC">AC</option>
                         <option value="AL">AL</option>
@@ -290,152 +54,341 @@
                         <option value="TO">TO</option>                            
                     </select>
                 </div>
-                <div>
-                    <label for="store-data-city">Cidade</label>
-                    <input type="text" id="store-data-city" name="store-data-city" placeholder="São Leopoldo">
+                <div class="field">
+                    <label class="input-label" for="store-data-city">Cidade:</label>
+                    <input type="text" id="store-data-city" class="input" placeholder="São Leopoldo">
                 </div>
-                <div>
-                    <label for="store-data-district">Bairro</label>
-                    <input type="text" id="store-data-district" name="store-data-district" placeholder="Cristo Rei">
+                <div class="field">
+                    <label class="input-label" for="store-data-district">Bairro:</label>
+                    <input type="text" id="store-data-district" class="input" placeholder="Cristo Rei">
                 </div>
-                <div>
-                    <label for="store-data-address">Endereço</label>
-                    <input type="text" id="store-data-address" name="store-data-address" placeholder="Av. Theodomiro Porto da Fonseca">
+                <div class="field">
+                    <label class="input-label" for="store-data-address">Endereço:</label>
+                    <input type="text" id="store-data-address" class="input" placeholder="Av. Theodomiro Porto da Fonseca">
                 </div>
-                <div>
-                    <label for="store-data-zip">CEP</label>
-                    <input type="text" id="store-data-zip" name="store-data-zip" placeholder="93022715">
+                <div class="field">
+                    <label class="input-label" for="store-data-zip">CEP:</label>
+                    <input type="text" id="store-data-zip" class="input" placeholder="93022715">
                 </div>
-                <div>
-                    <label for="store-data-number">Número</label>
-                    <input type="text" id="store-data-number" name="store-data-number" placeholder="3101">
+                <div class="field">
+                    <label class="input-label" for="store-data-number">Número:</label>
+                    <input type="text" id="store-data-number" class="input" placeholder="3101">
                 </div>
-                <div>
-                    <label for="store-data-complement">Complemento</label>
-                    <input type="text" id="store-data-complement" name="store-data-complement" placeholder="Complexo Tecnosinos">
+                <div class="field">
+                    <label class="input-label" for="store-data-complement">Complemento:</label>
+                    <input type="text" id="store-data-complement" class="input" placeholder="Complexo Tecnosinos">
                 </div>
-                <div>
-                    <label for="store-data-cnpj">CNPJ</label>
-                    <input type="text" id="store-data-cnpj" name="store-data-cnpj" placeholder="26747538000158">
+                <div class="field">
+                    <label class="input-label" for="store-data-cnpj">CNPJ:</label>
+                    <input type="text" id="store-data-cnpj" class="input" placeholder="26747538000158">
                 </div>
-                <div>
-                    <label for="store-data-state-registration">Inscrição estadual</label>
-                    <input type="text" id="store-data-state-registration" name="store-data-state-registration" placeholder="00123456789">
+                <div class="field">
+                    <label class="input-label" for="store-data-state-registration">Inscrição estadual:</label>
+                    <input type="text" id="store-data-state-registration" class="input" placeholder="00123456789">
                 </div>
-                <div>
-                    <label for="store-data-cnae">CNAE</label>
-                    <input type="text" id="store-data-cnae" name="store-data-CNAE" placeholder="5611102">
+                <div class="field">
+                    <label class="input-label" for="store-data-cnae">CNAE:</label>
+                    <input type="text" id="store-data-cnae" class="input" placeholder="5611102">
                 </div>
-                <div>
-                    <label for="store-data-phone">Telefone</label>
-                    <input type="text" id="store-data-phone" name="store-data-phone" placeholder="51989656323">
+                <div class="field">
+                    <label class="input-label" for="domain">Domínio:</label>
+                    <input type="text" id="domain" class="input" placeholder="nomedaloja">
                 </div>
-            </fieldset>
-            <!-- Turnos -->
-            <fieldset class="half-width-fieldset field-container-three">
-                <legend>Turnos</legend>
-                <div>
-                    <label for="shift-desc">Descrição</label>
-                    <input type="text" id="shift-desc" name="shift-desc" placeholder="Dia, Noite">
-                </div>
-                <div>
-                    <label for="shift-time">Horário</label>
-                    <input type="text" id="shift-time" name="shift-time" placeholder="0800, 1800">
-                </div>
-                <div>
-                    <label for="shift-service-fee">Taxa (%)</label>
-                    <input type="text" id="shift-service-fee" name="shift-service-fee" placeholder="5, 10">
+                <div class="field">
+                    <label class="input-label" for="store-data-phone">Telefone:</label>
+                    <input type="text" id="store-data-phone" class="input" placeholder="51989656323">
                 </div>
             </fieldset>
-            <!-- Funcionários -->
-            <fieldset class="half-width-fieldset field-container-four">
-                <legend>Funcionários</legend>
-                <div>
-                    <label for="waiters-quantity">Garçons</label>
-                    <input type="text" id="waiters-quantity" name="waiters-quantity" placeholder="2">
+            <fieldset id="partners-fieldset" class="five-col-fieldset fieldset">
+                <legend>Canais</legend>
+                <div class="field">
+                    <label class="input-label" for="partners">Canais de venda</label>
+                    <select id="partners" class="input">
+                        <option value="">Selecione</option>
+                        <option value="delivery-site">Site delivery</option>
+                        <option value="basic-menu">Cardápio Basic</option>
+                        <option value="premium-menu">Cardápio Premium</option>
+                        <option value="delivery-site, basic-menu">Site delivery e Cardápio Basic</option>
+                        <option value="deilvery-site, premiumMenu">Site delivery e Cardápio Premium</option>
+                    </select>
                 </div>
-                <div>
-                    <label for="waiters-daily-rate">Diária</label>
-                    <input type="text" id="waiters-daily-rate" name="waiters-daily-rate" placeholder="30, 50">
+                <div class="field">
+                    <label class="input-label" for="partners-pickup-method">Modo de entrega</label>
+                    <select id="partners-pickup-method" class="input">
+                        <option value="">Selecione</option>
+                        <option value="delivery">Delivery</option>
+                        <option value="counter">Retirada</option>
+                        <option value="delivery, counter">Delivery e retirada</option>
+                    </select>
                 </div>
-                <div>
-                    <label for="delivery-men-quantity">Entregadores</label>
-                    <input type="text" id="delivery-men-quantity" name="delivery-men-quantity" placeholder="3">
+                <div class="field">
+                    <label class="input-label" for="partners-images">Imagens:</label>
+                    <select id="partners-images" class="input">
+                        <option value="" selected>Selecione</option>
+                        <option value="hamburger">Hambúrguer</option>
+                        <option value="pizza">Pizza</option>
+                        <option value="sushi">Sushi</option>
+                        <option value="acai">Açaí</option>
+                        <option value="pastel">Salgado</option>
+                        <option value="pasta">Massa</option>                           
+                        <option value="meal">Refeição</option>                           
+                        <option value="meat">Carne</option>
+                        <option value="drink">Drink</option>
+                        <option value="beverage">Bebida</option>
+                        <option value="generic">Genérico</option>
+                    </select>
                 </div>
-                <div>
-                    <label for="delivery-men-daily-rate">Diária</label>
-                    <input type="text" id="delivery-men-daily-rate" name="delivery-men-daily-rate" placeholder="20, 30, 40">
+                <div class="field">
+                    <label class="input-label" for="partners-colors">Cor:</label>
+                    <select id="partners-colors" class="input">
+                        <option value="" selected>Selecione</option>
+                        <option value="black">Preto</option>
+                        <option value="white">Branco</option>
+                        <option value="red">Vermelho</option>
+                        <option value="orange">Laranja</option>
+                        <option value="yellow">Amarelo</option>                           
+                        <option value="green">Verde</option>
+                        <option value="blue">Azul</option>
+                        <option value="purple">Roxo</option>
+                        <option value="pink">Rosa</option>
+                    </select>
+                </div>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="partners-saipos-bot" class="checkbox">
+                    <span class="checkmark" data-text="Saipos Bot"></span>
+                </label>
+                <div class="field">
+                    <label class="input-label" for="partners-start-day">Dia início:</label>
+                    <select id="partners-start-day" class="input">
+                        <option value="" selected>Selecione</option>
+                        <option value="monday">Segunda-feira</option>
+                        <option value="tuesday">Terça-feira</option>
+                        <option value="wednesday">Quarta-feira</option>
+                        <option value="thursday">Quinta-feira</option>
+                        <option value="friday">Sexta-feira</option>
+                        <option value="saturday">Sábado</option>
+                        <option value="sunday">Domingo</option>                           
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="input-label" for="partners-end-day">Dia fim:</label>
+                    <select id="partners-end-day" class="input">
+                        <option value="" selected>Selecione</option>
+                        <option value="monday">Segunda-feira</option>
+                        <option value="tuesday">Terça-feira</option>
+                        <option value="wednesday">Quarta-feira</option>
+                        <option value="thursday">Quinta-feira</option>
+                        <option value="friday">Sexta-feira</option>
+                        <option value="saturday">Sábado</option>
+                        <option value="sunday">Domingo</option>                           
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="input-label" for="partners-start-time">Horário início:</label>
+                    <input type="text" id="partners-start-time" class="input" placeholder="08:00">
+                </div>
+                <div class="field">
+                    <label class="input-label" for="partners-end-time">Horário fim:</label>
+                    <input type="text" id="partners-end-time" class="input" placeholder="18:00">
+                </div>
+                <div class="field">
+                    <label class="input-label" for="partners-minimum-value">Pedido mínimo (R$):</label>
+                    <input type="text" id="partners-minimum-value" class="input" placeholder="19,90">
                 </div>
             </fieldset>
-            <!-- Integração Ifood -->
-            <fieldset class="half-width-fieldset field-container-four">
+            <fieldset id="ifood-fieldset" class="five-col-fieldset fieldset">
                 <legend>Integração Ifood</legend>
-                <div>
-                    <label for="partners-ifood-code">Código Ifood</label>
-                    <input type="text" id="partners-ifood-code" name="partners-ifood-code" placeholder="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                <div class="field">
+                    <label class="input-label" for="ifood-name">Nome Ifood:</label>
+                    <input type="text" id="ifood-name" class="input" placeholder="Nome da loja">
                 </div>
-                <div>
-                    <label for="partners-ifood-name">Nome Ifood</label>
-                    <input type="text" id="partners-ifood-name" name="partners-ifood-name" placeholder="Nome da loja Ifood">
+                <div class="field">
+                    <label class="input-label" for="ifood-code">Código Ifood:</label>
+                    <input type="text" id="ifood-code" class="input" placeholder="************************************">
                 </div>
-                <div>
-                    <label for="partners-ifood-username">Email Ifood</label>
-                    <input type="text" id="partners-ifood-username" name="partners-ifood-username" placeholder="xxx@xxx.com">
+                <div class="field">
+                    <label class="input-label" for="ifood-username">Email Ifood:</label>
+                    <input type="text" id="ifood-username" class="input" placeholder="@.com">
                 </div>
-                <div>
-                    <label for="partners-ifood-password">Senha Ifood</label>
-                    <input type="text" id="partners-ifood-password" name="partners-ifood-password" placeholder="**********">
+                <div class="field">
+                    <label class="input-label" for="ifood-password">Senha Ifood:</label>
+                    <input type="text" id="ifood-password" class="input" placeholder="**********">
+                </div>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="ifood-auto-sending" class="checkbox">
+                    <span class="checkmark" data-text="Disparo automático"></span>
+                </label>
+            </fieldset>
+            <fieldset id="payments-fieldset" class="ten-col-fieldset fieldset select-all-pay">
+                <legend>Formas de pagamento:</legend>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-all" class="checkbox">
+                    <span class="checkmark" data-text="Todos"></span> 
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-pix" class="checkbox">
+                    <span class="checkmark" data-text="Pix"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-elo" class="checkbox">
+                    <span class="checkmark" data-text="Elo"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-master" class="checkbox">
+                    <span class="checkmark" data-text="Master"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-visa" class="checkbox">
+                    <span class="checkmark" data-text="Visa "></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-amex" class="checkbox">
+                    <span class="checkmark" data-text="Hiper"></span> 
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-hiper" class="checkbox">
+                    <span class="checkmark" data-text="Amex"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-alelo" class="checkbox">
+                    <span class="checkmark" data-text="Alelo"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-sodexo" class="checkbox">
+                    <span class="checkmark" data-text="Sodexo"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="payment-types-ticket" class="checkbox">
+                    <span class="checkmark" data-text="Ticket "></span>
+                </label>
+            </fieldset>
+            <fieldset id="sale-statuses-fieldset" class="two-col-fieldset fieldset">
+                <legend>Status da venda</legend>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="sale-status-delivery" class="checkbox">
+                    <span class="checkmark" data-text="Delivery"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="sale-status-easy-delivery" class="checkbox">
+                    <span class="checkmark" data-text="Entrega Fácil"></span>
+                </label>
+            </fieldset>
+            <fieldset id="settings-fieldset" class="three-col-fieldset fieldset">
+                <legend>Configurações</legend>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="settings-cancel-password" class="checkbox">
+                    <span class="checkmark" data-text="Senha cancelamento"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="settings-cancel-reason" class="checkbox">
+                    <span class="checkmark" data-text="Motivo cancelamento"></span>
+                </label>
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="settings-kds" class="checkbox">
+                    <span class="checkmark" data-text="KDS"></span>
+                </label>
+            </fieldset>
+            <fieldset id="delivery-men-fieldset" class="two-col-fieldset fieldset">
+                <legend>Entregadores</legend>
+                <div class="field">
+                    <label class="input-label" for="delivery-men-quantity">Quantidade / Nomes:</label>
+                    <input type="text" id="delivery-men-quantity" class="input" placeholder="3">
+                </div>
+                <div class="field">
+                    <label class="input-label" for="delivery-men-daily-rate">Diárias:</label>
+                    <input type="text" id="delivery-men-daily-rate" class="input" placeholder="20, 30, 40">
                 </div>
             </fieldset>
-            <!-- Outros -->
-            <fieldset class="half-width-fieldset field-container-three">
-                <legend>Outros</legend>
-                <div>
-                    <label for="table-orders">Mesas</label>
-                    <input type="text" id="table-orders" name="table-orders" placeholder="25">
+            <fieldset id="waiters-fieldset" class="three-col-fieldset fieldset">
+                <legend>Garçons e Usuários</legend>
+                <div class="field">
+                    <label class="input-label" for="waiters-quantity">Quantidade / Nomes:</label>
+                    <input type="text" id="waiters-quantity" class="input" placeholder="2">
                 </div>
-                <div>
-                    <label for="order-cards">Comandas</label>
-                    <input type="text" id="order-cards" name="order-cards" placeholder="125">
+                <div class="field">
+                    <label class="input-label" for="waiters-daily-rate">Diárias:</label>
+                    <input type="text" id="waiters-daily-rate" class="input" placeholder="30, 50">
                 </div>
-                <div>
-                    <label for="domain">Domínio</label>
-                    <input type="text" id="domain" name="domain" placeholder="nomedaloja">
+                <label class="checkbox-label field">
+                    <input type="checkbox" id="waiter-cashier" class="checkbox">
+                    <span class="checkmark" data-text="Caixa"></span>
+                </label>
+            </fieldset>
+            <fieldset id="on-site-fieldset" class="two-col-fieldset fieldset">
+                <legend>Presencial</legend>
+                <div class="field">
+                    <label class="input-label" for="order-tables">Mesas:</label>
+                    <input type="text" id="order-tables" class="input" placeholder="25">
+                </div>
+                <div class="field">
+                    <label class="input-label" for="order-cards">Comandas:</label>
+                    <input type="text" id="order-cards" class="input" placeholder="125">
                 </div>
             </fieldset>
-        </div>
-        <!-- Botões -->
-        <div id="container-form" class="full-width-fieldset form-grid">
-            <div id="aux-div" class="sixth-width-fieldset field-container-two">
-                <button type="button" id="clean-button" class="aux-buttons button">
-                    &#x43
-                </button>
-                <button type="button" id="doc-button" class="aux-buttons button" href="https://drive.google.com/drive/folders/18TaY3PV4BYHET1h7ORRph_J1_UyeMxU4" target="_blank">
-                    &#128463
-                </button>
-            </div>
-            <div id="button-container" class="tenth-width-fieldset field-container-five">
-                <label for="menu-csv" class="button upload-button" id="menu-label">
-                    Cardápio
-                    <input type="file" id="menu-csv" name="menu-csv" accept=".csv">
-                    <span class="remove-file" id="menu-remove">✔</span>
+            <fieldset id="shifts-fieldset" class="three-col-fieldset fieldset">
+                <legend>Turnos</legend>
+                <div class="field">
+                    <label class="input-label" for="shift-desc">Descrição:</label>
+                    <input type="text" id="shift-desc" class="input" placeholder="Dia, Noite">
+                </div>
+                <div class="field">
+                    <label class="input-label" for="shift-time">Horário:</label>
+                    <input type="text" id="shift-time" class="input" placeholder="08:00, 18:00">
+                </div>
+                <div class="field">
+                    <label class="input-label" for="shift-service-fee">Taxa de serviço:</label>
+                    <input type="text" id="shift-service-fee" class="input" placeholder="5, 10">
+                </div>
+            </fieldset>
+            <fieldset id="delivery-area-fieldset" class="two-col-fieldset fieldset">
+                <legend>Áreas de Entrega</legend>
+                <label for="delivery-area-csv" class="field upload-label" id="delivery-area-districts-label">
+                    <input type="file" class="upload"  id="delivery-area-csv" accept=".csv">
+                    🗀 Áreas
                 </label>
-                <label for="choices-csv" class="button upload-button" id="choices-label">
-                    Adicionais
-                    <input type="file" id="choices-csv" name="choices-csv" accept=".csv">
-                    <span class="remove-file" id="choices-remove">✔</span>
-                </label> 
-                <label for="delivery-area-csv" class="button upload-button" id="delivery-area-label">
-                    Entrega
-                    <input type="file" id="delivery-area-csv" name="delivery-area-csv" accept=".csv">
-                    <span class="remove-file" id="delivery-area-remove">✔</span>
+                <div class="field single-select">
+                    <select id="delivery-area-type" class="input">
+                        <option value="districts" selected>Bairros</option>
+                        <option value="area" disabled>Raios</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset id="menu-fieldset" class="three-col-fieldset fieldset">
+                <legend>Cardápio</legend>
+                <label for="menu-csv" class="field upload-label" id="menu-label">
+                    <input type="file" class="upload"  id="menu-csv" accept=".csv">
+                    🗀 Cardápio
                 </label>
-                <input type="text" id="store-id" name="store-id" class="button upload-button" placeholder="ID">
-                <input type="button" value="INICIAR" id="execute-button" class="button">
-            </div>
-        </div>
-        <!-- Arquivo de renderização -->
-    </form>
+                <label for="choices-csv" class="field upload-label" id="choices-label">
+                    <input type="file" class="upload" id="choices-csv" accept=".csv">
+                    🗀 Adicionais
+                </label>
+                <div class="field single-select">
+                    <select id="apportionment-method" class="input">
+                        <option value="apportionment-proportional" selected>Rateio Proporcional</option>
+                        <option value="apportionment-bigger">Rateio Maior valor</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset id="general-fieldset" class="two-col-fieldset fieldset">
+                <legend>Geral</legend>
+                <div class="field">
+                    <label class="input-label" for="saipos-auth-token">Token Saipos:</label>
+                    <input type="text" id="saipos-auth-token" class="input" placeholder="****************************************************************">
+                </div>
+                <div class="field">
+                    <label class="input-label" for="store-id">ID da Loja:</label>
+                    <input type="text" id="store-id" class="input" placeholder="33738">
+                </div>
+            </fieldset>
+            <fieldset id="buttons-fieldset" class="three-col-fieldset fieldset">
+                <legend>Comandos</legend>
+                <input type="button" id="clean-button" class="button" value="Limpar seleção">
+                <input type="button" id="integrate-button" class="button" value="Integrar Hubspot">
+                <input type="button" id="execute-button" class="button" value="Executar Cadastro">
+            </fieldset>
+        </form>
+    </div>
     <script src="./../main.js" type="module"></script>
 </body>
 </html>

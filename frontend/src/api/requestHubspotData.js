@@ -20,7 +20,7 @@ export async function requestHubspotData(storeId) {
         const results = await response.json()
 
         // Return handling
-        if (results) return { data: results?.data, message: results.message, status: results.status, response: response.status}
+        if (results) return { data: results?.data, message: results.message, status: results.status}
         throw new Error("Erro ao conectar QuickAPI.")
     } catch (error) {
         throw error;
