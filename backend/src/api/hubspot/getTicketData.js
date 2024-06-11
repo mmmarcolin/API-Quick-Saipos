@@ -37,7 +37,7 @@ export async function getTicketData(storeId) {
                     "ids_do_ifood", 
                     "configuracoes__quicksaipos_", 
                     "pagamento__quicksaipos_", 
-                    "usuarios__quicksaipos_",
+                    "usuario_caixa__quicksaipos_",
                     "status_de_venda__quicksaipos_", 
                     "descricao_turno__quicksaipos_", 
                     "horario_turno__quicksaipos_",
@@ -48,8 +48,15 @@ export async function getTicketData(storeId) {
                     "quantidade_de_comandas__quicksaipos_", 
                     "dias_inicio__quicksaipos_", 
                     "cardapio___tipo_de_solicitacao",
-                    "hs_object_id"   ,
-                    "tipo_de_estabelecimento_ticket"   
+                    "hs_object_id",
+                    "tipo_de_estabelecimento_ticket", 
+                    "aceita_entrega__quick_saipos",
+                    "aceita_retirada_no_balcao",
+                    "saipos_bot__quick_saipos_",
+                    "cor_canais_de_venda__quicksaipos_",
+                    "login_do_portal_ifood",
+                    "senha_do_portal_ifood",
+                    "disparo_automatico__quicksaipos_",
                 ],
                 limit: 1
             })

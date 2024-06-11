@@ -75,17 +75,17 @@ export async function partners(quickData) {
     }
 
     const photo = {
-        hamburger: [, ],
-        pizza: [, ],
-        sushi: [, ],
-        acai: [, ],
-        pastel: [, ],
-        pasta: [, ],
-        meal: [, ],
-        meat: [, ],
-        drink: [, ],
-        beverage: [, ],
-        generic: [, ],
+        hamburger: [113, 132],
+        pizza: [40, 20],
+        sushi: [35, 14],
+        acai: [45, 48],
+        pastel: [99, 79],
+        pasta: [11, 91],
+        meal: [21, 4],
+        meat: [26, 8],
+        drink: [54, 70],
+        beverage: [56, 67],
+        generic: [25, 71],
     }
 
     try {

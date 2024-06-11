@@ -8,7 +8,6 @@ function kebabToCamel(str) {
 
 // Function to insert data retrieved from Hubspot
 export async function insertHubspotData(hsData) {
-
     try {
         // Checkboxes
         const checkFieldIds = [
@@ -20,29 +19,27 @@ export async function insertHubspotData(hsData) {
             "payment-types-hiper",
             "payment-types-sodexo",
             "payment-types-alelo",
-            "config-col42",
-            "config-permissions",
+            "payment-types-ticket",
             "settings-cancel-password",
             "settings-cancel-reason",
             "settings-kds",
-            "user-waiter-app",
             "waiter-cashier",
             "sale-status-delivery",
             "sale-status-easy-delivery",
-            "delivery-area-district",
-            "delivery-area-radius",
-            "apportionment-proportional",
-            "apportionment-bigger",
-            "partners-site-delivery",
-            "partners-counter-pickup",
-            "partners-basic-digital-menu",
-            "partners-premium-digital-menu",
-            "partners-instruction-counter",
-            "partners-instruction-waiter"   
+            "partners-saipos-bot",
+            "ifood-auto-sending"
         ];
         
         // Texts
         const valueFieldIds = [
+            "delivery-area-type",
+            "apportionment-method",
+            "partners",
+            "partners-pickup-method",
+            "partners-colors",
+            "partners-images",
+            "ifood-username",
+            "ifood-password",
             "partners-start-day",
             "partners-end-day",
             "partners-start-time",
